@@ -29,12 +29,3 @@ export const restoreScrollPosition = () => {
     }
   });
 };
-
-export const getActivePanel = (view: string) => {
-  let panel = rootStore.router.activePanel;
-  let panelsHistory = rootStore.router.panelsHistory;
-  if (typeof panelsHistory[view] !== "undefined") {
-    panel = panelsHistory[view][panelsHistory[view].length - 1];
-  }
-  return panel;
-};

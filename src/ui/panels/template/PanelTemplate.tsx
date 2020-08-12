@@ -1,10 +1,11 @@
 import React, { FC } from "react";
 import { Panel } from "@vkontakte/vkui";
+import { PanelProps } from "@vkontakte/vkui/dist/components/Panel/Panel";
 
-interface TemplateProps {
-  id: string;
-}
-
-export const PanelTemplate: FC<TemplateProps> = ({ id, children }) => {
-  return <Panel id={id}>{children}</Panel>;
+export const PanelTemplate: FC<PanelProps> = ({ id, children, ...other }) => {
+    return (
+        <Panel id={id} {...other}>
+            {children}
+        </Panel>
+    );
 };
