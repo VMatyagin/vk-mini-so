@@ -18,6 +18,10 @@ import Icon28UsersOutline from "@vkontakte/icons/dist/28/users_outline";
 import Icon28StatisticsOutline from "@vkontakte/icons/dist/28/statistics_outline";
 import Icon28HelpOutline from "@vkontakte/icons/dist/28/help_outline";
 import Icon28MailOutline from "@vkontakte/icons/dist/28/mail_outline";
+import data from "../../../feature/json/2018.json";
+import data9 from "../../../feature/json/2019.json";
+
+import { useMutation, gql } from "@apollo/react-hooks";
 
 export const ElsePanelBase: FC<{ id: string }> = observer(({ id }) => {
     const store = useMst();
@@ -26,6 +30,69 @@ export const ElsePanelBase: FC<{ id: string }> = observer(({ id }) => {
     const changeView = (view: string) => {
         store.router.setPage(view, "base");
     };
+    const preparedData: any[] = [];
+    const preparedShData: any[] = [];
+    const brigades: any[] = [];
+    const shtabs: any[] = [];
+    const dir = ["ССО", "СПО", "СМО", "ССхО", "СОП", "САО", "ССервО", "СЭО"];
+    const shsh = [
+        "ГАСУ",
+        "ТД",
+        "ИТМО",
+        "СПбГУ",
+        "Герцена",
+        "Сводный",
+        "ЛЭТИ",
+        "Политех",
+        "Кандидатский",
+        "ГУАП",
+        "1 Мед",
+        "СШСО",
+    ];
+    data9.forEach((item) => {
+        preparedData.push({
+            user: {
+                data: {
+                    first_name: item.__1.split(" ")[1]
+                        ? item.__1.split(" ")[1]
+                        : "",
+                    last_name: item.__1.split(" ")[0]
+                        ? item.__1.split(" ")[0]
+                        : "",
+                    middle_name: item.__1.split(" ")[2],
+                },
+            },
+            brigadeByBrigade: {
+                data: {
+                    direction: dir.indexOf(item.__5) + 1,
+                    shtab: shsh.indexOf(item.__3) + 1,
+                    title: `${item.__2}`,
+                },
+                on_conflict: {
+                    constraint: "brigades_title_direction_key",
+                    update_columns: "title",
+                },
+            },
+            year: 2019,
+        });
+    });
+
+    const [loadData] = useMutation(gql`
+        mutation MyMutation2($objects: [mini_app_seasons_insert_input!]! = {}) {
+            insert_mini_app_seasons(objects: $objects) {
+                affected_rows
+            }
+        }
+    `);
+    const handleCl = () => {
+        loadData({
+            variables: {
+                objects: preparedData.slice(1000),
+            },
+        });
+    };
+    console.log("asd".split(" ")[0]);
+
     return (
         <PanelTemplate id={id}>
             <PanelHeader>
@@ -36,7 +103,7 @@ export const ElsePanelBase: FC<{ id: string }> = observer(({ id }) => {
             <Group>
                 <SimpleCell
                     before={<Avatar size={72} src={store.app.userData.photo} />}
-                    description="Комендант СПбСО"
+                    description={store.app.soData.position}
                 >
                     {`${store.app.userData.first_name} ${store.app.userData.last_name}`}
                 </SimpleCell>
@@ -101,6 +168,7 @@ export const ElsePanelBase: FC<{ id: string }> = observer(({ id }) => {
                 >
                     Помощь
                 </SimpleCell>
+                <SimpleCell onClick={handleCl}>Жми</SimpleCell>
             </Group>
             <Div />
         </PanelTemplate>

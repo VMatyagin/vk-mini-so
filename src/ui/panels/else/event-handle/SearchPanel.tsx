@@ -9,7 +9,7 @@ import {
 import { useMst } from "../../../../feature/stores";
 import { PanelTemplate } from "../../template/PanelTemplate";
 import { EventCard } from "../../../molecules/EventCard";
-export const EventSearchPanel: FC<{ id: string }> = ({ id }) => {
+export const SearchPanel: FC<{ id: string }> = ({ id }) => {
     const store = useMst();
     const changeView = () => {
         store.router.setPage("else_event_handle", "event_page");

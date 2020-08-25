@@ -38,27 +38,7 @@ export const getAuthToken = (scope: any) => {
             rootStore.app.setAccessToken("");
         });
 };
-export const getUserData = async () => {
-    await VKBridge.send("VKWebAppGetUserInfo")
-        .then((data) => {
-            rootStore.app.setUserData({
-                id: data.id,
-                last_name: data.last_name,
-                first_name: data.first_name,
-                photo: data.photo_max_orig
-                    ? data.photo_max_orig
-                    : data.photo_200,
-            });
-        })
-        .catch(() => {
-            rootStore.app.setUserData({
-                id: 0,
-                last_name: "Ошибка загрузки",
-                first_name: "",
-                photo: "",
-            });
-        });
-};
+export const getUserData = () => VKBridge.send("VKWebAppGetUserInfo");
 
 export const closeApp = () => {
     return VKBridge.send("VKWebAppClose", {

@@ -16,7 +16,7 @@ import { useMst } from "../../../../feature/stores";
 import { PanelTemplate } from "../../template/PanelTemplate";
 import Icon28WalletOutline from "@vkontakte/icons/dist/28/wallet_outline";
 import Icon28ReplyOutline from "@vkontakte/icons/dist/28/reply_outline";
-export const EventPageWalletPanel: FC<{ id: string }> = ({ id }) => {
+export const WalletPanel: FC<{ id: string }> = ({ id }) => {
     const store = useMst();
     return (
         <PanelTemplate id={id}>

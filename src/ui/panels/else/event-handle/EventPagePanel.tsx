@@ -54,7 +54,7 @@ export const EventPagePanel: FC<{ id: string }> = ({ id }) => {
                     after={
                         <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
                     }
-                    // onClick={() => changeView("else_event_handle")}
+                    onClick={() => changeView("event_page_admins")}
                 >
                     Организаторы
                 </SimpleCell>
@@ -63,7 +63,7 @@ export const EventPagePanel: FC<{ id: string }> = ({ id }) => {
                     after={
                         <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
                     }
-                    // onClick={() => changeView("else_event_handle")}
+                    onClick={() => changeView("event_page_artists")}
                 >
                     Выступающие
                 </SimpleCell>
@@ -72,7 +72,7 @@ export const EventPagePanel: FC<{ id: string }> = ({ id }) => {
                     after={
                         <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
                     }
-                    // onClick={() => changeView("else_event_handle")}
+                    onClick={() => changeView("event_page_winners")}
                 >
                     Результаты (для рейтинга)
                 </SimpleCell>

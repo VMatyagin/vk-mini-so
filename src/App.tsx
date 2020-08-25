@@ -22,16 +22,22 @@ import { WalletPanelBase } from "./ui/panels/wallet/WalletPanelBase";
 import { EventQRModal } from "./ui/modals/EventQRModal";
 import { ElsePanelBase } from "./ui/panels/else/ElsePanelBase";
 import { EventHandlePanel } from "./ui/panels/else/event-handle/EventHandlePanel";
-import { EventAddPanel } from "./ui/panels/else/event-handle/EventAddPanel";
-import { EventSearchPanel } from "./ui/panels/else/event-handle/EventSearchPanel";
+import { AddPanel } from "./ui/panels/else/event-handle/AddPanel";
+import { SearchPanel } from "./ui/panels/else/event-handle/SearchPanel";
 import { EventPagePanel } from "./ui/panels/else/event-handle/EventPagePanel";
-import { EventPageWalletPanel } from "./ui/panels/else/event-handle/EventPageWalletPanel";
+import { WalletPanel } from "./ui/panels/else/event-handle/WalletPanel";
 import { ElseWalletCountModal } from "./ui/modals/ElseWalletCountModal";
+import { AdminsPanel } from "./ui/panels/else/event-handle/AdminsPanel";
+import { EventUsers } from "./ui/panels/else/event-handle/EventUsers";
+import { EventWinners } from "./ui/panels/else/event-handle/EventWinners";
+import { useMutation } from "@apollo/react-hooks";
+import { GET_USER_DATA } from "./feature/queries/app-q";
+import { AppLoadingPanel } from "./ui/panels/AppLoadingPanel";
 
 export const App: FC = observer(({ children }) => {
     const lastAndroidBackAction = useState<number>(0);
-
     const store = useMst();
+    const [loadData] = useMutation(GET_USER_DATA);
 
     const {
         setStory,
@@ -47,6 +53,47 @@ export const App: FC = observer(({ children }) => {
         getUserData();
     }, [setStory]);
 
+    useEffect(() => {
+        const fetch = async () => {
+            await getUserData()
+                .then((data) => {
+                    store.app.setUserData({
+                        id: data.id,
+                        last_name: data.last_name,
+                        first_name: data.first_name,
+                        photo: data.photo_max_orig
+                            ? data.photo_max_orig
+                            : data.photo_200,
+                    });
+                    loadData({
+                        variables: {
+                            id: data.id,
+                            last_name: data.last_name,
+                            first_name: data.first_name,
+                        },
+                    }).then((data) => {
+                        store.app.setSoData({
+                            position:
+                                data.data.insert_mini_app_users.returning[0]
+                                    .position.title,
+                            level:
+                                data.data.insert_mini_app_users.returning[0]
+                                    .position.level,
+                        });
+                        store.app.setLoading(false);
+                    });
+                })
+                .catch(() => {
+                    store.app.setUserData({
+                        id: 0,
+                        last_name: "Ошибка загрузки",
+                        first_name: "",
+                        photo: "",
+                    });
+                });
+        };
+        fetch();
+    }, [store.app, loadData]);
     return (
         <AppInner
             lastAndroidBackAction={lastAndroidBackAction}
@@ -136,111 +183,130 @@ export const AppInner: FC<AppInitialProps> = observer((props) => {
     );
     return (
         <ConfigProvider scheme={store.app.colorSchema}>
-            <Epic
-                activeStory={activeStory}
-                tabbar={
-                    <Tabbar itemsLayout="vertical">
-                        <TabbarItem
-                            onClick={() =>
-                                store.router.setStory("home", "base")
-                            }
-                            selected={activeStory === "home"}
-                            text="Главная"
+            {store.app.loading ? (
+                <View activePanel="app_loading">
+                    <AppLoadingPanel id="app_loading" />
+                </View>
+            ) : (
+                <Epic
+                    activeStory={activeStory}
+                    tabbar={
+                        <Tabbar itemsLayout="vertical">
+                            <TabbarItem
+                                onClick={() =>
+                                    store.router.setStory("home", "base")
+                                }
+                                selected={activeStory === "home"}
+                                text="Главная"
+                            >
+                                <Icon28Newsfeed />
+                            </TabbarItem>
+                            <TabbarItem text="Отряды">
+                                <Icon28CompassOutline />
+                            </TabbarItem>
+                            <TabbarItem
+                                onClick={() =>
+                                    store.router.setStory("calendar", "base")
+                                }
+                                selected={activeStory === "calendar"}
+                                text="Календарь"
+                            >
+                                <Icon28CalendarOutline />
+                            </TabbarItem>
+                            <TabbarItem
+                                onClick={() =>
+                                    store.router.setStory("wallet", "base")
+                                }
+                                selected={activeStory === "wallet"}
+                                text="Билеты"
+                            >
+                                <Icon28WalletOutline />
+                            </TabbarItem>
+                            <TabbarItem
+                                onClick={() =>
+                                    store.router.setStory("else", "base")
+                                }
+                                selected={activeStory === "else"}
+                                text="Ещё"
+                            >
+                                <Icon28Newsfeed />
+                            </TabbarItem>
+                        </Tabbar>
+                    }
+                >
+                    <Root id="home" activeView={activeView} popout={popout}>
+                        <View
+                            id="home"
+                            activePanel={store.router.getActivePanel("home")}
+                            history={history}
+                            onSwipeBack={() => goBack()}
                         >
-                            <Icon28Newsfeed />
-                        </TabbarItem>
-                        <TabbarItem text="Отряды">
-                            <Icon28CompassOutline />
-                        </TabbarItem>
-                        <TabbarItem
-                            onClick={() =>
-                                store.router.setStory("calendar", "base")
-                            }
-                            selected={activeStory === "calendar"}
-                            text="Календарь"
+                            <HomePanelBase id="base" />
+                        </View>
+                    </Root>
+                    <Root id="calendar" activeView={activeView} popout={popout}>
+                        <View
+                            id="calendar"
+                            activePanel={store.router.getActivePanel(
+                                "calendar"
+                            )}
+                            history={history}
+                            modal={calenderModals}
+                            onSwipeBack={() => goBack()}
                         >
-                            <Icon28CalendarOutline />
-                        </TabbarItem>
-                        <TabbarItem
-                            onClick={() =>
-                                store.router.setStory("wallet", "base")
-                            }
-                            selected={activeStory === "wallet"}
-                            text="Билеты"
+                            <CalendarPanelBase id="base" />
+                        </View>
+                    </Root>
+                    <Root id="wallet" activeView={activeView} popout={popout}>
+                        <View
+                            id="wallet"
+                            activePanel={store.router.getActivePanel("wallet")}
+                            history={history}
+                            modal={calenderModals}
+                            onSwipeBack={() => goBack()}
                         >
-                            <Icon28WalletOutline />
-                        </TabbarItem>
-                        <TabbarItem
-                            onClick={() =>
-                                store.router.setStory("else", "base")
-                            }
-                            selected={activeStory === "else"}
-                            text="Ещё"
+                            <WalletPanelBase id="base" />
+                        </View>
+                    </Root>
+                    <Root id="else" activeView={activeView} popout={popout}>
+                        <View
+                            id="else"
+                            activePanel={store.router.getActivePanel("else")}
+                            history={history}
+                            modal={calenderModals}
+                            onSwipeBack={() => goBack()}
                         >
-                            <Icon28Newsfeed />
-                        </TabbarItem>
-                    </Tabbar>
-                }
-            >
-                <Root id="home" activeView={activeView} popout={popout}>
-                    <View
-                        id="home"
-                        activePanel={store.router.getActivePanel("home")}
-                        history={history}
-                        onSwipeBack={() => goBack()}
-                    >
-                        <HomePanelBase id="base" />
-                    </View>
-                </Root>
-                <Root id="calendar" activeView={activeView} popout={popout}>
-                    <View
-                        id="calendar"
-                        activePanel={store.router.getActivePanel("calendar")}
-                        history={history}
-                        modal={calenderModals}
-                        onSwipeBack={() => goBack()}
-                    >
-                        <CalendarPanelBase id="base" />
-                    </View>
-                </Root>
-                <Root id="wallet" activeView={activeView} popout={popout}>
-                    <View
-                        id="wallet"
-                        activePanel={store.router.getActivePanel("wallet")}
-                        history={history}
-                        modal={calenderModals}
-                        onSwipeBack={() => goBack()}
-                    >
-                        <WalletPanelBase id="base" />
-                    </View>
-                </Root>
-                <Root id="else" activeView={activeView} popout={popout}>
-                    <View
-                        id="else"
-                        activePanel={store.router.getActivePanel("else")}
-                        history={history}
-                        modal={calenderModals}
-                        onSwipeBack={() => goBack()}
-                    >
-                        <ElsePanelBase id="base" />
-                    </View>
-                    <View
-                        id="else_event_handle"
-                        activePanel={store.router.getActivePanel(
-                            "else_event_handle"
-                        )}
-                        history={history}
-                        modal={calenderModals}
-                        onSwipeBack={() => goBack()}
-                    >
-                        <EventHandlePanel id="base" />
-                        <EventAddPanel id="event_add" />
-                        <EventSearchPanel id="event_search" />
-                        <EventPagePanel id="event_page" />
-                        <EventPageWalletPanel id="event_page_wallets" />
-                    </View>
-                </Root>
-            </Epic>
+                            <ElsePanelBase id="base" />
+                        </View>
+                        <View
+                            id="else_event_handle"
+                            activePanel={store.router.getActivePanel(
+                                "else_event_handle"
+                            )}
+                            history={history}
+                            modal={calenderModals}
+                            onSwipeBack={() => goBack()}
+                        >
+                            <EventHandlePanel id="base" />
+                            <AddPanel id="event_add" />
+                            <SearchPanel id="event_search" />
+                            <EventPagePanel id="event_page" />
+                            <WalletPanel id="event_page_wallets" />
+                            <AdminsPanel id="event_page_admins" />
+                            <EventUsers id="event_admins" type="admins" />
+                            <EventUsers
+                                id="event_volunteers"
+                                type="volunteers"
+                            />
+                            <EventUsers
+                                id="event_page_artists"
+                                type="artists"
+                            />
+                            <EventWinners id="event_page_winners" />
+                        </View>
+                    </Root>
+                </Epic>
+            )}
         </ConfigProvider>
     );
 });

@@ -12,7 +12,7 @@ import {
 } from "@vkontakte/vkui";
 import { useMst } from "../../../../feature/stores";
 import { PanelTemplate } from "../../template/PanelTemplate";
-export const EventAddPanel: FC<{ id: string }> = ({ id }) => {
+export const AddPanel: FC<{ id: string }> = ({ id }) => {
     const store = useMst();
     return (
         <PanelTemplate id={id}>

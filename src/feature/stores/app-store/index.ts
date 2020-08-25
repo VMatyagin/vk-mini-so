@@ -11,9 +11,14 @@ interface User {
     first_name: string;
     photo: string;
 }
+interface SoDataType {
+    level: string;
+    position: string;
+}
 
 export const AppStore = types
     .model("AppStore", {
+        loading: types.optional(types.boolean, true),
         accessToken: types.optional(types.string, ""),
         userData: types.optional(
             types.model({
@@ -29,6 +34,13 @@ export const AppStore = types
                 photo: "",
             }
         ),
+        soData: types.optional(
+            types.model({
+                level: types.string,
+                position: types.string,
+            }),
+            { level: "0", position: "" }
+        ),
         colorSchema: types.optional(
             types.union(
                 types.literal("client_light"),
@@ -42,6 +54,9 @@ export const AppStore = types
         componentScroll: types.frozen<{ [propName: string]: Position }>({}),
     })
     .actions((self) => ({
+        setLoading(key: boolean) {
+            self.loading = key;
+        },
         setColorScheme(
             colorSchema:
                 | "client_light"
@@ -53,6 +68,9 @@ export const AppStore = types
         },
         setUserData(data: User) {
             self.userData = data;
+        },
+        async setSoData(data: SoDataType) {
+            self.soData = data;
         },
         setAccessToken(accessToken: string) {
             self.accessToken = accessToken;

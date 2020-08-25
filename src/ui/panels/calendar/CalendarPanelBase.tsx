@@ -7,7 +7,6 @@ import {
     Div,
     List,
     PanelHeaderButton,
-    Spinner,
     Headline,
 } from "@vkontakte/vkui";
 import Icon28InfoOutline from "@vkontakte/icons/dist/28/info_outline";
@@ -21,6 +20,7 @@ import ru from "date-fns/locale/ru";
 import { Gesture } from "@vkontakte/vkui/dist/components/Touch/Touch";
 import { useMst } from "../../../feature/stores";
 import { EventCard } from "../../molecules/EventCard";
+
 registerLocale("ru", ru);
 const months = [
     "Январь",
@@ -205,7 +205,6 @@ export const CalendarPanelBase: FC<{ id: string }> = ({ id }) => {
             </Div>
 
             <Div>
-                <Spinner size="regular" />
                 <List>
                     <EventCard onClick={() => {}} />
                 </List>
