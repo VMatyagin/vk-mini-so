@@ -1978,23 +1978,23 @@
     arg "^4.1.3"
     chalk "4.1.0"
 
-"@vkontakte/icons@^1.30.1":
-  version "1.31.0"
-  resolved "https://registry.yarnpkg.com/@vkontakte/icons/-/icons-1.31.0.tgz#7881d4d77090ebb165ca582d8e84d27dfed06d36"
-  integrity sha512-z1CRPzhrmJxz7KF7+0vJUs8vRNPiZeqGsisqnkxvWMF2Ff/u3Xk5Rj5mFi4ItL/eog2ShCBERvJkili8sYPV/g==
+"@vkontakte/icons@^1.49.0":
+  version "1.49.0"
+  resolved "https://registry.yarnpkg.com/@vkontakte/icons/-/icons-1.49.0.tgz#a83f5b516c6ba644677336490a5fa50baccf6a6c"
+  integrity sha512-ajliZLbsfIDF1ezo8tvv9PKY/M2ja7Y9G5rJ+x4Rqb8ql058KOOWcTBHZDjRgZHhBS4orroNOhGk2RLhiaC96A==
   dependencies:
     es6-object-assign "1.1.0"
     svg-baker-runtime "1.4.6"
 
-"@vkontakte/vk-bridge@^2.2.5":
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/@vkontakte/vk-bridge/-/vk-bridge-2.2.6.tgz#df9ab2d9024bab8e039d9fbdcda1df55deb4d807"
-  integrity sha512-jpcSnvJHL79g7j3ibqbwvBB0LRwuUvuGlOY2NTO20P0lctUazkTSUbMtUS0V7DwGjX1oZvdRvMUKrDvw6aAjnQ==
+"@vkontakte/vk-bridge@^2.3.0":
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/@vkontakte/vk-bridge/-/vk-bridge-2.3.0.tgz#d436daeab23bf51a4485a3a45493f793dab78187"
+  integrity sha512-1kICD4u5J8EO4PyGg7ZMBwOju85Wh7zb5OxVs1JYB/ghTHg5YQSmpIx9M4NZH2TnK9KelUpBEs+TwFpkB5PMyw==
 
-"@vkontakte/vkui@^3.12.0":
-  version "3.12.0"
-  resolved "https://registry.yarnpkg.com/@vkontakte/vkui/-/vkui-3.12.0.tgz#1434227ca4bf9bd6d19891a0714b76a91512b9ae"
-  integrity sha512-+JW3AWpyY/OAGhxBQ4iudX7hNWcmH5e3dVSKCS/N6lNQnit7VFekwt2LBL9B2EbTD6+wz0GQGfR+TjNkZNLsVg==
+"@vkontakte/vkui@^3.12.8":
+  version "3.12.8"
+  resolved "https://registry.yarnpkg.com/@vkontakte/vkui/-/vkui-3.12.8.tgz#6a2f08191657853cf16b1c19b4a3f442370cb1d7"
+  integrity sha512-i7sFFdY1cNIUhgzHuM09u6MjOrF3JmzrHJHHNTltwfoZO3c8poqErnYbK9pKhLzCmgBNHRfoEs5dv5utxI2r7A==
 
 "@webassemblyjs/ast@1.8.5":
   version "1.8.5"
