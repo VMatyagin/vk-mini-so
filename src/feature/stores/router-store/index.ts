@@ -36,7 +36,7 @@ export const RouterStore = types
 
             let panelsHistory = self.panelsHistory[view] || [];
             let viewsHistory = self.viewsHistory[self.activeStory] || [];
-            const viewIndexInHistory = viewsHistory.indexOf(view);
+            const viewIndexInHistory = viewsHistory.indexOf(view);            
             if (viewIndexInHistory !== -1) {
                 viewsHistory = viewsHistory.filter(
                     (_, index) => index !== viewIndexInHistory
