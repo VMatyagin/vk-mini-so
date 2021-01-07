@@ -22,3 +22,19 @@ export interface Vote {
   poll_question: Question | number;
   poll: Poll | number;
 }
+
+export interface Result {
+  [key: string]: number;
+}
+
+interface AnswerResult {
+  id: number;
+  title: string;
+  count: number;
+}
+
+export interface QuestionResult {
+  id: number;
+  title: string;
+  result: AnswerResult[];
+}

@@ -31,16 +31,21 @@ export const VoteStore = types
     questions: types.optional(types.array(QuestionModel), []),
     selfVotes: types.optional(types.array(VoteModel), []),
   })
-  .views((self) => ({
-    currentIsVoted() {
-      const vote = self.selfVotes.find(
-        (vote) =>
-          (typeof vote.poll_question !== "number" && vote.poll_question.id) ===
-          self.questions[self.vote.currentQuestion].id
-      );
-      return !vote ? 0 : self.questions[self.vote.currentQuestion].id;
-    },
-  }))
+  .views((self) => {
+    return {
+      get currentIsVoted() {
+        const vote = self.selfVotes.find(
+          (vote) =>
+            typeof vote.poll_question !== "number" &&
+            vote.poll_question.id === self.vote.currentQuestion
+        );
+        // @ts-ignore
+        console.log(vote);
+
+        return vote.toJSON();
+      },
+    };
+  })
   .actions((self) => ({
     setVote(data: Poll) {
       self.vote = {

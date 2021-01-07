@@ -6,7 +6,10 @@ import {
   Button,
   InfoRow,
   Progress,
+  CellButton,
 } from "@vkontakte/vkui";
+import { observer } from "mobx-react";
+import { toJS } from "mobx";
 import React, { FC } from "react";
 import { useMst } from "../../../../../feature/stores";
 import { strapi } from "../../../../../feature/utils/api.service";
@@ -61,41 +64,46 @@ const Popup: FC<{ handleOk: () => void; onClose: () => void }> = ({
   </Alert>
 );
 
-export const Answering = () => {
+export const Answering = observer(({ onEnd }: { onEnd: () => void }) => {
   const store = useMst();
-  const { questions } = store.voteData;
-  const currentQuestion = questions[store.voteData.vote.currentQuestion];
+  const currentQuestion = toJS(store.voteData.questions).find(
+    (item) => item.id === store.voteData.vote.currentQuestion
+  );
+
+  const handleOk = async (answerId: number) => {
+    try {
+      const vote = {
+        user: store.app.soData.id,
+        poll_answer: answerId,
+        poll_question: store.voteData.vote.currentQuestion,
+        poll: store.voteData.vote.id,
+      };
+      await strapi.sendVote(vote);
+      onEnd();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleClick = (answerId: number) => {
-    const vote = {
-      user: store.app.soData.id,
-      poll_answer: answerId,
-      poll_question: currentQuestion.id,
-      poll: store.voteData.vote.id,
-    };
     store.router.openPopout(
       <Popup
-        handleOk={() => strapi.sendVote(vote)}
+        handleOk={() => handleOk(answerId)}
         onClose={store.router.closePopout}
       />
     );
   };
+  const vote = store.voteData.selfVotes.find(
+    (vote) =>
+      typeof vote.poll_question !== "number" &&
+      vote.poll_question.id === store.voteData.vote.currentQuestion
+  );
 
   return (
     <>
+      {JSON.stringify(store.voteData.selfVotes)}
       <Group>
-        <Div>
-          <InfoRow
-            header={`Отвечено на ${store.voteData.vote.currentQuestion} из ${questions.length}`}
-          >
-            <Progress
-              value={
-                (store.voteData.vote.currentQuestion * 100) / questions.length
-              }
-            />
-          </InfoRow>
-        </Div>
-        {questions.length > 0 && (
+        {currentQuestion && (
           <>
             <Group>
               <Div>
@@ -106,9 +114,10 @@ export const Answering = () => {
             </Group>
             <Group>
               {currentQuestion.poll_answers.map((item) => {
-                const isVoted = store.voteData.currentIsVoted();
+                const isVoted = 0;
                 return (
                   <Question
+                    key={item.id}
                     answer={item.answer}
                     onClick={() => handleClick(item.id)}
                     isVoted={isVoted}
@@ -117,9 +126,14 @@ export const Answering = () => {
                 );
               })}
             </Group>
+            {false && (
+              <Group>
+                <CellButton onClick={onEnd}>К результатам </CellButton>
+              </Group>
+            )}
           </>
         )}
       </Group>
     </>
   );
-};
+});

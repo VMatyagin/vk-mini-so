@@ -54,14 +54,16 @@ export const VotesBase: FC<{ id: string }> = ({ id }) => {
   };
   const changeView = (data: Poll) => {
     store.voteData.setVote(data);
-    store.router.setPage("else_votes", "vote_page");
+    mode === "admin"
+      ? store.router.setPage("else_votes", "vote_admin")
+      : store.router.setPage("else_votes", "vote_page");
   };
   return (
     <PanelTemplate id={id}>
       <PanelHeader left={<PanelHeaderBack onClick={store.router.goBack} />}>
         <PanelHeaderContent
-          status=""
-          before=""
+          status={null}
+          before={null}
           aside={
             <Icon16Dropdown
               style={{

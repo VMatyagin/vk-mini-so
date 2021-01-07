@@ -34,6 +34,7 @@ import { AppLoadingPanel } from "./ui/panels/AppLoadingPanel";
 import { strapi } from "./feature/utils/api.service";
 import { VotesBase } from "./ui/panels/else/votes/VoteBase/VotesBase";
 import { VotePage } from "./ui/panels/else/votes/VotePage/VotePage";
+import { VoteAdmin } from "./ui/panels/else/votes/VoteAdmin/VoteAdmin";
 
 export const App: FC = observer(({ children }) => {
   const lastAndroidBackAction = useState<number>(0);
@@ -54,6 +55,22 @@ export const App: FC = observer(({ children }) => {
   }, [setStory]);
 
   useEffect(() => {
+    const devFetch = async () => {
+      const userObject = {
+        id: 1,
+        last_name: "test",
+        first_name: "test",
+        photo: "test",
+      };
+      const bdId = (await strapi.init({ ...userObject })) as number;
+      store.app.setUserData(userObject);
+      store.app.setSoData({
+        position: "Кент",
+        level: "1",
+        id: bdId,
+      });
+      store.app.setLoading(false);
+    };
     const fetch = async () => {
       await getUserData()
         .then(async (data) => {
@@ -83,7 +100,8 @@ export const App: FC = observer(({ children }) => {
           });
         });
     };
-    fetch();
+    devFetch();
+    // fetch();
   }, [store.app]);
 
   return (
@@ -281,6 +299,7 @@ export const AppInner: FC<AppInitialProps> = observer((props) => {
             >
               <VotesBase id="base" />
               <VotePage id="vote_page" />
+              <VoteAdmin id="vote_admin" />
             </View>
           </Root>
         </Epic>

@@ -4,6 +4,7 @@ import {
   Title,
   PanelHeaderBack,
   ScreenSpinner,
+  Snackbar,
 } from "@vkontakte/vkui";
 import { useMst } from "../../../../../feature/stores";
 import { PanelTemplate } from "../../../template/PanelTemplate";
@@ -12,6 +13,7 @@ import socketIOClient from "socket.io-client";
 import { observer } from "mobx-react";
 import {
   Poll,
+  QuestionResult,
 } from "../../../../../feature/stores/vote-store/types";
 import { SorryForThat } from "./SorryForThat";
 import { Answering } from "./Answering";
@@ -21,7 +23,21 @@ export const VotePage: FC<{ id: string }> = observer(({ id }) => {
   const store = useMst();
 
   const [isLoading, setLoading] = useState(true);
-  const [mode] = useState("answering");
+  const [isAnswering, setIsAnswering] = useState(true);
+  const [
+    currentQuestionResult,
+    setCurrentQuestionResult,
+  ] = useState<QuestionResult | null>(null);
+  const [snackBar, setSnackBar] = useState<React.ReactNode | null>(null);
+
+  const openBase = (text: string) => {
+    if (snackBar) return;
+    setSnackBar(
+      <Snackbar layout="vertical" onClose={() => setSnackBar(null)}>
+        {text}
+      </Snackbar>
+    );
+  };
   useEffect(() => {
     let socket: SocketIOClient.Socket | null = null;
     if (store.voteData.vote.isRealTime) {
@@ -32,16 +48,19 @@ export const VotePage: FC<{ id: string }> = observer(({ id }) => {
       socket.on("connect", () => {
         store.router.closePopout();
         console.log("connected");
+        openBase("Подключено");
       });
       socket.emit("join", { id: store.voteData.vote.id });
       socket.on("reconnect", store.router.closePopout);
 
-      socket.on("vote_status_update", (data: Poll) =>
-        store.voteData.setVote(data)
-      );
+      socket.on("vote_status_update", (data: Poll) => {
+        store.voteData.setVote(data);
+        openBase("Данные обновлены");
+      });
 
       socket.on("reconnecting", () => {
         store.router.openPopout(<ScreenSpinner />);
+        openBase("Переподключение");
       });
     }
 
@@ -53,18 +72,22 @@ export const VotePage: FC<{ id: string }> = observer(({ id }) => {
 
   useEffect(() => {
     const getData = async () => {
-      const questions = await strapi.getQuestions(store.voteData.vote.id);
-      const votes = await strapi.getVotes(
-        store.voteData.vote.id,
-        store.app.soData.id
-      );
+      const [questions, votes, result] = await Promise.all([
+        strapi.getQuestions(store.voteData.vote.id),
+        strapi.getVotes(store.voteData.vote.id, store.app.soData.id),
+        strapi.getResultsByQuestion(store.voteData.vote.currentQuestion),
+      ]);
       store.voteData.setQuestions(questions);
       store.voteData.setSelfVotes(votes);
+      setCurrentQuestionResult(result);
       setLoading(false);
     };
     getData();
   }, [store]);
 
+  const handleAnswer = () => {
+    setIsAnswering((prev) => !prev);
+  };  
   return (
     <PanelTemplate id={id}>
       <PanelHeader left={<PanelHeaderBack onClick={store.router.goBack} />}>
@@ -78,10 +101,12 @@ export const VotePage: FC<{ id: string }> = observer(({ id }) => {
       {!isLoading &&
         store.voteData.vote.isRealTime &&
         !store.voteData.vote.disabled && (
-          <>{mode === "answering" ? <Answering /> : <Awaiting />}</>
+          <>{isAnswering ? <Answering onEnd={handleAnswer} /> : null}</>
         )}
+      {snackBar}
     </PanelTemplate>
   );
 });
 
 // удаление голосов по отрядам или штабам из списка. В этом же списке можно проставить вес голоса.Круто если выпадающий списко
+// statuses:
