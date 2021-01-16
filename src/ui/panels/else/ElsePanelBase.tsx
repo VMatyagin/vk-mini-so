@@ -86,7 +86,6 @@ export const ElsePanelBase: FC<{ id: string }> = observer(({ id }) => {
         <SimpleCell
           before={<Icon28PollSquareOutline />}
           after={<Icon28ChevronRightOutline fill="var(--icon_tertiary)" />}
-          onClick={() => changeView("else_votes")}
         >
           Голосования
         </SimpleCell>

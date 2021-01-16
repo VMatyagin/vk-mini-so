@@ -60,7 +60,7 @@ export const WalletPanel: FC<{ id: string }> = ({ id }) => {
                 </SimpleCell>
             </Group>
             <Group>
-                <FormLayout>
+                {/* <FormLayout>
                     <Input
                         top="СПбПУ Петра Великого"
                         value={315}
@@ -77,11 +77,11 @@ export const WalletPanel: FC<{ id: string }> = ({ id }) => {
                         name="3"
                         placeholder="Введите количество билетов"
                     />
-                </FormLayout>
+                </FormLayout> */}
             </Group>
             <Group>
                 <Div>
-                    <Button disabled size="xl">
+                    <Button disabled size="l">
                         Сохранить
                     </Button>
                     <Footer>597 шт. осталось</Footer>

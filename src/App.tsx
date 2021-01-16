@@ -11,10 +11,7 @@ import {
 } from "@vkontakte/vkui";
 import { useMst } from "./feature/stores";
 import { initApp, getUserData, getAuthToken } from "./feature/VKBridge";
-import Icon28Newsfeed from "@vkontakte/icons/dist/28/newsfeed";
-import Icon28WalletOutline from "@vkontakte/icons/dist/28/wallet_outline";
-import Icon28CalendarOutline from "@vkontakte/icons/dist/28/calendar_outline";
-import Icon28CompassOutline from "@vkontakte/icons/dist/28/compass_outline";
+
 import { HomePanelBase } from "./ui/panels/home/HomePanelBase";
 import { CalendarPanelBase } from "./ui/panels/calendar/CalendarPanelBase";
 import { CalendarInfoModal } from "./ui/modals/CalendarInfoModal";
@@ -32,9 +29,7 @@ import { EventUsers } from "./ui/panels/else/event-handle/EventUsers";
 import { EventWinners } from "./ui/panels/else/event-handle/EventWinners";
 import { AppLoadingPanel } from "./ui/panels/AppLoadingPanel";
 import { strapi } from "./feature/utils/api.service";
-import { VotesBase } from "./ui/panels/else/votes/VoteBase/VotesBase";
-import { VotePage } from "./ui/panels/else/votes/VotePage/VotePage";
-import { VoteAdmin } from "./ui/panels/else/votes/VoteAdmin/VoteAdmin";
+import { Icon28CalendarOutline, Icon28CompassOutline, Icon28Newsfeed, Icon28WalletOutline } from "@vkontakte/icons";
 
 export const App: FC = observer(({ children }) => {
   const lastAndroidBackAction = useState<number>(0);
@@ -290,16 +285,6 @@ export const AppInner: FC<AppInitialProps> = observer((props) => {
               <EventUsers id="event_volunteers" type="volunteers" />
               <EventUsers id="event_page_artists" type="artists" />
               <EventWinners id="event_page_winners" />
-            </View>
-            <View
-              id="else_votes"
-              activePanel={store.router.getActivePanel("else_votes")}
-              history={history}
-              onSwipeBack={() => goBack()}
-            >
-              <VotesBase id="base" />
-              <VotePage id="vote_page" />
-              <VoteAdmin id="vote_admin" />
             </View>
           </Root>
         </Epic>

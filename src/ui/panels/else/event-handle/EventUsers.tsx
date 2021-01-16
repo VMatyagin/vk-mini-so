@@ -88,7 +88,7 @@ export const EventUsers: FC<{
                         : ""
                 }
             >
-                <Button size="xl" mode="tertiary" before={<Icon24Add />}>
+                <Button size="l" mode="tertiary" before={<Icon24Add />}>
                     Добавить {titles[type].btn}
                 </Button>
             </Group>

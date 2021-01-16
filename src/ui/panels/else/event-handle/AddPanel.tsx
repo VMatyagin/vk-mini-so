@@ -23,7 +23,7 @@ export const AddPanel: FC<{ id: string }> = ({ id }) => {
                     Новое мероприятие
                 </Title>
             </PanelHeader>
-            <FormLayout>
+            {/* <FormLayout>
                 <Input top="Название" name="name" />
                 <Input top="Место проведения" name="place" />
                 <Input type="date" top="Дата" name="date" />
@@ -36,7 +36,7 @@ export const AddPanel: FC<{ id: string }> = ({ id }) => {
                     Согласен с <Link>этим</Link>
                 </Checkbox>
                 <Button size="xl">Сохранить</Button>
-            </FormLayout>
+            </FormLayout> */}
         </PanelTemplate>
     );
 };

@@ -45,7 +45,7 @@ export const ElseWalletCountModal: FC<CalendarInfoModalComponentProps> = ({
                 <Input name="count" value={700} />
             </FormLayout>
             <Div>
-                <Button size="xl">Сохранить</Button>
+                <Button size="l">Сохранить</Button>
             </Div>
         </ModalPage>
     );

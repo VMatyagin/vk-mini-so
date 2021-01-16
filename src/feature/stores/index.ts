@@ -3,13 +3,11 @@ import { AppStore } from "./app-store";
 import { RouterStore } from "./router-store";
 import { createContext, useContext } from "react";
 import { FormStore } from "./form-store";
-import { VoteStore } from "./vote-store";
 
 const RootStore = types.model({
   app: AppStore,
   router: RouterStore,
   formData: FormStore,
-  voteData: VoteStore,
 });
 
 export const rootStore = RootStore.create({
@@ -18,7 +16,6 @@ export const rootStore = RootStore.create({
   formData: {
     forms: {},
   },
-  voteData: {},
 });
 
 onSnapshot(rootStore, (snapshot) => console.log("Snapshot: ", snapshot));

@@ -26,7 +26,7 @@ export const EventWinners: FC<{
                     Результаты
                 </Title>
             </PanelHeader>
-            <FormLayout>
+            {/* <FormLayout>
                 {Array(3)
                     .fill("1")
                     .map((item, index) => (
@@ -38,9 +38,9 @@ export const EventWinners: FC<{
                             <option value="2">Приз 2</option>
                         </Select>
                     ))}
-            </FormLayout>
+            </FormLayout> */}
             <Group description="Номинация / вид спорта не важны для рейтинга, поэтому выставляем только призовые места">
-                <Button size="xl" mode="tertiary" before={<Icon24Add />}>
+                <Button size="l" mode="tertiary" before={<Icon24Add />}>
                     Добавить победителя
                 </Button>
             </Group>

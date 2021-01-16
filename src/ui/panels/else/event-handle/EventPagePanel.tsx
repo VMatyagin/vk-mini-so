@@ -79,7 +79,7 @@ export const EventPagePanel: FC<{ id: string }> = ({ id }) => {
             </Group>
             <Group description="В дальнейшем только РО сможет изменять данные">
                 <Div>
-                    <Button disabled mode="outline" size="xl">
+                    <Button disabled mode="outline" size="l">
                         Первичный расчет рейтинга
                     </Button>
                 </Div>
