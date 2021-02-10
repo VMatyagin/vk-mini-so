@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { PanelTemplate } from "../template/PanelTemplate";
+import { PanelTemplate } from "../../../ui/panels/template/PanelTemplate";
 import { Touch } from "@vkontakte/vkui";
 import {
     PanelHeader,
@@ -18,8 +18,8 @@ import getDate from "date-fns/getDate";
 import getMonth from "date-fns/getMonth";
 import ru from "date-fns/locale/ru";
 import { Gesture } from "@vkontakte/vkui/dist/components/Touch/Touch";
-import { useMst } from "../../../feature/stores";
-import { EventCard } from "../../molecules/EventCard";
+import { useMst } from "../../stores";
+import { EventCard } from "../../../ui/molecules/EventCard";
 
 registerLocale("ru", ru);
 const months = [

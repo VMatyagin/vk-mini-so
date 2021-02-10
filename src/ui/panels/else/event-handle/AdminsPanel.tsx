@@ -9,7 +9,7 @@ import {
     Caption,
     Div,
 } from "@vkontakte/vkui";
-import { useMst } from "../../../../feature/stores";
+import { useMst } from "../../../../features/stores";
 import { PanelTemplate } from "../../template/PanelTemplate";
 import Icon28FireOutline from "@vkontakte/icons/dist/28/fire_outline";
 import Icon28UsersOutline from "@vkontakte/icons/dist/28/users_outline";

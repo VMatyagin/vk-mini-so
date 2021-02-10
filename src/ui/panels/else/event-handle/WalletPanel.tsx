@@ -9,10 +9,8 @@ import {
     Button,
     Div,
     Footer,
-    Input,
-    FormLayout,
 } from "@vkontakte/vkui";
-import { useMst } from "../../../../feature/stores";
+import { useMst } from "../../../../features/stores";
 import { PanelTemplate } from "../../template/PanelTemplate";
 import Icon28WalletOutline from "@vkontakte/icons/dist/28/wallet_outline";
 import Icon28ReplyOutline from "@vkontakte/icons/dist/28/reply_outline";

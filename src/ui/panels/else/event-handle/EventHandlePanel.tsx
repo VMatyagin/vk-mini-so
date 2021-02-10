@@ -7,7 +7,7 @@ import {
     Text,
     PanelHeaderBack,
 } from "@vkontakte/vkui";
-import { useMst } from "../../../../feature/stores";
+import { useMst } from "../../../../features/stores";
 import { PanelTemplate } from "../../template/PanelTemplate";
 import Icon28AddOutline from "@vkontakte/icons/dist/28/add_outline";
 import Icon28ChevronRightOutline from "@vkontakte/icons/dist/28/chevron_right_outline";

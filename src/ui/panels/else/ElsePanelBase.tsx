@@ -9,7 +9,7 @@ import {
   Switch,
   Div,
 } from "@vkontakte/vkui";
-import { useMst } from "../../../feature/stores";
+import { useMst } from "../../../features/stores";
 import { observer } from "mobx-react";
 import Icon28ChevronRightOutline from "@vkontakte/icons/dist/28/chevron_right_outline";
 import Icon28CalendarOutline from "@vkontakte/icons/dist/28/calendar_outline";

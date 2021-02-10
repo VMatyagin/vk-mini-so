@@ -6,7 +6,7 @@ import {
     Search,
     Group,
 } from "@vkontakte/vkui";
-import { useMst } from "../../../../feature/stores";
+import { useMst } from "../../../../features/stores";
 import { PanelTemplate } from "../../template/PanelTemplate";
 import { EventCard } from "../../../molecules/EventCard";
 export const SearchPanel: FC<{ id: string }> = ({ id }) => {

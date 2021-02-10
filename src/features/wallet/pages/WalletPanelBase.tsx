@@ -1,14 +1,14 @@
 import React, { FC, useState, useEffect } from "react";
-import { PanelTemplate } from "../template/PanelTemplate";
+import { PanelTemplate } from "../../../ui/panels/template/PanelTemplate";
 import {  Tabs, TabsItem } from "@vkontakte/vkui";
 import {
     PanelHeader,
     Title,
 } from "@vkontakte/vkui";
-import { useMst } from "../../../feature/stores";
-import { EventCard } from "../../molecules/EventCard";
+import { useMst } from "../../stores";
+import { EventCard } from "../../../ui/molecules/EventCard";
 import { observer } from "mobx-react";
-import { restoreScrollPosition } from "../../../feature/utils";
+import { restoreScrollPosition } from "../../utils";
 
 export const WalletPanelBase: FC<{ id: string }> = observer(({ id }) => {
     const [activeTab, setActiveTab] = useState<string>("base");

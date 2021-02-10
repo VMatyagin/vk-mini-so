@@ -6,10 +6,8 @@ import {
     Title,
     Group,
     Button,
-    FormLayout,
-    Select,
 } from "@vkontakte/vkui";
-import { useMst } from "../../../../feature/stores";
+import { useMst } from "../../../../features/stores";
 import { observer } from "mobx-react";
 import Icon24Add from "@vkontakte/icons/dist/24/add";
 

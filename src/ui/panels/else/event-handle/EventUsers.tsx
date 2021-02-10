@@ -9,7 +9,7 @@ import {
     Avatar,
     Button,
 } from "@vkontakte/vkui";
-import { useMst } from "../../../../feature/stores";
+import { useMst } from "../../../../features/stores";
 import { observer } from "mobx-react";
 import Icon28EditOutline from "@vkontakte/icons/dist/28/edit_outline";
 import Icon24Add from "@vkontakte/icons/dist/24/add";
