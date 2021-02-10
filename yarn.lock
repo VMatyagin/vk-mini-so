@@ -2012,28 +2012,28 @@
     arg "^4.1.3"
     chalk "4.1.0"
 
-"@vkontakte/icons@^1.49.0":
-  version "1.70.0"
-  resolved "https://registry.yarnpkg.com/@vkontakte/icons/-/icons-1.70.0.tgz#dd5fa8e4ae79ac2b032a268724eb95f3ffea99c1"
-  integrity sha512-ObOCJZDHbuNG+Q79WnkrN+wxhZKLB18AkIzpZ9U6mN9Dps68zjaxPUZNvaPBzjGh7ue/aZ/BWlKSFz7yh/GZrg==
+"@vkontakte/icons@^1.75.0":
+  version "1.75.0"
+  resolved "https://registry.yarnpkg.com/@vkontakte/icons/-/icons-1.75.0.tgz#3b08de7e7a87498adb5472d4a4650ac067eb7868"
+  integrity sha512-BfI7PRU1qtBNFAOtls3TaeclufW6OmnncJIVYCtjW0U7lTkXMFKzHjhkeYGkh4eTZaA33QBnjD+JnGNkwcF59w==
   dependencies:
     es6-object-assign "1.1.0"
     svg-baker-runtime "1.4.6"
 
-"@vkontakte/vk-bridge@^2.3.0":
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/@vkontakte/vk-bridge/-/vk-bridge-2.3.0.tgz#d436daeab23bf51a4485a3a45493f793dab78187"
-  integrity sha512-1kICD4u5J8EO4PyGg7ZMBwOju85Wh7zb5OxVs1JYB/ghTHg5YQSmpIx9M4NZH2TnK9KelUpBEs+TwFpkB5PMyw==
+"@vkontakte/vk-bridge@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@vkontakte/vk-bridge/-/vk-bridge-2.4.0.tgz#99835f34e64585b1267ba3cfb2241155a9ebcc28"
+  integrity sha512-LtlMt1nBurY7zaDiX/RjtKWPX1THnnVgOUymfILDW8SyBtJy0podwrGpUPDi9FtWvgvmuYF40ZYPA47EkY19nQ==
 
 "@vkontakte/vkjs@^0.20.0":
   version "0.20.0"
   resolved "https://registry.yarnpkg.com/@vkontakte/vkjs/-/vkjs-0.20.0.tgz#ddb9367649ab7e79754b9906c3f6e1960f624c37"
   integrity sha512-bocEj9pcr6i6F0LN288xU3PX1MI4OJ3ZJXTa6kFx9IqEgk0CnoMtLAcuH2D7DzZAnc83DJCa/tuo9mT7XW035A==
 
-"@vkontakte/vkui@^4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@vkontakte/vkui/-/vkui-4.0.4.tgz#8485ebf9e818e391f09589a9333ddbd974bb287c"
-  integrity sha512-kj8S5J/fAyWiCeqEg1Q5tfzkHEtaXmhh4rWKIGU9GzMZYZIszWZU3RmUPtJPf3wKhs9p6cm3VhSzNKsHA+WSbA==
+"@vkontakte/vkui@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@vkontakte/vkui/-/vkui-4.1.0.tgz#b806798de9335be87cd967b98c9630b6fe042c7d"
+  integrity sha512-K30cb8fckHbx8l9ssbQaqgjw+Q0OrARL0dRXhjqal1zukOOLHyIgUtMf9heAnvSpOS8TMrr5wutNiILyNf+vgA==
 
 "@webassemblyjs/ast@1.9.0":
   version "1.9.0"
