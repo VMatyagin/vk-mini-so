@@ -29,7 +29,12 @@ import { EventUsers } from "./ui/panels/else/event-handle/EventUsers";
 import { EventWinners } from "./ui/panels/else/event-handle/EventWinners";
 import { AppLoadingPanel } from "./ui/panels/AppLoadingPanel";
 import { strapi } from "./feature/utils/api.service";
-import { Icon28CalendarOutline, Icon28CompassOutline, Icon28Newsfeed, Icon28WalletOutline } from "@vkontakte/icons";
+import {
+  Icon28CalendarOutline,
+  Icon28CompassOutline,
+  Icon28Newsfeed,
+  Icon28WalletOutline,
+} from "@vkontakte/icons";
 
 export const App: FC = observer(({ children }) => {
   const lastAndroidBackAction = useState<number>(0);
@@ -57,12 +62,11 @@ export const App: FC = observer(({ children }) => {
         first_name: "test",
         photo: "test",
       };
-      const bdId = (await strapi.init({ ...userObject })) as number;
       store.app.setUserData(userObject);
       store.app.setSoData({
         position: "Кент",
         level: "1",
-        id: bdId,
+        id: 0,
       });
       store.app.setLoading(false);
     };

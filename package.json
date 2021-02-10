@@ -4,10 +4,10 @@
   "private": true,
   "dependencies": {
     "@vkontakte/api-schema-typescript-generator": "^0.5.0",
-    "@vkontakte/icons": "^1.49.0",
-    "@vkontakte/vk-bridge": "^2.3.0",
+    "@vkontakte/icons": "^1.75.0",
+    "@vkontakte/vk-bridge": "^2.4.0",
     "@vkontakte/vkjs": "^0.20.0",
-    "@vkontakte/vkui": "^4.0.4",
+    "@vkontakte/vkui": "^4.1.0",
     "axios": "^0.21.0",
     "mobx": "^6.0.4",
     "mobx-react": "^7.0.5",
