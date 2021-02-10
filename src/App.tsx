@@ -19,7 +19,7 @@ export const App: FC = observer(({ children }) => {
         activeView,
     } = store.router;
     useEffect(() => {
-        setStory("else", "base");
+        setStory("users", "base");
         initApp();
         getUserData();
     }, [setStory]);

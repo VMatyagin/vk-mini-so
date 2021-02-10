@@ -31,6 +31,7 @@ import { EventWinners } from "./ui/panels/else/event-handle/EventWinners";
 import { EventQRModal } from "./features/wallet/organisms/modals/EventQRModal";
 
 import { useMst } from "./features/stores";
+import { UsersPanelBase } from "./features/users/pages/UsersPanelBase";
 
 interface AppInitialProps {
     lastAndroidBackAction: [
@@ -117,7 +118,11 @@ export const AppLayout: FC<AppInitialProps> = observer((props) => {
             activeStory={activeStory}
             tabbar={
                 <Tabbar itemsLayout="vertical">
-                    <TabbarItem text="Отряды">
+                    <TabbarItem
+                        text="Отряды"
+                        onClick={() => store.router.setStory("users", "base")}
+                        selected={activeStory === "users"}
+                    >
                         <Icon28CompassOutline />
                     </TabbarItem>
                     <TabbarItem
@@ -146,6 +151,17 @@ export const AppLayout: FC<AppInitialProps> = observer((props) => {
                 </Tabbar>
             }
         >
+            <Root id="users" activeView={activeView} popout={popout}>
+                <View
+                    id="users"
+                    activePanel={store.router.getActivePanel("users")}
+                    history={history}
+                    modal={modals}
+                    onSwipeBack={() => goBack()}
+                >
+                    <UsersPanelBase id="base" />
+                </View>
+            </Root>
             <Root id="calendar" activeView={activeView} popout={popout}>
                 <View
                     id="calendar"
