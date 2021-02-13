@@ -1,14 +1,19 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { PanelTemplate } from "../../../ui/panels/template/PanelTemplate";
 import { Footer, Group, Header, Search, SimpleCell } from "@vkontakte/vkui";
 import { PanelHeader, Title } from "@vkontakte/vkui";
-const thematics = [
-    {
-        id: "1",
-        name: "Name",
-    },
-] as Record<string, string>[];
+import { SoAPI } from "../../utils/api.service";
+import { useFetch } from "../../utils/useFetch";
+
 export const UsersPanelBase: FC<{ id: string }> = ({ id }) => {
+    const { fetch, data } = useFetch(SoAPI.getList);
+
+    useEffect(() => {
+        fetch({
+            limit: 20,
+            offset: 0,
+        });
+    }, [fetch]);
     const [search, setSearch] = useState<string>();
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,17 +32,23 @@ export const UsersPanelBase: FC<{ id: string }> = ({ id }) => {
                     onChange={handleChange}
                     // onIconClick={onFiltersClick}
                 />
-                <Header mode="tertiary" indicator={thematics.length}>
+                <Header mode="tertiary" indicator={data && data.count}>
                     Люди
                 </Header>
-
-                {thematics.length > 0 &&
-                    thematics.map((thematic) => (
-                        <SimpleCell key={thematic.id}>
-                            {thematic.name}
-                        </SimpleCell>
-                    ))}
-                {thematics.length === 0 && <Footer>Ничего не найдено</Footer>}
+                {data && (
+                    <>
+                        {data &&
+                            data.items.length > 0 &&
+                            data.items.map((item) => (
+                                <SimpleCell
+                                    key={item.id}
+                                >{`${item.lastName} ${item.firstName} ${item.middleName}`}</SimpleCell>
+                            ))}
+                        {data.items.length === 0 && (
+                            <Footer>Ничего не найдено</Footer>
+                        )}
+                    </>
+                )}
             </Group>
         </PanelTemplate>
     );

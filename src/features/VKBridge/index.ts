@@ -14,6 +14,10 @@ export const initApp = () => {
             rootStore.app.setColorScheme(e.detail.data.scheme);
         }
     };
+    window.localStorage.setItem(
+        "token",
+        "ab25c2d1948653c69da205d325f1bcce00500b0b"
+    );
 
     VKBridge.subscribe(VKConnectCallback);
 
