@@ -31,7 +31,8 @@ import { EventWinners } from "./ui/panels/else/event-handle/EventWinners";
 import { EventQRModal } from "./features/wallet/organisms/modals/EventQRModal";
 
 import { useMst } from "./features/stores";
-import { UsersPanelBase } from "./features/users/pages/UsersPanelBase";
+import { UsersListView } from "./features/users/pages/UsersListView";
+import { UsersView } from "./features/users/pages/UserView";
 
 interface AppInitialProps {
     lastAndroidBackAction: [
@@ -106,13 +107,7 @@ export const AppLayout: FC<AppInitialProps> = observer((props) => {
             />
         </ModalRoot>
     );
-    // return (
 
-    //             {store.app.loading ? (
-    //                 <View activePanel="app_loading">
-    //                     <AppLoadingPanel id="app_loading" />
-    //                 </View>
-    //             ) : (
     return (
         <Epic
             activeStory={activeStory}
@@ -152,15 +147,8 @@ export const AppLayout: FC<AppInitialProps> = observer((props) => {
             }
         >
             <Root id="users" activeView={activeView} popout={popout}>
-                <View
-                    id="users"
-                    activePanel={store.router.getActivePanel("users")}
-                    history={history}
-                    modal={modals}
-                    onSwipeBack={() => goBack()}
-                >
-                    <UsersPanelBase id="base" />
-                </View>
+                <UsersListView id="users" />
+                <UsersView id="user" />
             </Root>
             <Root id="calendar" activeView={activeView} popout={popout}>
                 <View

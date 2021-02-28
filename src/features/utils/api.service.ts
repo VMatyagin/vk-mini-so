@@ -31,7 +31,7 @@ export const SoAPI = {
         offset: number;
         limit: number;
         search?: string;
-    }): Promise<SuccessResponse<Boec, true>> {
+    }): Promise<SuccessResponse<Boec<true>, true>> {
         if (cancel) {
             cancel();
         }
@@ -47,5 +47,8 @@ export const SoAPI = {
             }),
             params,
         });
+    },
+    async getUserData(id: string): Promise<SuccessResponse<Boec, false>> {
+        return instance.get(`/api/so/boec/${id}/`);
     },
 };
