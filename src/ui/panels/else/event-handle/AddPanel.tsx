@@ -1,11 +1,11 @@
 import React, { FC } from "react";
-import { PanelHeader, Title, PanelHeaderBack } from "@vkontakte/vkui";
+import { PanelHeader, Title, PanelHeaderBack, Panel } from "@vkontakte/vkui";
 import { useMst } from "../../../../features/stores";
-import { PanelTemplate } from "../../template/PanelTemplate";
 export const AddPanel: FC<{ id: string }> = ({ id }) => {
+
     const store = useMst();
     return (
-        <PanelTemplate id={id}>
+        <Panel id={id}>
             <PanelHeader
                 left={<PanelHeaderBack onClick={store.router.goBack} />}
             >
@@ -27,6 +27,6 @@ export const AddPanel: FC<{ id: string }> = ({ id }) => {
                 </Checkbox>
                 <Button size="xl">Сохранить</Button>
             </FormLayout> */}
-        </PanelTemplate>
+        </Panel>
     );
 };

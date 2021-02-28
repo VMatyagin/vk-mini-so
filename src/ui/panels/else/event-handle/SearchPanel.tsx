@@ -5,9 +5,9 @@ import {
     PanelHeaderBack,
     Search,
     Group,
+    Panel,
 } from "@vkontakte/vkui";
 import { useMst } from "../../../../features/stores";
-import { PanelTemplate } from "../../template/PanelTemplate";
 import { EventCard } from "../../../molecules/EventCard";
 export const SearchPanel: FC<{ id: string }> = ({ id }) => {
     const store = useMst();
@@ -15,7 +15,7 @@ export const SearchPanel: FC<{ id: string }> = ({ id }) => {
         store.router.setPage("else_event_handle", "event_page");
     };
     return (
-        <PanelTemplate id={id}>
+        <Panel id={id}>
             <PanelHeader
                 left={<PanelHeaderBack onClick={store.router.goBack} />}
             >
@@ -28,6 +28,6 @@ export const SearchPanel: FC<{ id: string }> = ({ id }) => {
             <Group>
                 <EventCard onClick={changeView} />
             </Group>
-        </PanelTemplate>
+        </Panel>
     );
 };

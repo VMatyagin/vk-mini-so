@@ -1,11 +1,11 @@
 import React, { FC } from "react";
-import { PanelTemplate } from "../../template/PanelTemplate";
 import {
     PanelHeader,
     PanelHeaderBack,
     Title,
     Group,
     Button,
+    Panel,
 } from "@vkontakte/vkui";
 import { useMst } from "../../../../features/stores";
 import { observer } from "mobx-react";
@@ -16,7 +16,7 @@ export const EventWinners: FC<{
 }> = observer(({ id }) => {
     const store = useMst();
     return (
-        <PanelTemplate id={id}>
+        <Panel id={id}>
             <PanelHeader
                 left={<PanelHeaderBack onClick={store.router.goBack} />}
             >
@@ -42,6 +42,6 @@ export const EventWinners: FC<{
                     Добавить победителя
                 </Button>
             </Group>
-        </PanelTemplate>
+        </Panel>
     );
 });

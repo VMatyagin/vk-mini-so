@@ -1,6 +1,5 @@
 import React, { FC, useState } from "react";
-import { PanelTemplate } from "../../../ui/panels/template/PanelTemplate";
-import { Touch } from "@vkontakte/vkui";
+import { Panel, Touch } from "@vkontakte/vkui";
 import {
     PanelHeader,
     Title,
@@ -157,7 +156,7 @@ export const CalendarPanelBase: FC<{ id: string }> = ({ id }) => {
         store.router.openModal("MODAL_CALENDAR_INFO");
     };
     return (
-        <PanelTemplate id={id}>
+        <Panel id={id}>
             <PanelHeader
                 left={
                     <PanelHeaderButton onClick={handleClickInfo}>
@@ -209,6 +208,6 @@ export const CalendarPanelBase: FC<{ id: string }> = ({ id }) => {
                     <EventCard onClick={() => {}} />
                 </List>
             </Div>
-        </PanelTemplate>
+        </Panel>
     );
 };

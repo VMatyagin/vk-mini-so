@@ -1,5 +1,4 @@
 import React, { FC, useState } from "react";
-import { PanelTemplate } from "../template/PanelTemplate";
 import {
   PanelHeader,
   Title,
@@ -8,6 +7,7 @@ import {
   Avatar,
   Switch,
   Div,
+  Panel,
 } from "@vkontakte/vkui";
 import { useMst } from "../../../features/stores";
 import { observer } from "mobx-react";
@@ -29,7 +29,7 @@ export const ElsePanelBase: FC<{ id: string }> = observer(({ id }) => {
   };
 
   return (
-    <PanelTemplate id={id}>
+    <Panel id={id}>
       <PanelHeader>
         <Title level="2" weight="bold">
           Ещё
@@ -97,6 +97,6 @@ export const ElsePanelBase: FC<{ id: string }> = observer(({ id }) => {
         </SimpleCell>
       </Group>
       <Div />
-    </PanelTemplate>
+    </Panel>
   );
 });

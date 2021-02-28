@@ -9,15 +9,15 @@ import {
     Button,
     Div,
     Footer,
+    Panel,
 } from "@vkontakte/vkui";
 import { useMst } from "../../../../features/stores";
-import { PanelTemplate } from "../../template/PanelTemplate";
 import Icon28WalletOutline from "@vkontakte/icons/dist/28/wallet_outline";
 import Icon28ReplyOutline from "@vkontakte/icons/dist/28/reply_outline";
 export const WalletPanel: FC<{ id: string }> = ({ id }) => {
     const store = useMst();
     return (
-        <PanelTemplate id={id}>
+        <Panel id={id}>
             <PanelHeader
                 left={<PanelHeaderBack onClick={store.router.goBack} />}
             >
@@ -85,6 +85,6 @@ export const WalletPanel: FC<{ id: string }> = ({ id }) => {
                     <Footer>597 шт. осталось</Footer>
                 </Div>
             </Group>
-        </PanelTemplate>
+        </Panel>
     );
 };

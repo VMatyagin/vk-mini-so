@@ -1,6 +1,5 @@
 import React, { FC, useState, useEffect } from "react";
-import { PanelTemplate } from "../../../ui/panels/template/PanelTemplate";
-import {  Tabs, TabsItem } from "@vkontakte/vkui";
+import {  Panel, Tabs, TabsItem } from "@vkontakte/vkui";
 import {
     PanelHeader,
     Title,
@@ -25,7 +24,7 @@ export const WalletPanelBase: FC<{ id: string }> = observer(({ id }) => {
         store.router.openModal("MODAL_WALLET_QR");
     };
     return (
-        <PanelTemplate id={id}>
+        <Panel id={id}>
             <PanelHeader separator={false}>
                 <Title level="2" weight="bold">
                     Билеты
@@ -46,6 +45,6 @@ export const WalletPanelBase: FC<{ id: string }> = observer(({ id }) => {
                 </TabsItem>
             </Tabs>
             <EventCard onClick={handleEventClick} />
-        </PanelTemplate>
+        </Panel>
     );
 });

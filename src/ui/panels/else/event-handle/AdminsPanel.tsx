@@ -8,9 +8,9 @@ import {
     UsersStack,
     Caption,
     Div,
+    Panel,
 } from "@vkontakte/vkui";
 import { useMst } from "../../../../features/stores";
-import { PanelTemplate } from "../../template/PanelTemplate";
 import Icon28FireOutline from "@vkontakte/icons/dist/28/fire_outline";
 import Icon28UsersOutline from "@vkontakte/icons/dist/28/users_outline";
 import Icon28ChevronRightOutline from "@vkontakte/icons/dist/28/chevron_right_outline";
@@ -28,7 +28,7 @@ export const AdminsPanel: FC<{ id: string }> = ({ id }) => {
         store.router.setPage("else_event_handle", panel);
     };
     return (
-        <PanelTemplate id={id}>
+        <Panel id={id}>
             <PanelHeader
                 left={<PanelHeaderBack onClick={store.router.goBack} />}
             >
@@ -98,6 +98,6 @@ export const AdminsPanel: FC<{ id: string }> = ({ id }) => {
                     </Caption>
                 </Div>
             </Group>
-        </PanelTemplate>
+        </Panel>
     );
 };

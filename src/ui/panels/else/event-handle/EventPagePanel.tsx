@@ -8,9 +8,9 @@ import {
     Switch,
     Button,
     Div,
+    Panel,
 } from "@vkontakte/vkui";
 import { useMst } from "../../../../features/stores";
-import { PanelTemplate } from "../../template/PanelTemplate";
 import { EventCard } from "../../../molecules/EventCard";
 import Icon28ChevronRightOutline from "@vkontakte/icons/dist/28/chevron_right_outline";
 import Icon28WalletOutline from "@vkontakte/icons/dist/28/wallet_outline";
@@ -23,7 +23,7 @@ export const EventPagePanel: FC<{ id: string }> = ({ id }) => {
         store.router.setPage("else_event_handle", panel);
     };
     return (
-        <PanelTemplate id={id}>
+        <Panel id={id}>
             <PanelHeader
                 left={<PanelHeaderBack onClick={store.router.goBack} />}
             >
@@ -84,6 +84,6 @@ export const EventPagePanel: FC<{ id: string }> = ({ id }) => {
                     </Button>
                 </Div>
             </Group>
-        </PanelTemplate>
+        </Panel>
     );
 };

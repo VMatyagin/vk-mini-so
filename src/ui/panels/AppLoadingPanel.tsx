@@ -1,5 +1,5 @@
+import { Panel } from "@vkontakte/vkui";
 import React, { FC } from "react";
-import { PanelTemplate } from "./template/PanelTemplate";
 import styled from "styled-components";
 
 const Logo = () => (
@@ -59,10 +59,10 @@ const LogoWrapper = styled.div`
 
 export const AppLoadingPanel: FC<{ id: string }> = ({ id }) => {
     return (
-        <PanelTemplate id={id}>
+        <Panel id={id}>
             <LogoWrapper>
                 <Logo />
             </LogoWrapper>
-        </PanelTemplate>
+        </Panel>
     );
 };

@@ -1,5 +1,4 @@
 import React, { FC } from "react";
-import { PanelTemplate } from "../../template/PanelTemplate";
 import {
     PanelHeader,
     PanelHeaderBack,
@@ -8,6 +7,7 @@ import {
     SimpleCell,
     Avatar,
     Button,
+    Panel,
 } from "@vkontakte/vkui";
 import { useMst } from "../../../../features/stores";
 import { observer } from "mobx-react";
@@ -37,7 +37,7 @@ export const EventUsers: FC<{
 }> = observer(({ id, type }) => {
     const store = useMst();
     return (
-        <PanelTemplate id={id}>
+        <Panel id={id}>
             <PanelHeader
                 left={<PanelHeaderBack onClick={store.router.goBack} />}
             >
@@ -92,6 +92,6 @@ export const EventUsers: FC<{
                     Добавить {titles[type].btn}
                 </Button>
             </Group>
-        </PanelTemplate>
+        </Panel>
     );
 });
