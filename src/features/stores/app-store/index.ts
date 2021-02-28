@@ -54,7 +54,6 @@ export const AppStore = types
         ),
         activeTab: types.map(types.frozen<string>()),
         componentScroll: types.frozen<{ [propName: string]: Position }>({}),
-        restToken: types.optional(types.string, ""),
     })
     .actions((self) => ({
         setLoading(key: boolean) {
@@ -91,8 +90,5 @@ export const AppStore = types
             const x = element.scrollLeft;
             const y = element.scrollTop;
             self.componentScroll[component] = { x, y };
-        },
-        setRestToken(token: string) {
-            self.restToken = token;
         },
     }));

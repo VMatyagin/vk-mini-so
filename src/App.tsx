@@ -9,9 +9,7 @@ import { AppLayout } from "./AppLayout";
 export const App: FC = observer(({ children }) => {
     const lastAndroidBackAction = useState<number>(0);
     const store = useMst();
-    // if (store.app.restToken === "") {
-    //     return authRoutes();
-    // }
+  
     const {
         setStory,
         goBack,
