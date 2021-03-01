@@ -7,6 +7,16 @@ import {
     Tabbar,
     TabbarItem,
     ModalRoot,
+    usePlatform,
+    useAdaptivity,
+    ViewWidth,
+    VKCOM,
+    SplitCol,
+    SplitLayout,
+    PanelHeader,
+    Panel,
+    Group,
+    Cell,
 } from "@vkontakte/vkui";
 import {
     Icon28CalendarOutline,
@@ -107,102 +117,220 @@ export const AppLayout: FC<AppInitialProps> = observer((props) => {
             />
         </ModalRoot>
     );
+    const platform = usePlatform();
+    const { viewWidth = 100 } = useAdaptivity();
+
+    const isDesktop = viewWidth >= ViewWidth.TABLET;
+    const hasHeader = platform !== VKCOM;
 
     return (
-        <Epic
-            activeStory={activeStory}
-            tabbar={
-                <Tabbar itemsLayout="vertical">
-                    <TabbarItem
-                        text="Отряды"
-                        onClick={() => store.router.setStory("users", "base")}
-                        selected={activeStory === "users"}
-                    >
-                        <Icon28CompassOutline />
-                    </TabbarItem>
-                    <TabbarItem
-                        onClick={() =>
-                            store.router.setStory("calendar", "base")
-                        }
-                        selected={activeStory === "calendar"}
-                        text="Календарь"
-                    >
-                        <Icon28CalendarOutline />
-                    </TabbarItem>
-                    <TabbarItem
-                        onClick={() => store.router.setStory("wallet", "base")}
-                        selected={activeStory === "wallet"}
-                        text="Билеты"
-                    >
-                        <Icon28WalletOutline />
-                    </TabbarItem>
-                    <TabbarItem
-                        onClick={() => store.router.setStory("else", "base")}
-                        selected={activeStory === "else"}
-                        text="Ещё"
-                    >
-                        <Icon28Newsfeed />
-                    </TabbarItem>
-                </Tabbar>
-            }
+        <SplitLayout
+            header={hasHeader && <PanelHeader separator={false} />}
+            style={{ justifyContent: "center" }}
         >
-            <Root id="users" activeView={activeView} popout={popout}>
-                <UsersListView id="users" />
-                <UsersView id="user" />
-            </Root>
-            <Root id="calendar" activeView={activeView} popout={popout}>
-                <View
-                    id="calendar"
-                    activePanel={store.router.getActivePanel("calendar")}
-                    history={history}
-                    modal={modals}
-                    onSwipeBack={() => goBack()}
+            {isDesktop && (
+                <SplitCol fixed width="280px" maxWidth="280px">
+                    <Panel>
+                        {hasHeader && <PanelHeader />}
+                        <Group>
+                            <Cell
+                                disabled={activeStory === "users"}
+                                style={
+                                    activeStory === "users"
+                                        ? {
+                                              backgroundColor:
+                                                  "var(--button_secondary_background)",
+                                              borderRadius: 8,
+                                          }
+                                        : {}
+                                }
+                                onClick={() =>
+                                    store.router.setStory("users", "base")
+                                }
+                                before={<Icon28CompassOutline />}
+                            >
+                                Отряды
+                            </Cell>
+                            <Cell
+                                disabled={activeStory === "calendar"}
+                                style={
+                                    activeStory === "calendar"
+                                        ? {
+                                              backgroundColor:
+                                                  "var(--button_secondary_background)",
+                                              borderRadius: 8,
+                                          }
+                                        : {}
+                                }
+                                onClick={() =>
+                                    store.router.setStory("calendar", "base")
+                                }
+                                before={<Icon28CalendarOutline />}
+                            >
+                                Календарь
+                            </Cell>
+                            <Cell
+                                disabled={activeStory === "wallet"}
+                                style={
+                                    activeStory === "wallet"
+                                        ? {
+                                              backgroundColor:
+                                                  "var(--button_secondary_background)",
+                                              borderRadius: 8,
+                                          }
+                                        : {}
+                                }
+                                onClick={() =>
+                                    store.router.setStory("wallet", "base")
+                                }
+                                before={<Icon28WalletOutline />}
+                            >
+                                Билеты
+                            </Cell>
+                            <Cell
+                                disabled={activeStory === "else"}
+                                style={
+                                    activeStory === "else"
+                                        ? {
+                                              backgroundColor:
+                                                  "var(--button_secondary_background)",
+                                              borderRadius: 8,
+                                          }
+                                        : {}
+                                }
+                                onClick={() =>
+                                    store.router.setStory("else", "base")
+                                }
+                                before={<Icon28Newsfeed />}
+                            >
+                                Ещё
+                            </Cell>
+                        </Group>
+                    </Panel>
+                </SplitCol>
+            )}
+
+            <SplitCol
+                animate={!isDesktop}
+                spaced={isDesktop}
+                width={isDesktop ? "560px" : "100%"}
+                maxWidth={isDesktop ? "560px" : "100%"}
+            >
+                <Epic
+                    activeStory={activeStory}
+                    tabbar={
+                        !isDesktop && (
+                            <Tabbar itemsLayout="vertical">
+                                <TabbarItem
+                                    text="Отряды"
+                                    onClick={() =>
+                                        store.router.setStory("users", "base")
+                                    }
+                                    selected={activeStory === "users"}
+                                >
+                                    <Icon28CompassOutline />
+                                </TabbarItem>
+                                <TabbarItem
+                                    onClick={() =>
+                                        store.router.setStory(
+                                            "calendar",
+                                            "base"
+                                        )
+                                    }
+                                    selected={activeStory === "calendar"}
+                                    text="Календарь"
+                                >
+                                    <Icon28CalendarOutline />
+                                </TabbarItem>
+                                <TabbarItem
+                                    onClick={() =>
+                                        store.router.setStory("wallet", "base")
+                                    }
+                                    selected={activeStory === "wallet"}
+                                    text="Билеты"
+                                >
+                                    <Icon28WalletOutline />
+                                </TabbarItem>
+                                <TabbarItem
+                                    onClick={() =>
+                                        store.router.setStory("else", "base")
+                                    }
+                                    selected={activeStory === "else"}
+                                    text="Ещё"
+                                >
+                                    <Icon28Newsfeed />
+                                </TabbarItem>
+                            </Tabbar>
+                        )
+                    }
                 >
-                    <CalendarPanelBase id="base" />
-                </View>
-            </Root>
-            <Root id="wallet" activeView={activeView} popout={popout}>
-                <View
-                    id="wallet"
-                    activePanel={store.router.getActivePanel("wallet")}
-                    history={history}
-                    modal={modals}
-                    onSwipeBack={() => goBack()}
-                >
-                    <WalletPanelBase id="base" />
-                </View>
-            </Root>
-            <Root id="else" activeView={activeView} popout={popout}>
-                <View
-                    id="else"
-                    activePanel={store.router.getActivePanel("else")}
-                    history={history}
-                    modal={modals}
-                    onSwipeBack={() => goBack()}
-                >
-                    <ElsePanelBase id="base" />
-                </View>
-                <View
-                    id="else_event_handle"
-                    activePanel={store.router.getActivePanel(
-                        "else_event_handle"
-                    )}
-                    history={history}
-                    modal={modals}
-                    onSwipeBack={() => goBack()}
-                >
-                    <EventHandlePanel id="base" />
-                    <AddPanel id="event_add" />
-                    <SearchPanel id="event_search" />
-                    <EventPagePanel id="event_page" />
-                    <WalletPanel id="event_page_wallets" />
-                    <AdminsPanel id="event_page_admins" />
-                    <EventUsers id="event_admins" type="admins" />
-                    <EventUsers id="event_volunteers" type="volunteers" />
-                    <EventUsers id="event_page_artists" type="artists" />
-                    <EventWinners id="event_page_winners" />
-                </View>
-            </Root>
-        </Epic>
+                    <Root id="users" activeView={activeView} popout={popout}>
+                        <UsersListView id="users" />
+                        <UsersView id="user" />
+                    </Root>
+                    <Root id="calendar" activeView={activeView} popout={popout}>
+                        <View
+                            id="calendar"
+                            activePanel={store.router.getActivePanel(
+                                "calendar"
+                            )}
+                            history={history}
+                            modal={modals}
+                            onSwipeBack={() => goBack()}
+                        >
+                            <CalendarPanelBase id="base" />
+                        </View>
+                    </Root>
+                    <Root id="wallet" activeView={activeView} popout={popout}>
+                        <View
+                            id="wallet"
+                            activePanel={store.router.getActivePanel("wallet")}
+                            history={history}
+                            modal={modals}
+                            onSwipeBack={() => goBack()}
+                        >
+                            <WalletPanelBase id="base" />
+                        </View>
+                    </Root>
+                    <Root id="else" activeView={activeView} popout={popout}>
+                        <View
+                            id="else"
+                            activePanel={store.router.getActivePanel("else")}
+                            history={history}
+                            modal={modals}
+                            onSwipeBack={() => goBack()}
+                        >
+                            <ElsePanelBase id="base" />
+                        </View>
+                        <View
+                            id="else_event_handle"
+                            activePanel={store.router.getActivePanel(
+                                "else_event_handle"
+                            )}
+                            history={history}
+                            modal={modals}
+                            onSwipeBack={() => goBack()}
+                        >
+                            <EventHandlePanel id="base" />
+                            <AddPanel id="event_add" />
+                            <SearchPanel id="event_search" />
+                            <EventPagePanel id="event_page" />
+                            <WalletPanel id="event_page_wallets" />
+                            <AdminsPanel id="event_page_admins" />
+                            <EventUsers id="event_admins" type="admins" />
+                            <EventUsers
+                                id="event_volunteers"
+                                type="volunteers"
+                            />
+                            <EventUsers
+                                id="event_page_artists"
+                                type="artists"
+                            />
+                            <EventWinners id="event_page_winners" />
+                        </View>
+                    </Root>
+                </Epic>
+            </SplitCol>
+        </SplitLayout>
     );
 });
