@@ -51,4 +51,9 @@ export const SoAPI = {
     async getUserData(id: string): Promise<SuccessResponse<Boec, false>> {
         return instance.get(`/api/so/boec/${id}/`);
     },
+    async updateBoecData(
+        data: Partial<Boec>
+    ): Promise<SuccessResponse<Boec, false>> {
+        return instance.put(`/api/so/boec/${data.id}/`, data);
+    },
 };

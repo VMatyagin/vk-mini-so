@@ -1,59 +1,99 @@
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import {
-    Div,
-    Footer,
-    Group,
-    Header,
+    Cell,
+    List,
     Panel,
     PanelHeaderBack,
-    SimpleCell,
+    PanelHeaderContent,
+    PanelHeaderContext,
 } from "@vkontakte/vkui";
-import { PanelHeader, Title } from "@vkontakte/vkui";
+import { PanelHeader } from "@vkontakte/vkui";
 
 import { useMst } from "../../stores";
-import { Icon28PlaneOutline } from "@vkontakte/icons";
+import {
+    Icon16Dropdown,
+    Icon24Done,
+    Icon28SettingsOutline,
+    Icon28UsersOutline,
+} from "@vkontakte/icons";
 import { observer } from "mobx-react";
 import { AbstractView } from "../../../ui/molecules/AbstractView";
+import { UserViewMode } from "../organisms/UserViewMode";
+import { UserEditMode } from "../organisms/UserEditMode";
 
 export const UsersView: FC<{ id: string }> = observer(({ id }) => {
     const { boec, router } = useMst();
-
+    const [contextOpened, setContextOpened] = useState<boolean>(false);
+    const [mode, setMode] = useState<"view" | "edit">("view");
+    const toggleContext = () => setContextOpened((prev) => !prev);
     useEffect(() => {
         return boec.reset();
     }, [boec]);
 
+    const select = (e: React.MouseEvent<HTMLElement>) => {
+        const mode = e.currentTarget.dataset.mode as "view" | "edit";
+        setMode(mode);
+        requestAnimationFrame(toggleContext);
+    };
+
+    const getBack = () => {
+        setMode("view");
+    };
     return (
         <AbstractView id={id}>
             <Panel id="base">
                 <PanelHeader left={<PanelHeaderBack onClick={router.goBack} />}>
-                    <Title level="2" weight="bold">
-                        Боец
-                    </Title>
-                </PanelHeader>
-                <Group>
-                    <Div>
-                        <Title level="2" weight="medium">
-                            {boec.boecData?.fullName}
-                        </Title>
-                    </Div>
-                </Group>
-                {boec.boecData && (
-                    <Group
-                        header={<Header mode="secondary">Года выезда</Header>}
+                    <PanelHeaderContent
+                        aside={
+                            <Icon16Dropdown
+                                style={{
+                                    transform: `rotate(${
+                                        contextOpened ? "180deg" : "0"
+                                    })`,
+                                }}
+                            />
+                        }
+                        onClick={toggleContext}
                     >
-                        {boec.boecData.seasons.length > 0 ? (
-                            boec.boecData.seasons.map((season) => (
-                                <SimpleCell
-                                    indicator={season.year}
-                                    before={<Icon28PlaneOutline />}
-                                >
-                                    {season.brigade.title}
-                                </SimpleCell>
-                            ))
-                        ) : (
-                            <Footer>Ничего не найдено</Footer>
-                        )}
-                    </Group>
+                        Боец
+                    </PanelHeaderContent>
+                </PanelHeader>
+                <PanelHeaderContext
+                    opened={contextOpened}
+                    onClose={toggleContext}
+                >
+                    <List>
+                        <Cell
+                            before={<Icon28UsersOutline />}
+                            after={
+                                mode === "view" ? (
+                                    <Icon24Done fill="var(--accent)" />
+                                ) : null
+                            }
+                            onClick={select}
+                            data-mode="view"
+                        >
+                            Просмотр
+                        </Cell>
+                        <Cell
+                            before={<Icon28SettingsOutline />}
+                            after={
+                                mode === "edit" ? (
+                                    <Icon24Done fill="var(--accent)" />
+                                ) : null
+                            }
+                            onClick={select}
+                            data-mode="edit"
+                        >
+                            Редактирование
+                        </Cell>
+                    </List>
+                </PanelHeaderContext>
+
+                {mode === "view" ? (
+                    <UserViewMode />
+                ) : (
+                    <UserEditMode getBack={getBack} />
                 )}
             </Panel>
         </AbstractView>
