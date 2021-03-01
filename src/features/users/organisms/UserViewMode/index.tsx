@@ -17,15 +17,18 @@ export const UserViewMode = observer(() => {
             </Group>
             <Group header={<Header mode="secondary">Года выезда</Header>}>
                 {boec.boecData.seasons.length > 0 ? (
-                    boec.boecData.seasons.map((season) => (
-                        <SimpleCell
-                            key={season.id}
-                            indicator={season.year}
-                            before={<Icon28PlaneOutline />}
-                        >
-                            {season.brigade.title}
-                        </SimpleCell>
-                    ))
+                    boec.boecData.seasons
+                        .slice()
+                        .sort((a, b) => a.year - b.year)
+                        .map((season) => (
+                            <SimpleCell
+                                key={season.id}
+                                indicator={season.year}
+                                before={<Icon28PlaneOutline />}
+                            >
+                                {season.brigade.title}
+                            </SimpleCell>
+                        ))
                 ) : (
                     <Footer>Ничего не найдено</Footer>
                 )}

@@ -20,6 +20,7 @@ import { observer } from "mobx-react";
 import { AbstractView } from "../../../ui/molecules/AbstractView";
 import { UserViewMode } from "../organisms/UserViewMode";
 import { UserEditMode } from "../organisms/UserEditMode";
+import { SeasonPanel } from "../organisms/SeasonPanel";
 
 export const UsersView: FC<{ id: string }> = observer(({ id }) => {
     const { boec, router } = useMst();
@@ -96,6 +97,7 @@ export const UsersView: FC<{ id: string }> = observer(({ id }) => {
                     <UserEditMode getBack={getBack} />
                 )}
             </Panel>
+            <SeasonPanel id="season" />
         </AbstractView>
     );
 });

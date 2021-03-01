@@ -1,5 +1,5 @@
 import axios, { Canceler } from "axios";
-import { Boec } from "../types";
+import { Boec, Brigade, Seasons } from "../types";
 import { SuccessResponse } from "./types";
 
 const instance = axios.create({
@@ -23,14 +23,16 @@ instance.interceptors.request.use((config) => {
 });
 
 export const SoAPI = {
-    async getList({
+    getList({
         limit,
         offset,
         search,
+        brigadeId,
     }: {
         offset: number;
         limit: number;
         search?: string;
+        brigadeId?: string;
     }): Promise<SuccessResponse<Boec<true>, true>> {
         if (cancel) {
             cancel();
@@ -39,6 +41,7 @@ export const SoAPI = {
             offset,
             limit,
             search,
+            brigadeId,
         };
 
         return instance.get("/api/so/boec/", {
@@ -48,12 +51,39 @@ export const SoAPI = {
             params,
         });
     },
-    async getUserData(id: string): Promise<SuccessResponse<Boec, false>> {
+    getUserData(id: string): Promise<SuccessResponse<Boec, false>> {
         return instance.get(`/api/so/boec/${id}/`);
     },
-    async updateBoecData(
-        data: Partial<Boec>
-    ): Promise<SuccessResponse<Boec, false>> {
+    updateBoecData(data: Partial<Boec>): Promise<SuccessResponse<Boec, false>> {
         return instance.put(`/api/so/boec/${data.id}/`, data);
+    },
+    getBrigadesList(
+        filter = { limit: 200, offset: 0 }
+    ): Promise<SuccessResponse<Brigade, true>> {
+        return instance.get(`/api/so/brigade/`, {
+            params: filter,
+        });
+    },
+    getSeason(id: string): Promise<SuccessResponse<Boec, false>> {
+        return instance.get(`/api/so/boec/${id}/`);
+    },
+    updateSeason(
+        data: Record<keyof Seasons, string>
+    ): Promise<SuccessResponse<Record<keyof Seasons, string>, false>> {
+        return instance.put(`/api/so/season/${data.id}/`, data);
+    },
+    setSeason(
+        data: Record<keyof Seasons, string>
+    ): Promise<SuccessResponse<Record<keyof Seasons, string>, false>> {
+        return instance.post(`/api/so/season/`, {
+            ...data,
+            brigade: undefined,
+            brigade_id: data.brigade,
+        });
+    },
+    deleteSeason(
+        id: string
+    ): Promise<SuccessResponse<Record<keyof Seasons, string>, false>> {
+        return instance.delete(`/api/so/season/${id}/`);
     },
 };

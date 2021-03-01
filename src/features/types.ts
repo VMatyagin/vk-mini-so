@@ -1,7 +1,7 @@
 export interface WithId {
     id: number;
 }
-interface Brigade extends WithId {
+export interface Brigade extends WithId {
     title: string;
 }
 
@@ -15,7 +15,7 @@ interface BoecWhole extends WithId {
     firstName: string;
     lastName: string;
     middleName: string | undefined;
-    DOB: Date | null;
+    DOB: string | null;
     fullName: string;
     seasons: Seasons[]
 }

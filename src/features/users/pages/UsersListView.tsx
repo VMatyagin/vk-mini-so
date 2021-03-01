@@ -32,6 +32,7 @@ export const UsersListView: FC<{ id: string }> = observer(({ id }) => {
         search: undefined as string | undefined,
         limit: 20,
         offset: 0,
+        brigadeId: undefined as string | undefined,
     });
 
     const onLoad = useCallback((data: ListResponse<Boec<true>>) => {
@@ -59,6 +60,7 @@ export const UsersListView: FC<{ id: string }> = observer(({ id }) => {
             search: prev.search,
             limit: 20,
             offset: prev.offset + prev.limit,
+            brigadeId: prev.brigadeId,
         }));
     }, []);
     const loadMoreD = useMemo(
@@ -72,11 +74,12 @@ export const UsersListView: FC<{ id: string }> = observer(({ id }) => {
     const handleChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
             setSearch(event.target.value);
-            setFilterD({
+            setFilterD((prev) => ({
                 search: event.target.value,
                 limit: 20,
                 offset: 0,
-            });
+                brigadeId: prev.brigadeId,
+            }));
         },
         [setFilterD]
     );
@@ -93,7 +96,15 @@ export const UsersListView: FC<{ id: string }> = observer(({ id }) => {
         <ModalRoot activeModal={activeModal}>
             <UsersFilterModal
                 id="MODAL_USERS_LIST"
-                onClose={() => store.router.closeModal()}
+                onClose={(id?: string) => {
+                    setFilter((prev) => ({
+                        search: prev.search,
+                        limit: 20,
+                        offset: 0,
+                        brigadeId: id,
+                    }));
+                    store.router.closeModal();
+                }}
             />
         </ModalRoot>
     );
