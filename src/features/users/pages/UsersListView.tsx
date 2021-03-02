@@ -38,7 +38,15 @@ export const UsersListView: FC<{ id: string }> = observer(({ id }) => {
     const onLoad = useCallback((data: ListResponse<Boec<true>>) => {
         setTotalCount((prev) => {
             if (data.count === prev) {
-                setData((prev) => [...(prev ? prev : []), ...data.items]);
+                setData((prev) => [
+                    ...(prev ? prev : []),
+                    ...data.items.filter(
+                        (item) =>
+                            !prev
+                                ?.map((prevItem) => prevItem.id)
+                                .includes(item.id)
+                    ),
+                ]);
             } else {
                 setData(data.items);
             }
