@@ -36,7 +36,7 @@ export const RouterStore = types
 
             let panelsHistory = self.panelsHistory[view] || [];
             let viewsHistory = self.viewsHistory[self.activeStory] || [];
-            const viewIndexInHistory = viewsHistory.indexOf(view);            
+            const viewIndexInHistory = viewsHistory.indexOf(view);
             if (viewIndexInHistory !== -1) {
                 viewsHistory = viewsHistory.filter(
                     (_, index) => index !== viewIndexInHistory
@@ -135,7 +135,7 @@ export const RouterStore = types
                 self.activePanel]: window.pageYOffset,
             };
         },
-        goBack() {
+        goBack(_event?: any, howManyPanelsBack = 1) {
             let setView = self.activeView;
             let setPanel = self.activePanel;
             let setStory = self.activeStory;
@@ -183,7 +183,8 @@ export const RouterStore = types
             let storiesHistory = self.storiesHistory;
 
             if (panelsHistory.length > 1) {
-                panelsHistory.pop();
+                // panelsHistory.pop();
+                panelsHistory.splice(-howManyPanelsBack, howManyPanelsBack);
 
                 setPanel = panelsHistory[panelsHistory.length - 1];
             } else if (viewsHistory.length > 1) {

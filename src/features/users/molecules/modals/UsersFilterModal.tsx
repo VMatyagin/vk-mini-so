@@ -39,7 +39,7 @@ export const UsersFilterModal: FC<CalendarInfoModalComponentProps> = withModalRo
         const platform = usePlatform();
         const { viewWidth = 100 } = useAdaptivity();
 
-        const isDesktop = viewWidth >= ViewWidth.TABLET;
+        const isDesktop = viewWidth >= ViewWidth.SMALL_TABLET;
 
         const close = () => onClose();
 

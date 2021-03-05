@@ -1,17 +1,17 @@
 import React, { FC } from "react";
 import {
     PanelHeader,
-    Title,
     Group,
     SimpleCell,
-    Text,
     PanelHeaderBack,
     Panel,
+    CellButton,
 } from "@vkontakte/vkui";
-import { useMst } from "../../../../features/stores";
+import { useMst } from "../../stores";
 import Icon28AddOutline from "@vkontakte/icons/dist/28/add_outline";
 import Icon28ChevronRightOutline from "@vkontakte/icons/dist/28/chevron_right_outline";
-import Icon28InfoOutline from "@vkontakte/icons/dist/28/info_outline";
+
+import { Icon28SearchOutline } from "@vkontakte/icons";
 export const EventHandlePanel: FC<{ id: string }> = ({ id }) => {
     const store = useMst();
     const changeView = (panel: string) => {
@@ -22,22 +22,18 @@ export const EventHandlePanel: FC<{ id: string }> = ({ id }) => {
             <PanelHeader
                 left={<PanelHeaderBack onClick={store.router.goBack} />}
             >
-                <Title level="2" weight="bold">
-                    Упр. мероприятиями
-                </Title>
+                Управление мероприятиями
             </PanelHeader>
             <Group>
-                <SimpleCell
+                <CellButton
                     before={<Icon28AddOutline />}
+                    onClick={() => changeView("event_edit")}
                     after={<Icon28ChevronRightOutline />}
-                    onClick={() => changeView("event_add")}
                 >
-                    <Text weight="regular" style={{ color: "var(--accent)" }}>
-                        Добавить мероприятие
-                    </Text>
-                </SimpleCell>
+                    Добавить мероприятие
+                </CellButton>
                 <SimpleCell
-                    before={<Icon28InfoOutline />}
+                    before={<Icon28SearchOutline />}
                     after={
                         <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
                     }

@@ -4,12 +4,14 @@ import { RouterStore } from "./router-store";
 import { createContext, useContext } from "react";
 import { FormStore } from "./form-store";
 import { BoecStore } from "./boec-store";
+import { EventStore } from "./event-store";
 
 const RootStore = types.model({
     app: AppStore,
     router: RouterStore,
     formData: FormStore,
     boec: BoecStore,
+    event: EventStore,
 });
 
 export const rootStore = RootStore.create({
@@ -19,6 +21,7 @@ export const rootStore = RootStore.create({
         forms: {},
     },
     boec: {},
+    event: {},
 });
 
 onSnapshot(rootStore, (snapshot) => console.log("Snapshot: ", snapshot));

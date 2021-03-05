@@ -24,6 +24,8 @@ import { useFetch } from "../../../utils/useFetch";
 export const SeasonPanel: FC<{ id: string }> = observer(({ id }) => {
     const { router, boec } = useMst();
     const [brigadeList, setBrigades] = useState<Brigade[]>([]);
+    const [SnackBar, setSnackBar] = useState<React.ReactNode>(null);
+
     const onLoad = useCallback((data: ListResponse<Brigade>) => {
         setBrigades(data.items);
     }, []);
@@ -84,7 +86,7 @@ export const SeasonPanel: FC<{ id: string }> = observer(({ id }) => {
             boec.fetchBoec(boec.boecData!.id.toString());
             router.closePopout();
             reset(data);
-            router.openPopout(<SuccessSnackbar />);
+            setSnackBar(<SuccessSnackbar onClose={() => setSnackBar(null)} />);
         });
     };
 
@@ -99,7 +101,7 @@ export const SeasonPanel: FC<{ id: string }> = observer(({ id }) => {
                         action: () => {
                             currentSeason &&
                                 SoAPI.deleteSeason(currentSeason.id.toString());
-                            router.goBack();
+                            router.goBack(2);
                             boec.fetchBoec(boec.boecData!.id.toString());
                         },
                     },
@@ -206,6 +208,7 @@ export const SeasonPanel: FC<{ id: string }> = observer(({ id }) => {
                     </Button>
                 </FormItem>
             )}
+            {SnackBar}
         </Panel>
     );
 });

@@ -11,9 +11,10 @@ import {
     Footer,
     Panel,
 } from "@vkontakte/vkui";
-import { useMst } from "../../../../features/stores";
 import Icon28WalletOutline from "@vkontakte/icons/dist/28/wallet_outline";
 import Icon28ReplyOutline from "@vkontakte/icons/dist/28/reply_outline";
+import { useMst } from "../../stores";
+
 export const WalletPanel: FC<{ id: string }> = ({ id }) => {
     const store = useMst();
     return (

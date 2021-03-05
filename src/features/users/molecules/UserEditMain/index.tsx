@@ -8,7 +8,7 @@ import {
     ScreenSpinner,
 } from "@vkontakte/vkui";
 import { observer } from "mobx-react";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { SuccessSnackbar } from "../../../../ui/molecules/SuccessSnackbar";
@@ -18,6 +18,8 @@ import { SoAPI } from "../../../utils/api.service";
 
 export const UserEditMain: FC = observer(() => {
     const { boec, router } = useMst();
+    const [SnackBar, setSnackBar] = useState<React.ReactNode>(null);
+
     const {
         handleSubmit,
         errors,
@@ -38,7 +40,7 @@ export const UserEditMain: FC = observer(() => {
             boec.setBoec(data);
             router.closePopout();
             reset(data);
-            router.openPopout(<SuccessSnackbar />);
+            setSnackBar(<SuccessSnackbar onClose={() => setSnackBar(null)} />);
         });
     };
     return boec.boecData ? (
@@ -167,6 +169,7 @@ export const UserEditMain: FC = observer(() => {
                     </Button>
                 </FormItem>
             </FormLayout>
+            {SnackBar}
         </Group>
     ) : null;
 });

@@ -6,36 +6,58 @@ import {
     Group,
     SimpleCell,
     Switch,
-    Button,
-    Div,
     Panel,
+    CellButton,
 } from "@vkontakte/vkui";
-import { useMst } from "../../../../features/stores";
-import { EventCard } from "../../../molecules/EventCard";
+
 import Icon28ChevronRightOutline from "@vkontakte/icons/dist/28/chevron_right_outline";
 import Icon28WalletOutline from "@vkontakte/icons/dist/28/wallet_outline";
 import Icon28UsersOutline from "@vkontakte/icons/dist/28/users_outline";
 import Icon28PlaylistOutline from "@vkontakte/icons/dist/28/playlist_outline";
 import Icon28PollSquareOutline from "@vkontakte/icons/dist/28/poll_square_outline";
-export const EventPagePanel: FC<{ id: string }> = ({ id }) => {
-    const store = useMst();
+import { Icon28FireOutline } from "@vkontakte/icons";
+import { observer } from "mobx-react";
+import { useMst } from "../../stores";
+import { EventCard } from "../../../ui/molecules/EventCard";
+
+export const EventPagePanel: FC<{ id: string }> = observer(({ id }) => {
+    const { router, event } = useMst();
     const changeView = (panel: string) => {
-        store.router.setPage("else_event_handle", panel);
+        router.setPage("else_event_handle", panel);
     };
-    return (
+    const onBack = () => {
+        router.goBack();
+        event.reset();
+    };
+    return event.eventData ? (
         <Panel id={id}>
-            <PanelHeader
-                left={<PanelHeaderBack onClick={store.router.goBack} />}
-            >
+            <PanelHeader left={<PanelHeaderBack onClick={onBack} />}>
                 <Title level="2" weight="bold">
-                    Слет ССО
+                    {event.eventData.title}
                 </Title>
             </PanelHeader>
             <Group>
-                <EventCard onClick={() => {}} />
+                <EventCard
+                    title={event.eventData.title}
+                    startDate={event.eventData.startDate}
+                    startTime={event.eventData.startTime}
+                    description={event.eventData.description}
+                    key={event.eventData.id}
+                />
             </Group>
             <Group description="Включает отображение мероприятия в календаре">
-                <SimpleCell after={<Switch defaultChecked />}>
+                <SimpleCell
+                    onClick={() =>
+                        event.eventData &&
+                        event.toggleVisibility(event.eventData.id)
+                    }
+                    after={
+                        <Switch
+                            checked={event.eventData.visibility}
+                            readOnly={true}
+                        />
+                    }
+                >
                     Видимость
                 </SimpleCell>
             </Group>
@@ -50,13 +72,22 @@ export const EventPagePanel: FC<{ id: string }> = ({ id }) => {
                     Билеты
                 </SimpleCell>
                 <SimpleCell
+                    before={<Icon28FireOutline />}
+                    after={
+                        <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
+                    }
+                    onClick={() => changeView("event_organizers")}
+                >
+                    Организаторы
+                </SimpleCell>
+                <SimpleCell
                     before={<Icon28UsersOutline />}
                     after={
                         <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
                     }
-                    onClick={() => changeView("event_page_admins")}
+                    onClick={() => changeView("event_volonteers")}
                 >
-                    Организаторы
+                    Волонтеры
                 </SimpleCell>
                 <SimpleCell
                     before={<Icon28PlaylistOutline />}
@@ -74,16 +105,14 @@ export const EventPagePanel: FC<{ id: string }> = ({ id }) => {
                     }
                     onClick={() => changeView("event_page_winners")}
                 >
-                    Результаты (для рейтинга)
+                    Победители
                 </SimpleCell>
             </Group>
-            <Group description="В дальнейшем только РО сможет изменять данные">
-                <Div>
-                    <Button disabled mode="outline" size="l">
-                        Первичный расчет рейтинга
-                    </Button>
-                </Div>
+            <Group>
+                <CellButton onClick={() => changeView("event_edit")}>
+                    Редактировать
+                </CellButton>
             </Group>
         </Panel>
-    );
-};
+    ) : null;
+});

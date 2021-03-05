@@ -17,11 +17,27 @@ interface BoecWhole extends WithId {
     middleName: string | undefined;
     DOB: string | null;
     fullName: string;
-    seasons: Seasons[]
+    seasons: Seasons[];
 }
 
-interface BoecList extends WithId {
+interface BoecShort extends WithId {
     fullName: string;
 }
 
-export type Boec<IsList = false> = IsList extends true ? BoecList : BoecWhole;
+export type Boec<IsList = false> = IsList extends true ? BoecShort : BoecWhole;
+
+export interface Event extends WithId {
+    status: number;
+    title: string;
+    description: string | null;
+    location: string | null;
+    shtab: number | null;
+    startDate: string | null;
+    startTime: string | null;
+    organizer: BoecShort[];
+    volonteer: BoecShort[];
+    visibility: boolean;
+}
+export interface Shtab extends WithId {
+    title: string;
+}

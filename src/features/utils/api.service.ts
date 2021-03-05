@@ -1,5 +1,5 @@
 import axios, { Canceler } from "axios";
-import { Boec, Brigade, Seasons } from "../types";
+import { Boec, Brigade, Event, Seasons, Shtab } from "../types";
 import { SuccessResponse } from "./types";
 
 const instance = axios.create({
@@ -55,7 +55,7 @@ export const SoAPI = {
         return instance.get(`/api/so/boec/${id}/`);
     },
     updateBoecData(data: Partial<Boec>): Promise<SuccessResponse<Boec, false>> {
-        return instance.put(`/api/so/boec/${data.id}/`, data);
+        return instance.patch(`/api/so/boec/${data.id}/`, data);
     },
     getBrigadesList(
         filter = { limit: 200, offset: 0 }
@@ -70,7 +70,7 @@ export const SoAPI = {
     updateSeason(
         data: Record<keyof Seasons, string>
     ): Promise<SuccessResponse<Record<keyof Seasons, string>, false>> {
-        return instance.put(`/api/so/season/${data.id}/`, data);
+        return instance.patch(`/api/so/season/${data.id}/`, data);
     },
     setSeason(
         data: Record<keyof Seasons, string>
@@ -85,5 +85,55 @@ export const SoAPI = {
         id: string
     ): Promise<SuccessResponse<Record<keyof Seasons, string>, false>> {
         return instance.delete(`/api/so/season/${id}/`);
+    },
+    getEvent(id: string): Promise<SuccessResponse<Event, false>> {
+        return instance.get(`/api/event/${id}/`);
+    },
+    createEvent(data: Partial<Event>): Promise<SuccessResponse<Event, false>> {
+        return instance.post(`/api/event/`, data);
+    },
+    getEventList({
+        limit,
+        offset,
+        search,
+    }: {
+        offset: number;
+        limit: number;
+        search?: string;
+    }): Promise<SuccessResponse<Event, true>> {
+        if (cancel) {
+            cancel();
+        }
+        const params = {
+            offset,
+            limit,
+            search,
+        };
+
+        return instance.get("/api/event/", {
+            cancelToken: new CancelToken(function executor(c) {
+                cancel = c;
+            }),
+            params,
+        });
+    },
+    getShtabList(
+        filter = { limit: 200, offset: 0 }
+    ): Promise<SuccessResponse<Shtab, true>> {
+        return instance.get(`/api/so/shtab/`, {
+            params: filter,
+        });
+    },
+    updateEvent(data: Partial<Event>): Promise<SuccessResponse<Event, false>> {
+        return instance.patch(`/api/event/${data.id}/`, data);
+    },
+    toggleEventVisibility(id: number): Promise<SuccessResponse<Event, false>> {
+        return instance.get(`/api/event/${id}/toggle/`);
+    },
+    getEventUsers(
+        id: number,
+        type: "volonteers" | "organizers" | "artists"
+    ): Promise<SuccessResponse<Boec<true>[], false>> {
+        return instance.get(`/api/event/${id}/${type}/`);
     },
 };

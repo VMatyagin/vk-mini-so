@@ -5,7 +5,7 @@ import {
     Title,
 } from "@vkontakte/vkui";
 import { useMst } from "../../stores";
-import { EventCard } from "../../../ui/molecules/EventCard";
+// import { EventCard } from "../../../ui/molecules/EventCard";
 import { observer } from "mobx-react";
 import { restoreScrollPosition } from "../../utils";
 
@@ -20,9 +20,9 @@ export const WalletPanelBase: FC<{ id: string }> = observer(({ id }) => {
         };
     }, [store.app, activeTab]);
 
-    const handleEventClick = () => {
-        store.router.openModal("MODAL_WALLET_QR");
-    };
+    // const handleEventClick = () => {
+    //     store.router.openModal("MODAL_WALLET_QR");
+    // };
     return (
         <Panel id={id}>
             <PanelHeader separator={false}>
@@ -44,7 +44,7 @@ export const WalletPanelBase: FC<{ id: string }> = observer(({ id }) => {
                     Прошедшее
                 </TabsItem>
             </Tabs>
-            <EventCard onClick={handleEventClick} />
+            {/* <EventCard onClick={handleEventClick} /> */}
         </Panel>
     );
 });

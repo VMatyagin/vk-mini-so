@@ -28,21 +28,16 @@ import {
 import { CalendarPanelBase } from "./features/calendar/pages/CalendarPanelBase";
 import { CalendarInfoModal } from "./features/calendar/organisms/modals/CalendarInfoModal";
 import { WalletPanelBase } from "./features/wallet/pages/WalletPanelBase";
-import { ElsePanelBase } from "./ui/panels/else/ElsePanelBase";
-import { EventHandlePanel } from "./ui/panels/else/event-handle/EventHandlePanel";
-import { AddPanel } from "./ui/panels/else/event-handle/AddPanel";
-import { SearchPanel } from "./ui/panels/else/event-handle/SearchPanel";
-import { EventPagePanel } from "./ui/panels/else/event-handle/EventPagePanel";
-import { WalletPanel } from "./ui/panels/else/event-handle/WalletPanel";
+
 import { ElseWalletCountModal } from "./features/wallet/organisms/modals/ElseWalletCountModal";
-import { AdminsPanel } from "./ui/panels/else/event-handle/AdminsPanel";
-import { EventUsers } from "./ui/panels/else/event-handle/EventUsers";
-import { EventWinners } from "./ui/panels/else/event-handle/EventWinners";
+
 import { EventQRModal } from "./features/wallet/organisms/modals/EventQRModal";
 
 import { useMst } from "./features/stores";
 import { UsersListView } from "./features/users/pages/UsersListView";
 import { UsersView } from "./features/users/pages/UserView";
+import { ElseView } from "./features/else/pages/ElseView";
+import { EventHandlingView } from "./features/event/EventHandlingView";
 
 interface AppInitialProps {
     lastAndroidBackAction: [
@@ -293,41 +288,8 @@ export const AppLayout: FC<AppInitialProps> = observer((props) => {
                         </View>
                     </Root>
                     <Root id="else" activeView={activeView} popout={popout}>
-                        <View
-                            id="else"
-                            activePanel={store.router.getActivePanel("else")}
-                            history={history}
-                            modal={modals}
-                            onSwipeBack={() => goBack()}
-                        >
-                            <ElsePanelBase id="base" />
-                        </View>
-                        <View
-                            id="else_event_handle"
-                            activePanel={store.router.getActivePanel(
-                                "else_event_handle"
-                            )}
-                            history={history}
-                            modal={modals}
-                            onSwipeBack={() => goBack()}
-                        >
-                            <EventHandlePanel id="base" />
-                            <AddPanel id="event_add" />
-                            <SearchPanel id="event_search" />
-                            <EventPagePanel id="event_page" />
-                            <WalletPanel id="event_page_wallets" />
-                            <AdminsPanel id="event_page_admins" />
-                            <EventUsers id="event_admins" type="admins" />
-                            <EventUsers
-                                id="event_volunteers"
-                                type="volunteers"
-                            />
-                            <EventUsers
-                                id="event_page_artists"
-                                type="artists"
-                            />
-                            <EventWinners id="event_page_winners" />
-                        </View>
+                        <ElseView id="else" />
+                        <EventHandlingView id="else_event_handle" />
                     </Root>
                 </Epic>
             </SplitCol>

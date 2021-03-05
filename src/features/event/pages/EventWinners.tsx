@@ -7,9 +7,9 @@ import {
     Button,
     Panel,
 } from "@vkontakte/vkui";
-import { useMst } from "../../../../features/stores";
 import { observer } from "mobx-react";
 import Icon24Add from "@vkontakte/icons/dist/24/add";
+import { useMst } from "../../stores";
 
 export const EventWinners: FC<{
     id: string;

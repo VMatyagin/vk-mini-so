@@ -18,7 +18,6 @@ import getMonth from "date-fns/getMonth";
 import ru from "date-fns/locale/ru";
 import { Gesture } from "@vkontakte/vkui/dist/components/Touch/Touch";
 import { useMst } from "../../stores";
-import { EventCard } from "../../../ui/molecules/EventCard";
 
 registerLocale("ru", ru);
 const months = [
@@ -205,7 +204,7 @@ export const CalendarPanelBase: FC<{ id: string }> = ({ id }) => {
 
             <Div>
                 <List>
-                    <EventCard onClick={() => {}} />
+                    {/* <EventCard onClick={() => {}} /> */}
                 </List>
             </Div>
         </Panel>
