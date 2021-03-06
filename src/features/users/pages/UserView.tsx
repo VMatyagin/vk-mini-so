@@ -1,11 +1,16 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import {
     Cell,
+    CellButton,
+    Group,
     List,
     Panel,
     PanelHeaderBack,
     PanelHeaderContent,
     PanelHeaderContext,
+    Title,
+    useAdaptivity,
+    ViewWidth,
 } from "@vkontakte/vkui";
 import { PanelHeader } from "@vkontakte/vkui";
 
@@ -26,75 +31,109 @@ export const UsersView: FC<{ id: string }> = observer(({ id }) => {
     const { boec, router } = useMst();
     const [contextOpened, setContextOpened] = useState<boolean>(false);
     const [mode, setMode] = useState<"view" | "edit">("view");
-    const toggleContext = () => setContextOpened((prev) => !prev);
+    const toggleContext = useCallback(
+        () => setContextOpened((prev) => !prev),
+        []
+    );
     useEffect(() => {
         return boec.reset();
     }, [boec]);
 
-    const select = (e: React.MouseEvent<HTMLElement>) => {
-        const mode = e.currentTarget.dataset.mode as "view" | "edit";
-        setMode(mode);
-        requestAnimationFrame(toggleContext);
-    };
+    const select = useCallback(
+        (e: React.MouseEvent<HTMLElement>) => {
+            const mode = e.currentTarget.dataset.mode as "view" | "edit";
+            setMode(mode);
+            requestAnimationFrame(toggleContext);
+        },
+        [toggleContext]
+    );
 
     const getBack = () => {
         setMode("view");
     };
+    const handleClose = () => {
+        requestAnimationFrame(toggleContext);
+    };
+    const { viewWidth = 100 } = useAdaptivity();
+
+    const isDesktop = viewWidth >= ViewWidth.TABLET;
+
     return (
         <AbstractView id={id}>
             <Panel id="base">
-                <PanelHeader left={<PanelHeaderBack onClick={router.goBack} />}>
-                    <PanelHeaderContent
-                        aside={
-                            <Icon16Dropdown
-                                style={{
-                                    transform: `rotate(${
-                                        contextOpened ? "180deg" : "0"
-                                    })`,
-                                }}
-                            />
-                        }
-                        onClick={toggleContext}
-                    >
-                        Боец
-                    </PanelHeaderContent>
-                </PanelHeader>
-                <PanelHeaderContext
-                    opened={contextOpened}
-                    onClose={toggleContext}
+                <PanelHeader
+                    left={
+                        <PanelHeaderBack
+                            onClick={mode === "edit" ? getBack : router.goBack}
+                        />
+                    }
                 >
-                    <List>
-                        <Cell
-                            before={<Icon28UsersOutline />}
-                            after={
-                                mode === "view" ? (
-                                    <Icon24Done fill="var(--accent)" />
-                                ) : null
+                    {isDesktop ? (
+                        <Title level="2" weight="bold">
+                            {mode === "view" ? "Боец" : "Редактирование"}
+                        </Title>
+                    ) : (
+                        <PanelHeaderContent
+                            aside={
+                                <Icon16Dropdown
+                                    style={{
+                                        transform: `rotate(${
+                                            contextOpened ? "180deg" : "0"
+                                        })`,
+                                    }}
+                                />
                             }
-                            onClick={select}
-                            data-mode="view"
+                            onClick={toggleContext}
                         >
-                            Просмотр
-                        </Cell>
-                        <Cell
-                            before={<Icon28SettingsOutline />}
-                            after={
-                                mode === "edit" ? (
-                                    <Icon24Done fill="var(--accent)" />
-                                ) : null
-                            }
-                            onClick={select}
-                            data-mode="edit"
-                        >
-                            Редактирование
-                        </Cell>
-                    </List>
-                </PanelHeaderContext>
+                            Боец
+                        </PanelHeaderContent>
+                    )}
+                </PanelHeader>
+                {!isDesktop && (
+                    <PanelHeaderContext
+                        opened={contextOpened}
+                        onClose={handleClose}
+                    >
+                        <List>
+                            <Cell
+                                before={<Icon28UsersOutline />}
+                                after={
+                                    mode === "view" ? (
+                                        <Icon24Done fill="var(--accent)" />
+                                    ) : null
+                                }
+                                onClick={select}
+                                data-mode="view"
+                            >
+                                Просмотр
+                            </Cell>
+                            <Cell
+                                before={<Icon28SettingsOutline />}
+                                after={
+                                    mode === "edit" ? (
+                                        <Icon24Done fill="var(--accent)" />
+                                    ) : null
+                                }
+                                onClick={select}
+                                data-mode="edit"
+                            >
+                                Редактирование
+                            </Cell>
+                        </List>
+                    </PanelHeaderContext>
+                )}
 
                 {mode === "view" ? (
-                    <UserViewMode />
+                    <>
+                        <UserViewMode />
+                        <Group>
+                            <CellButton onClick={() => setMode("edit")}>
+                                Редактировать
+                            </CellButton>
+                        </Group>
+                    </>
                 ) : (
-                    <UserEditMode getBack={getBack} />
+                    <UserEditMode />
                 )}
             </Panel>
             <SeasonPanel id="season" />
