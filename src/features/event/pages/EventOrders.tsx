@@ -10,60 +10,63 @@ import {
     Spinner,
     Footer,
     Header,
+    ScreenSpinner,
 } from "@vkontakte/vkui";
 import { observer } from "mobx-react";
 
 import { useMst } from "../../stores";
-import { Boec } from "../../types";
+import { EventOrder } from "../../types";
 import { useFetch } from "../../utils/useFetch";
 import { SoAPI } from "../../utils/api.service";
 import { Icon24Add } from "@vkontakte/icons";
 
-const titles = {
-    organizers: {
-        title: "Организаторы",
-        btn: "организатора",
-    },
-    volonteers: {
-        title: "Волонтеры",
-        btn: "волонтера",
-    },
-};
-
-export const EventUsers: FC<{
+export const EventOrders: FC<{
     id: string;
-    type: "organizers" | "volonteers";
-}> = observer(({ id, type }) => {
+}> = observer(({ id }) => {
     const { event, router } = useMst();
-    const [data, setData] = useState<Boec<true>[]>();
+    const [data, setData] = useState<EventOrder[]>();
 
-    const onLoad = useCallback((data: Boec<true>[]) => {
+    const onLoad = useCallback((data: EventOrder[]) => {
         setData(data);
     }, []);
 
-    const { fetch, errors, isLoading } = useFetch(SoAPI.getEventUsers, onLoad);
+    const { fetch, errors, isLoading } = useFetch(SoAPI.getEventOrders, onLoad);
 
     useEffect(() => {
-        event.eventData && fetch(event.eventData.id, type);
-    }, [fetch, event, type]);
-
+        event.eventData && fetch(event.eventData.id);
+    }, [fetch, event]);
+    const changeView = (id: number) => {
+        router.openPopout(<ScreenSpinner />);
+        event.fetchOrder(id, () => {
+            router.setPage("else_event_handle", "event_order");
+            router.closePopout();
+        });
+    };
     return (
         <Panel id={id}>
             <PanelHeader left={<PanelHeaderBack onClick={router.goBack} />}>
                 <Title level="2" weight="bold">
-                    {titles[type].title}
+                    Заявки
                 </Title>
             </PanelHeader>
             <Group
                 header={
                     <Header mode="tertiary" indicator={data?.length}>
-                        {titles[type].title}
+                        Заявки
                     </Header>
                 }
             >
                 {data &&
                     data.map((item) => (
-                        <SimpleCell key={item.id}>{item.fullName}</SimpleCell>
+                        <SimpleCell
+                            key={item.id}
+                            onClick={() => changeView(item.id)}
+                        >
+                            {`Заявка ${item.brigade.title}  ${
+                                item.title && `- ${item.title}`
+                            }
+                            `}
+                        </SimpleCell>
                     ))}
                 {isLoading && !errors && (
                     <Spinner size="small" style={{ margin: "20px 0" }} />
@@ -74,8 +77,16 @@ export const EventUsers: FC<{
                 {errors && <Footer>Ошибка соединения</Footer>}
             </Group>
             <Group>
-                <Button size="l" mode="tertiary" before={<Icon24Add />}>
-                    Добавить {titles[type].btn}
+                <Button
+                    size="l"
+                    mode="tertiary"
+                    stretched={true}
+                    before={<Icon24Add />}
+                    onClick={() => {
+                        router.setPage("else_event_handle", "event_order");
+                    }}
+                >
+                    Добавить заявку
                 </Button>
             </Group>
         </Panel>

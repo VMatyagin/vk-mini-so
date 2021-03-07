@@ -37,7 +37,18 @@ export interface Event extends WithId {
     organizer: BoecShort[];
     volonteer: BoecShort[];
     visibility: boolean;
+    worth: string
 }
 export interface Shtab extends WithId {
+    title: string;
+}
+
+export interface EventOrder extends WithId {
+    brigade: Brigade;
+    brigade_id: number;
+    event: number;
+    participations: BoecShort[];
+    isСontender: boolean;
+    place: string | null;
     title: string;
 }

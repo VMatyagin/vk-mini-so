@@ -70,8 +70,6 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
             router.closePopout();
             reset(data);
             setSnackBar(<SuccessSnackbar onClose={() => setSnackBar(null)} />);
-            console.log(isNew);
-            
             isNew && event.reset();
             router.goBack();
         });
@@ -199,6 +197,40 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
                     />
                     <Controller
                         control={control}
+                        name="worth"
+                        rules={{ required: true }}
+                        render={({ onChange, value, name }, { invalid }) => (
+                            <FormItem
+                                top="Тип мероприятия"
+                                status={invalid ? "error" : "default"}
+                                bottom={
+                                    errors &&
+                                    errors["worth"] &&
+                                    errors["worth"].message
+                                }
+                            >
+                                <Select
+                                    name={name}
+                                    defaultValue={value}
+                                    placeholder="Не выбран"
+                                    options={[
+                                        { label: "Не учитывается", value: "0" },
+                                        { label: "Творчество", value: "1" },
+                                        { label: "Спорт", value: "2" },
+                                        { label: "Волонтерство", value: "3" },
+                                        { label: "Городское", value: "4" },
+                                    ]}
+                                    onChange={onChange}
+                                    renderOption={({
+                                        option,
+                                        ...restProps
+                                    }) => <CustomSelectOption {...restProps} />}
+                                />
+                            </FormItem>
+                        )}
+                    />{" "}
+                    <Controller
+                        control={control}
                         name="shtab"
                         rules={{ required: false }}
                         render={({ onChange, value, name }, { invalid }) => (
@@ -286,7 +318,6 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
                             </FormItem>
                         )}
                     />
-
                     <FormItem>
                         <Button
                             size="l"

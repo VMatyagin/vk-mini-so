@@ -1,5 +1,5 @@
 import axios, { Canceler } from "axios";
-import { Boec, Brigade, Event, Seasons, Shtab } from "../types";
+import { Boec, Brigade, Event, EventOrder, Seasons, Shtab } from "../types";
 import { SuccessResponse } from "./types";
 
 const instance = axios.create({
@@ -132,8 +132,24 @@ export const SoAPI = {
     },
     getEventUsers(
         id: number,
-        type: "volonteers" | "organizers" | "artists"
+        type: "volonteers" | "organizers"
     ): Promise<SuccessResponse<Boec<true>[], false>> {
         return instance.get(`/api/event/${id}/${type}/`);
+    },
+    getEventOrders(id: number): Promise<SuccessResponse<EventOrder[], false>> {
+        return instance.get(`/api/event/${id}/orders/`);
+    },
+    getEventOrder(id: number): Promise<SuccessResponse<EventOrder, false>> {
+        return instance.get(`/api/event/orders/${id}/`);
+    },
+    createOrder(
+        data: Partial<EventOrder>
+    ): Promise<SuccessResponse<EventOrder, false>> {
+        return instance.post(`/api/event/orders/`, data);
+    },
+    updateOrder(
+        data: Partial<EventOrder>
+    ): Promise<SuccessResponse<EventOrder, false>> {
+        return instance.patch(`/api/event/orders/${data.id}/`, data);
     },
 };

@@ -2,8 +2,10 @@ import React, { FC } from "react";
 import { AbstractView } from "../../ui/molecules/AbstractView";
 import { EventEditPanel } from "./pages/EventEditPanel";
 import { EventHandlePanel } from "./pages/EventHandlePanel";
+import { EventOrders } from "./pages/EventOrders";
 import { EventPagePanel } from "./pages/EventPagePanel";
 import { EventUsers } from "./pages/EventUsers";
+import { OrderPanel } from "./pages/OrderPanel";
 import { SearchPanel } from "./pages/SearchPanel";
 import { WalletPanel } from "./pages/WalletPanel";
 
@@ -20,7 +22,10 @@ export const EventHandlingView: FC<{ id: string }> = ({ id }) => {
 
             <EventUsers id="event_organizers" type="organizers" />
             <EventUsers id="event_volonteers" type="volonteers" />
-            <EventUsers id="event_page_artists" type="artists" />
+
+            <EventOrders id='event_orders' />
+            <OrderPanel id='event_order' />
+
         </AbstractView>
     );
 };

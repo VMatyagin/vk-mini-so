@@ -1,6 +1,6 @@
 import { cast, types } from "mobx-state-tree";
 
-import { Event } from "../../types";
+import { Event, EventOrder } from "../../types";
 import { SoAPI } from "../../utils/api.service";
 
 const BoecShort = types.model({
@@ -21,10 +21,26 @@ const EventModel = types.model({
     organizer: types.array(BoecShort),
     volonteer: types.array(BoecShort),
     visibility: types.boolean,
+    worth: types.string
+});
+
+const EventOrderModel = types.model({
+    id: types.number,
+    brigade: types.model({
+        id: types.number,
+        title: types.string,
+    }),
+    participations: types.array(BoecShort),
+    event: types.number,
+    isСontender: types.boolean,
+    place: types.maybeNull(types.string),
+    brigade_id: types.number,
+    title: types.string,
 });
 export const EventStore = types
     .model("EventStore", {
         eventData: types.maybeNull(EventModel),
+        eventOrder: types.maybeNull(EventOrderModel),
     })
     .actions((self) => ({
         setEvent(data: Event) {
@@ -43,5 +59,17 @@ export const EventStore = types
             SoAPI.toggleEventVisibility(id).then(({ data }) => {
                 this.setEvent(data);
             });
+        },
+        fetchOrder(id: number, onLoad: () => void) {
+            SoAPI.getEventOrder(id).then(({ data }) => {
+                this.setEventOrder(data);
+                onLoad();
+            });
+        },
+        setEventOrder(data: EventOrder) {
+            self.eventOrder = cast(data);
+        },
+        resetOrder() {
+            self.eventOrder = null;
         },
     }));

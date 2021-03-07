@@ -10,12 +10,7 @@ import {
     CellButton,
 } from "@vkontakte/vkui";
 
-import Icon28ChevronRightOutline from "@vkontakte/icons/dist/28/chevron_right_outline";
-import Icon28WalletOutline from "@vkontakte/icons/dist/28/wallet_outline";
-import Icon28UsersOutline from "@vkontakte/icons/dist/28/users_outline";
-import Icon28PlaylistOutline from "@vkontakte/icons/dist/28/playlist_outline";
-import Icon28PollSquareOutline from "@vkontakte/icons/dist/28/poll_square_outline";
-import { Icon28FireOutline } from "@vkontakte/icons";
+import { Icon28ChevronRightOutline, Icon28FireOutline, Icon28InboxOutline, Icon28UsersOutline, Icon28WalletOutline } from "@vkontakte/icons";
 import { observer } from "mobx-react";
 import { useMst } from "../../stores";
 import { EventCard } from "../../../ui/molecules/EventCard";
@@ -90,22 +85,13 @@ export const EventPagePanel: FC<{ id: string }> = observer(({ id }) => {
                     Волонтеры
                 </SimpleCell>
                 <SimpleCell
-                    before={<Icon28PlaylistOutline />}
+                    before={<Icon28InboxOutline />}
                     after={
                         <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
                     }
-                    onClick={() => changeView("event_page_artists")}
+                    onClick={() => changeView("event_orders")}
                 >
-                    Выступающие
-                </SimpleCell>
-                <SimpleCell
-                    before={<Icon28PollSquareOutline />}
-                    after={
-                        <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
-                    }
-                    onClick={() => changeView("event_page_winners")}
-                >
-                    Победители
+                    Заявки
                 </SimpleCell>
             </Group>
             <Group>
