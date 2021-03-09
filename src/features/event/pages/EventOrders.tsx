@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import {
     PanelHeader,
     PanelHeaderBack,
@@ -7,8 +7,6 @@ import {
     SimpleCell,
     Button,
     Panel,
-    Spinner,
-    Footer,
     Header,
     ScreenSpinner,
 } from "@vkontakte/vkui";
@@ -19,6 +17,7 @@ import { EventOrder } from "../../types";
 import { useFetch } from "../../utils/useFetch";
 import { SoAPI } from "../../utils/api.service";
 import { Icon24Add } from "@vkontakte/icons";
+import { ItemsList } from "../molecules/ItemsList";
 
 export const EventOrders: FC<{
     id: string;
@@ -56,8 +55,11 @@ export const EventOrders: FC<{
                     </Header>
                 }
             >
-                {data &&
-                    data.map((item) => (
+                <ItemsList
+                    data={data}
+                    isLoading={isLoading}
+                    isError={!!errors}
+                    renderItem={(item) => (
                         <SimpleCell
                             key={item.id}
                             onClick={() => changeView(item.id)}
@@ -65,16 +67,10 @@ export const EventOrders: FC<{
                             {`Заявка ${item.brigade.title}  ${
                                 item.title && `- ${item.title}`
                             }
-                            `}
+                        `}
                         </SimpleCell>
-                    ))}
-                {isLoading && !errors && (
-                    <Spinner size="small" style={{ margin: "20px 0" }} />
-                )}
-                {!isLoading && data && data.length === 0 && (
-                    <Footer>Ничего не найдено</Footer>
-                )}
-                {errors && <Footer>Ошибка соединения</Footer>}
+                    )}
+                />
             </Group>
             <Group>
                 <Button

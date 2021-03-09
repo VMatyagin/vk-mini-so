@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import {
     PanelHeader,
     PanelHeaderBack,
@@ -7,8 +7,6 @@ import {
     SimpleCell,
     Button,
     Panel,
-    Spinner,
-    Footer,
     Header,
 } from "@vkontakte/vkui";
 import { observer } from "mobx-react";
@@ -18,6 +16,7 @@ import { Boec } from "../../types";
 import { useFetch } from "../../utils/useFetch";
 import { SoAPI } from "../../utils/api.service";
 import { Icon24Add } from "@vkontakte/icons";
+import { ItemsList } from "../molecules/ItemsList";
 
 const titles = {
     organizers: {
@@ -61,17 +60,14 @@ export const EventUsers: FC<{
                     </Header>
                 }
             >
-                {data &&
-                    data.map((item) => (
+                <ItemsList
+                    data={data}
+                    isLoading={isLoading}
+                    isError={!!errors}
+                    renderItem={(item) => (
                         <SimpleCell key={item.id}>{item.fullName}</SimpleCell>
-                    ))}
-                {isLoading && !errors && (
-                    <Spinner size="small" style={{ margin: "20px 0" }} />
-                )}
-                {!isLoading && data && data.length === 0 && (
-                    <Footer>Ничего не найдено</Footer>
-                )}
-                {errors && <Footer>Ошибка соединения</Footer>}
+                    )}
+                />
             </Group>
             <Group>
                 <Button size="l" mode="tertiary" before={<Icon24Add />}>
