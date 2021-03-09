@@ -24,7 +24,9 @@ interface BoecShort extends WithId {
     fullName: string;
 }
 
-export type Boec<IsList = false> = IsList extends true ? BoecShort : BoecWhole;
+export type Boec<IsShort = false> = IsShort extends true
+    ? BoecShort
+    : BoecWhole;
 
 export interface Event extends WithId {
     status: number;
@@ -37,15 +39,14 @@ export interface Event extends WithId {
     organizer: BoecShort[];
     volonteer: BoecShort[];
     visibility: boolean;
-    worth: string
+    worth: string;
 }
 export interface Shtab extends WithId {
     title: string;
 }
 
-export interface EventOrder extends WithId {
-    brigade: Brigade;
-    brigade_id: number;
+export interface EventOrder<IsUPDATE extends boolean = false> extends WithId {
+    brigades: IsUPDATE extends true ? undefined : Brigade[];
     event: number;
     participations: BoecShort[];
     isСontender: boolean;
@@ -53,5 +54,6 @@ export interface EventOrder extends WithId {
     title: string;
 }
 
-export type ArrayElement<ArrayType extends readonly unknown[]> = 
-  ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
+export type ArrayElement<
+    ArrayType extends readonly unknown[]
+> = ArrayType extends readonly (infer ElementType)[] ? ElementType : never;

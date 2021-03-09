@@ -64,9 +64,10 @@ export const EventOrders: FC<{
                             key={item.id}
                             onClick={() => changeView(item.id)}
                         >
-                            {`Заявка ${item.brigade.title}  ${
-                                item.title && `- ${item.title}`
-                            }
+                            {`Заявка ${item.brigades.reduce(
+                                (prev, cur) => (prev += ` ${cur.title}`),
+                                ""
+                            )}  ${item.title && `- ${item.title}`}
                         `}
                         </SimpleCell>
                     )}

@@ -143,12 +143,12 @@ export const SoAPI = {
         return instance.get(`/api/event/orders/${id}/`);
     },
     createOrder(
-        data: Partial<EventOrder>
+        data: Partial<EventOrder<true>>
     ): Promise<SuccessResponse<EventOrder, false>> {
         return instance.post(`/api/event/orders/`, data);
     },
     updateOrder(
-        data: Partial<EventOrder>
+        data: Partial<EventOrder<true>>
     ): Promise<SuccessResponse<EventOrder, false>> {
         return instance.patch(`/api/event/orders/${data.id}/`, data);
     },

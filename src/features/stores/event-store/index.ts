@@ -21,20 +21,21 @@ const EventModel = types.model({
     organizer: types.array(BoecShort),
     volonteer: types.array(BoecShort),
     visibility: types.boolean,
-    worth: types.string
+    worth: types.string,
 });
 
 const EventOrderModel = types.model({
     id: types.number,
-    brigade: types.model({
-        id: types.number,
-        title: types.string,
-    }),
+    brigades: types.array(
+        types.model({
+            id: types.number,
+            title: types.string,
+        })
+    ),
     participations: types.array(BoecShort),
     event: types.number,
     isСontender: types.boolean,
     place: types.maybeNull(types.string),
-    brigade_id: types.number,
     title: types.string,
 });
 export const EventStore = types
