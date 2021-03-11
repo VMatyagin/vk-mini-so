@@ -8,6 +8,8 @@ import {
     Button,
     Panel,
     Header,
+    CellButton,
+    Alert,
 } from "@vkontakte/vkui";
 import { observer } from "mobx-react";
 
@@ -15,7 +17,7 @@ import { useMst } from "../../stores";
 import { Boec } from "../../types";
 import { useFetch } from "../../utils/useFetch";
 import { SoAPI } from "../../utils/api.service";
-import { Icon24Add } from "@vkontakte/icons";
+import { Icon24Add, Icon24Cancel } from "@vkontakte/icons";
 import { ItemsList } from "../molecules/ItemsList";
 
 const titles = {
@@ -46,6 +48,42 @@ export const EventUsers: FC<{
         event.eventData && fetch(event.eventData.id, type);
     }, [fetch, event, type]);
 
+    const onAdd = () => {
+        router.setPage("else_event_handle", `event_find_${type}`);
+    };
+    const onDelete = (clickEvent: React.MouseEvent<HTMLElement>) => {
+        const userId = clickEvent.currentTarget.dataset.userid;
+        router.openPopout(
+            <Alert
+                actions={[
+                    {
+                        title: "Удалить",
+                        mode: "destructive",
+                        autoclose: true,
+                        action: () => {
+                            if (userId && event.eventData) {
+                                SoAPI.removeEventUser(
+                                    event.eventData.id,
+                                    type,
+                                    Number(userId)
+                                ).then(({ data }) => setData(data));
+                            }
+                        },
+                    },
+                    {
+                        title: "Отмена",
+                        autoclose: true,
+                        mode: "cancel",
+                    },
+                ]}
+                actionsLayout="vertical"
+                onClose={router.closePopout}
+                header="Подтвердите действие"
+                text="Вы уверены, что хотите удалить это мероприятие?"
+            />
+        );
+    };
+
     return (
         <Panel id={id}>
             <PanelHeader left={<PanelHeaderBack onClick={router.goBack} />}>
@@ -60,19 +98,27 @@ export const EventUsers: FC<{
                     </Header>
                 }
             >
+                <CellButton before={<Icon24Add />} onClick={onAdd}>
+                    Добавить {titles[type].btn}
+                </CellButton>
                 <ItemsList
                     data={data}
                     isLoading={isLoading}
                     isError={!!errors}
                     renderItem={(item) => (
-                        <SimpleCell key={item.id}>{item.fullName}</SimpleCell>
+                        <SimpleCell
+                            key={item.id}
+                            after={
+                                <Icon24Cancel
+                                    onClick={onDelete}
+                                    data-userid={item.id}
+                                />
+                            }
+                        >
+                            {item.fullName}
+                        </SimpleCell>
                     )}
                 />
-            </Group>
-            <Group>
-                <Button size="l" mode="tertiary" before={<Icon24Add />}>
-                    Добавить {titles[type].btn}
-                </Button>
             </Group>
         </Panel>
     );

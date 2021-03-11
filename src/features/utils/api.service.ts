@@ -127,6 +127,9 @@ export const SoAPI = {
     updateEvent(data: Partial<Event>): Promise<SuccessResponse<Event, false>> {
         return instance.patch(`/api/event/${data.id}/`, data);
     },
+    removeEvent(id: number): Promise<undefined> {
+        return instance.delete(`/api/event/${id}/`);
+    },
     toggleEventVisibility(id: number): Promise<SuccessResponse<Event, false>> {
         return instance.get(`/api/event/${id}/toggle/`);
     },
@@ -151,5 +154,28 @@ export const SoAPI = {
         data: Partial<EventOrder<true>>
     ): Promise<SuccessResponse<EventOrder, false>> {
         return instance.patch(`/api/event/orders/${data.id}/`, data);
+    },
+    addEventUser(
+        id: number,
+        type: "volonteers" | "organizers",
+        userId: number,
+        params?: Record<string, string>
+    ): Promise<SuccessResponse<Boec<true>[], false>> {
+        return instance.post(
+            `/api/event/${id}/${type}/`,
+            {
+                id: userId,
+            },
+            { params }
+        );
+    },
+    removeEventUser(
+        id: number,
+        type: "volonteers" | "organizers",
+        userId: number
+    ): Promise<SuccessResponse<Boec<true>[], false>> {
+        return this.addEventUser(id, type, userId, {
+            isRemove: "1",
+        });
     },
 };

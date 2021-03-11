@@ -1,6 +1,7 @@
 import {
     Icon28CalendarOutline,
     Icon28ChevronRightOutline,
+    Icon28StatisticsOutline,
     // Icon28HelpOutline,
     // Icon28MailOutline,
     // Icon28PollSquareOutline,
@@ -44,6 +45,15 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
                     >
                         Управление мероприятиями
                     </SimpleCell>
+                    <SimpleCell
+                        before={<Icon28StatisticsOutline />}
+                        after={
+                            <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
+                        }
+                        onClick={() => changeView("else_rating")}
+                    >
+                        Рейтинг
+                    </SimpleCell>
                     {/* <SimpleCell
                         before={<Icon28ScanViewfinderOutline />}
                         after={
@@ -60,14 +70,7 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
                     >
                         Мой отряд / штаб
                     </SimpleCell>
-                    <SimpleCell
-                        before={<Icon28StatisticsOutline />}
-                        after={
-                            <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
-                        }
-                    >
-                        Рейтинг
-                    </SimpleCell>
+                
                     <SimpleCell
                         before={<Icon28MailOutline />}
                         after={

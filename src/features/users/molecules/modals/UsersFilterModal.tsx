@@ -13,25 +13,32 @@ import {
     useAdaptivity,
     ViewWidth,
 } from "@vkontakte/vkui";
-import React, { FC, useCallback, useEffect, useState } from "react";
+import { FC, useCallback, useContext, useEffect, useState } from "react";
 import { Icon24Cancel, Icon24Done } from "@vkontakte/icons";
 
 import { useFetch } from "../../../utils/useFetch";
 import { SoAPI } from "../../../utils/api.service";
 import { Brigade } from "../../../types";
 import { ListResponse } from "../../../utils/types";
+import {
+    ModalContext,
+    ModelContextInstance,
+} from "../../../../ui/molecules/AbstractView";
+
 interface CalendarInfoModalComponentProps {
     id: string;
-    onClose: (id?: string) => void;
 }
 export const UsersFilterModal: FC<CalendarInfoModalComponentProps> = withModalRootContext(
-    ({ id, onClose }) => {
+    ({ id }) => {
         const [selectedBrigade, setBrigade] = useState<string>();
         const [brigadeList, setBrigades] = useState<Brigade[]>([]);
         const onLoad = useCallback((data: ListResponse<Brigade>) => {
             setBrigades(data.items);
         }, []);
         const { fetch } = useFetch(SoAPI.getBrigadesList, onLoad);
+        const { onClose } = useContext<
+            ModelContextInstance<(id?: string) => void>
+        >(ModalContext);
 
         useEffect(() => {
             fetch();
@@ -40,8 +47,6 @@ export const UsersFilterModal: FC<CalendarInfoModalComponentProps> = withModalRo
         const { viewWidth = 100 } = useAdaptivity();
 
         const isDesktop = viewWidth >= ViewWidth.SMALL_TABLET;
-
-        const close = () => onClose();
 
         return (
             <ModalPage
@@ -52,7 +57,7 @@ export const UsersFilterModal: FC<CalendarInfoModalComponentProps> = withModalRo
                     <ModalPageHeader
                         left={
                             platform === ANDROID && (
-                                <PanelHeaderButton onClick={close}>
+                                <PanelHeaderButton onClick={() => onClose()}>
                                     <Icon24Cancel />
                                 </PanelHeaderButton>
                             )
@@ -68,7 +73,7 @@ export const UsersFilterModal: FC<CalendarInfoModalComponentProps> = withModalRo
                         Фильтры
                     </ModalPageHeader>
                 }
-                onClose={close}
+                onClose={onClose}
             >
                 <Group
                     style={{
@@ -78,11 +83,14 @@ export const UsersFilterModal: FC<CalendarInfoModalComponentProps> = withModalRo
                     <FormItem top="Отряд">
                         <Select
                             placeholder="Не выбран"
+                            value={selectedBrigade}
                             options={brigadeList.map((user) => ({
                                 label: user.title,
-                                value: user.id,
+                                value: user.id.toString(),
                             }))}
                             onChange={(e) => {
+                                console.log(e.target.value);
+                                
                                 setBrigade(e.target.value);
                             }}
                             renderOption={({ option, ...restProps }) => (

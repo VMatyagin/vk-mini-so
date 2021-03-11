@@ -83,10 +83,13 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
                         mode: "destructive",
                         autoclose: true,
                         action: () => {
-                            // currentSeason &&
-                            //     SoAPI.deleteSeason(currentSeason.id.toString());
-                            router.goBack(undefined, 2);
-                            event.reset();
+                            event.eventData &&
+                                SoAPI.removeEvent(event.eventData.id).then(
+                                    () => {
+                                        router.goBack(undefined, 2);
+                                        event.reset();
+                                    }
+                                );
                         },
                     },
                     {
