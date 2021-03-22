@@ -10,11 +10,12 @@ const CancelToken = axios.CancelToken;
 let cancel: Canceler | undefined;
 
 instance.interceptors.request.use((config) => {
-    const token = window.localStorage.getItem("token");
-    if (true || token) {
+    const params = window.location.search.slice(1);
+
+    if (params) {
         config.headers[
             "Authorization"
-        ] = `vk_user_id=admin&vk_app_id=6736218&vk_is_app_user=1&vk_are_notifications_enabled=1&vk_language=ru&vk_access_token_settings=&vk_platform=android&sign=htQFduJpLxz7ribXRZpDFUH-XEUhC9rBPTJkjUFEkRA`;
+        ] = params;
     }
     if (!config.headers["Content-Type"]) {
         config.headers["Content-Type"] = "application/json";
