@@ -5,7 +5,6 @@ import {
     Title,
     Group,
     SimpleCell,
-    Button,
     Panel,
     Header,
     CellButton,

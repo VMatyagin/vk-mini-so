@@ -38,6 +38,7 @@ import { UsersListView } from "./features/users/pages/UsersListView";
 import { UsersView } from "./features/users/pages/UserView";
 import { ElseView } from "./features/else/pages/ElseView";
 import { EventHandlingView } from "./features/event/EventHandlingView";
+import { RatingView } from "./features/rating/RatingView";
 
 interface AppInitialProps {
     lastAndroidBackAction: [
@@ -113,9 +114,9 @@ export const AppLayout: FC<AppInitialProps> = observer((props) => {
         </ModalRoot>
     );
     const platform = usePlatform();
-    const { viewWidth = 100 } = useAdaptivity();
+    const { viewWidth = 3 } = useAdaptivity();
 
-    const isDesktop = viewWidth >= ViewWidth.TABLET;
+    const isDesktop = viewWidth >= ViewWidth.SMALL_TABLET;
     const hasHeader = platform !== VKCOM;
 
     return (
@@ -290,6 +291,7 @@ export const AppLayout: FC<AppInitialProps> = observer((props) => {
                     <Root id="else" activeView={activeView} popout={popout}>
                         <ElseView id="else" />
                         <EventHandlingView id="else_event_handle" />
+                        <RatingView id="else_rating" />
                     </Root>
                 </Epic>
             </SplitCol>
