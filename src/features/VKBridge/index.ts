@@ -1,28 +1,28 @@
 import VKBridge, {
     VKBridgeEvent,
     AnyReceiveMethodName,
+    UserGetFriendsFriend,
 } from "@vkontakte/vk-bridge";
-import { rootStore } from "../stores";
+import { AppStoreInstance } from "../stores/app-store";
 
-const APP_ID = 7555628;
-const API_VERSION = "5.122";
+export const APP_ID = 7555628;
+export const API_VERSION = "5.122";
 
-export const initApp = () => {
+export const initApp = async () => {
     const VKConnectCallback = (e: VKBridgeEvent<AnyReceiveMethodName>) => {
         if (e.detail.type === "VKWebAppUpdateConfig") {
             VKBridge.unsubscribe(VKConnectCallback);
-            rootStore.app.setColorScheme(e.detail.data.scheme);
+            AppStoreInstance.setColorScheme(e.detail.data.scheme);
         }
     };
     VKBridge.subscribe(VKConnectCallback);
 
-    return VKBridge.send("VKWebAppInit", {})
-        .then((data) => {
-            return data;
-        })
-        .catch((error) => {
-            return error;
-        });
+    try {
+        const data = await VKBridge.send("VKWebAppInit", {});
+        return data;
+    } catch (error) {
+        return error;
+    }
 };
 
 export const getAuthToken = async (scope: any) => {
@@ -31,67 +31,68 @@ export const getAuthToken = async (scope: any) => {
         scope: scope.join(","),
     })
         .then((data) => {
-            rootStore.app.setAccessToken(data.access_token);
+            AppStoreInstance.setAccessToken(data.access_token);
         })
         .catch(() => {
-            rootStore.app.setAccessToken("");
-        });
-};
-export const getUserData = () => VKBridge.send("VKWebAppGetUserInfo");
-
-export const closeApp = () => {
-    return VKBridge.send("VKWebAppClose", {
-        status: "success",
-    })
-        .then((data) => {
-            return data;
-        })
-        .catch((error) => {
-            return error;
+            AppStoreInstance.setAccessToken(null);
         });
 };
 
-export const swipeBackOn = () => {
-    return VKBridge.send("VKWebAppEnableSwipeBack", {})
-        .then((data) => {
-            return data;
-        })
-        .catch((error) => {
-            return error;
+export const closeApp = async () => {
+    try {
+        const data = await VKBridge.send("VKWebAppClose", {
+            status: "success",
         });
+        return data;
+    } catch (error) {
+        return error;
+    }
 };
 
-export const swipeBackOff = () => {
-    return VKBridge.send("VKWebAppDisableSwipeBack", {})
-        .then((data) => {
-            return data;
-        })
-        .catch((error) => {
-            return error;
-        });
+export const swipeBackOn = async () => {
+    try {
+        const data = await VKBridge.send("VKWebAppEnableSwipeBack", {});
+        return data;
+    } catch (error) {
+        return error;
+    }
 };
 
-export const getWallPosts = () => {
-    return APICall("wall.get", {
-        owner_id: "-12906",
-        extended: "1",
-        count: "10",
-    });
+export const swipeBackOff = async () => {
+    try {
+        const data = await VKBridge.send("VKWebAppDisableSwipeBack", {});
+        return data;
+    } catch (error) {
+        return error;
+    }
 };
 
-export const APICall = (method: string, params: Record<string, string>) => {
-    return VKBridge.send("VKWebAppCallAPIMethod", {
-        method,
-        params: {
-            ...params,
-            access_token: rootStore.app.accessToken,
-            v: params["v"] === undefined ? API_VERSION : params["v"],
-        },
-    })
-        .then((data) => {
-            return data.response;
-        })
-        .catch((error) => {
-            return error;
+export const APICall = async (
+    method: string,
+    params: Record<string, string>,
+    access_token: string
+) => {
+    try {
+        const data = await VKBridge.send("VKWebAppCallAPIMethod", {
+            method,
+            params: {
+                ...params,
+                access_token,
+                v: params["v"] === undefined ? API_VERSION : params["v"],
+            },
         });
+        return data.response;
+    } catch (error) {
+        return error;
+    }
+};
+export const selectVKUsers = async (): Promise<UserGetFriendsFriend[]> => {
+    try {
+        const data = await VKBridge.send("VKWebAppGetFriends", {
+            multi: false,
+        });
+        return data.users;
+    } catch (error) {
+        return error;
+    }
 };

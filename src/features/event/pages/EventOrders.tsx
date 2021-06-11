@@ -1,54 +1,46 @@
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useContext } from "react";
 import {
     PanelHeader,
     PanelHeaderBack,
     Title,
     Group,
-    SimpleCell,
     Button,
     Panel,
-    Header,
-    ScreenSpinner,
 } from "@vkontakte/vkui";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 
-import { useMst } from "../../stores";
-import { EventOrder } from "../../types";
-import { useFetch } from "../../utils/useFetch";
-import { SoAPI } from "../../utils/api.service";
 import { Icon24Add } from "@vkontakte/icons";
-import { ItemsList } from "../molecules/ItemsList";
+import { routerStore } from "../../stores/router-store";
 
 export const EventOrders: FC<{
     id: string;
 }> = observer(({ id }) => {
-    const { event, router } = useMst();
-    const [data, setData] = useState<EventOrder[]>();
+    const { setPage, goBack } = useContext(routerStore);
 
-    const onLoad = useCallback((data: EventOrder[]) => {
-        setData(data);
-    }, []);
+    // const onLoad = useCallback((data: EventOrder[]) => {
+    //     setData(data);
+    // }, []);
 
-    const { fetch, errors, isLoading } = useFetch(SoAPI.getEventOrders, onLoad);
+    // const { fetch, errors, isLoading } = useFetch(SoAPI.getEventOrders, onLoad);
 
-    useEffect(() => {
-        event.eventData && fetch(event.eventData.id);
-    }, [fetch, event]);
-    const changeView = (id: number) => {
-        router.openPopout(<ScreenSpinner />);
-        event.fetchOrder(id, () => {
-            router.setPage("else_event_handle", "event_order");
-            router.closePopout();
-        });
-    };
+    // useEffect(() => {
+    //     eventData && fetch(eventData.id);
+    // }, [fetch, eventData]);
+    // const changeView = (id: number) => {
+    //     openPopout(<ScreenSpinner />);
+    //     fetchOrder(id, () => {
+    //         setPage("else_event_handle", "event_order");
+    //         closePopout();
+    //     });
+    // };
     return (
         <Panel id={id}>
-            <PanelHeader left={<PanelHeaderBack onClick={router.goBack} />}>
+            <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
                 <Title level="2" weight="bold">
                     Заявки
                 </Title>
             </PanelHeader>
-            <Group
+            {/* <Group
                 header={
                     <Header mode="tertiary" indicator={data?.length}>
                         Заявки
@@ -57,8 +49,8 @@ export const EventOrders: FC<{
             >
                 <ItemsList
                     data={data}
-                    isLoading={isLoading}
-                    isError={!!errors}
+                    // isLoading={isLoading}
+                    // isError={!!errors}
                     renderItem={(item) => (
                         <SimpleCell
                             key={item.id}
@@ -72,7 +64,7 @@ export const EventOrders: FC<{
                         </SimpleCell>
                     )}
                 />
-            </Group>
+            </Group> */}
             <Group>
                 <Button
                     size="l"
@@ -80,7 +72,7 @@ export const EventOrders: FC<{
                     stretched={true}
                     before={<Icon24Add />}
                     onClick={() => {
-                        router.setPage("else_event_handle", "event_order");
+                        setPage("else_event_handle", "event_order");
                     }}
                 >
                     Добавить заявку

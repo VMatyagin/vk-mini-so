@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
 import {
     PanelHeader,
     Group,
@@ -6,20 +6,18 @@ import {
     Panel,
     CellButton,
 } from "@vkontakte/vkui";
-import { useMst } from "../../stores";
 import Icon28AddOutline from "@vkontakte/icons/dist/28/add_outline";
 import Icon28ChevronRightOutline from "@vkontakte/icons/dist/28/chevron_right_outline";
+import { routerStore } from "../../stores/router-store";
 
 export const RatingListView: FC<{ id: string }> = ({ id }) => {
-    const store = useMst();
+    const { goBack, setPage } = useContext(routerStore);
     const changeView = (panel: string) => {
-        store.router.setPage("else_rating", panel);
+        setPage("else_rating", panel);
     };
     return (
         <Panel id={id}>
-            <PanelHeader
-                left={<PanelHeaderBack onClick={store.router.goBack} />}
-            >
+            <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
                 Все расчеты рейтинга
             </PanelHeader>
             <Group>
@@ -31,8 +29,7 @@ export const RatingListView: FC<{ id: string }> = ({ id }) => {
                     Выполнить расчет
                 </CellButton>
             </Group>
-            <Group>
-            </Group>
+            <Group></Group>
         </Panel>
     );
 };

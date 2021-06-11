@@ -1,9 +1,6 @@
-import { ModalRoot } from "@vkontakte/vkui";
-import { observer } from "mobx-react";
-import React, { FC } from "react";
+import { observer } from "mobx-react-lite";
+import { FC } from "react";
 import { AbstractView } from "../../ui/molecules/AbstractView";
-import { useMst } from "../stores";
-import { UsersFilterModal } from "../users/molecules/modals/UsersFilterModal";
 import { EventEditPanel } from "./pages/EventEditPanel";
 import { EventHandlePanel } from "./pages/EventHandlePanel";
 import { EventOrders } from "./pages/EventOrders";
@@ -15,19 +12,8 @@ import { SearchPanel } from "./pages/SearchPanel";
 import { WalletPanel } from "./pages/WalletPanel";
 
 export const EventHandlingView: FC<{ id: string }> = observer(({ id }) => {
-    const store = useMst();
-
-    let activeModal =
-        store.router.activeModals[id] === undefined
-            ? null
-            : store.router.activeModals[id];
-    const modals = (
-        <ModalRoot activeModal={activeModal} onClose={store.router.closeModal}>
-            <UsersFilterModal id="MODAL_USERS_LIST" />
-        </ModalRoot>
-    );
     return (
-        <AbstractView id={id} modal={modals}>
+        <AbstractView id={id}>
             <EventHandlePanel id="base" />
             <SearchPanel id="event_search" />
 

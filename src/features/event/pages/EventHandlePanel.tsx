@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import {
     PanelHeader,
     Group,
@@ -7,21 +7,20 @@ import {
     Panel,
     CellButton,
 } from "@vkontakte/vkui";
-import { useMst } from "../../stores";
 import Icon28AddOutline from "@vkontakte/icons/dist/28/add_outline";
 import Icon28ChevronRightOutline from "@vkontakte/icons/dist/28/chevron_right_outline";
 
 import { Icon28SearchOutline } from "@vkontakte/icons";
+import { routerStore } from "../../stores/router-store";
+
 export const EventHandlePanel: FC<{ id: string }> = ({ id }) => {
-    const store = useMst();
+    const { setPage, goBack } = useContext(routerStore);
     const changeView = (panel: string) => {
-        store.router.setPage("else_event_handle", panel);
+        setPage("else_event_handle", panel);
     };
     return (
         <Panel id={id}>
-            <PanelHeader
-                left={<PanelHeaderBack onClick={store.router.goBack} />}
-            >
+            <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
                 Управление мероприятиями
             </PanelHeader>
             <Group>

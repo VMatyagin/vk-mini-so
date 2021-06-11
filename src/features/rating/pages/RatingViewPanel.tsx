@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useContext } from "react";
 import {
     PanelHeader,
     Group,
@@ -6,7 +6,6 @@ import {
     Panel,
     Header,
 } from "@vkontakte/vkui";
-import { useMst } from "../../stores";
 import {
     Icon16Fire,
     Icon20LightbulbOutline,
@@ -19,17 +18,16 @@ import {
     Icon20WorkOutline,
 } from "@vkontakte/icons";
 import { ReportCategory } from "../../../ui/molecules/ReportCategory";
+import { routerStore } from "../../stores/router-store";
 
 export const RatingViewPanel: FC<{ id: string }> = ({ id }) => {
-    const store = useMst();
+    const { goBack } = useContext(routerStore);
     // const changeView = (panel: string) => {
     //     store.router.setPage("else_rating", panel);
     // };
     return (
         <Panel id={id}>
-            <PanelHeader
-                left={<PanelHeaderBack onClick={store.router.goBack} />}
-            >
+            <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
                 Пример
             </PanelHeader>
             <Group

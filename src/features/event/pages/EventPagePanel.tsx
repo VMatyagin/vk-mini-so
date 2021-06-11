@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import {
     PanelHeader,
     Title,
@@ -10,45 +10,50 @@ import {
     CellButton,
 } from "@vkontakte/vkui";
 
-import { Icon28ChevronRightOutline, Icon28FireOutline, Icon28InboxOutline, Icon28UsersOutline, Icon28WalletOutline } from "@vkontakte/icons";
-import { observer } from "mobx-react";
-import { useMst } from "../../stores";
+import {
+    Icon28ChevronRightOutline,
+    Icon28FireOutline,
+    Icon28InboxOutline,
+    Icon28UsersOutline,
+    Icon28WalletOutline,
+} from "@vkontakte/icons";
+import { observer } from "mobx-react-lite";
 import { EventCard } from "../../../ui/molecules/EventCard";
+import { routerStore } from "../../stores/router-store";
+import { eventStore } from "../store/eventStore";
 
 export const EventPagePanel: FC<{ id: string }> = observer(({ id }) => {
-    const { router, event } = useMst();
+    const { setPage, goBack } = useContext(routerStore);
+    const { eventData, reset, toggleVisibility } = useContext(eventStore);
     const changeView = (panel: string) => {
-        router.setPage("else_event_handle", panel);
+        setPage("else_event_handle", panel);
     };
     const onBack = () => {
-        router.goBack();
-        event.reset();
+        goBack();
+        reset();
     };
-    return event.eventData ? (
+    return eventData ? (
         <Panel id={id}>
             <PanelHeader left={<PanelHeaderBack onClick={onBack} />}>
                 <Title level="2" weight="bold">
-                    {event.eventData.title}
+                    {eventData.title}
                 </Title>
             </PanelHeader>
             <Group>
                 <EventCard
-                    title={event.eventData.title}
-                    startDate={event.eventData.startDate}
-                    startTime={event.eventData.startTime}
-                    description={event.eventData.description}
-                    key={event.eventData.id}
+                    title={eventData.title}
+                    startDate={eventData.startDate}
+                    startTime={eventData.startTime}
+                    description={eventData.description}
+                    key={eventData.id}
                 />
             </Group>
             <Group description="Включает отображение мероприятия в календаре">
                 <SimpleCell
-                    onClick={() =>
-                        event.eventData &&
-                        event.toggleVisibility(event.eventData.id)
-                    }
+                    onClick={() => eventData && toggleVisibility(eventData.id)}
                     after={
                         <Switch
-                            checked={event.eventData.visibility}
+                            checked={eventData.visibility}
                             readOnly={true}
                         />
                     }

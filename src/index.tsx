@@ -1,12 +1,13 @@
-import React from "react";
 import ReactDOM from "react-dom";
 import { App } from "./App";
 import "@vkontakte/vkui/dist/vkui.css";
-import { Provider, rootStore } from "./features/stores";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 ReactDOM.render(
-  <Provider value={rootStore}>
-    <App />
-  </Provider>,
-  document.getElementById("root")
+    <QueryClientProvider client={queryClient}>
+        <App />
+    </QueryClientProvider>,
+    document.getElementById("root")
 );

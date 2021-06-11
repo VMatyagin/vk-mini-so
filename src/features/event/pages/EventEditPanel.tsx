@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { FC, useContext, useState } from "react";
 import {
     PanelHeader,
     Title,
@@ -16,66 +16,60 @@ import {
     Alert,
 } from "@vkontakte/vkui";
 
-import { observer } from "mobx-react";
-import { useMst } from "../../stores";
+import { observer } from "mobx-react-lite";
 import { Event, Shtab } from "../../types";
 import { Controller, useForm } from "react-hook-form";
-import { ListResponse } from "../../utils/types";
-import { useFetch } from "../../utils/useFetch";
 import { SoAPI } from "../../utils/api.service";
 import { dirtyValues } from "../../utils";
 import { SuccessSnackbar } from "../../../ui/molecules/SuccessSnackbar";
+import { routerStore } from "../../stores/router-store";
+import { eventStore } from "../store/eventStore";
 
 export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
-    const { router, event } = useMst();
-    const [shtabList, setList] = useState<Shtab[]>();
+    const { goBack, openPopout, closePopout } = useContext(routerStore);
+    const { eventData, setEvent } = useContext(eventStore);
+
+    const [shtabList] = useState<Shtab[]>();
     const [SnackBar, setSnackBar] = useState<React.ReactNode>(null);
-    const onLoad = useCallback(
-        (data: ListResponse<Shtab>) => {
-            setList(data.items);
-            router.closePopout();
-        },
-        [router]
-    );
-    const { fetch } = useFetch(SoAPI.getShtabList, onLoad);
-    useEffect(() => {
-        if (event.eventData) {
-            router.openPopout(<ScreenSpinner />);
-            fetch();
-        }
-    }, [event.eventData, fetch, router]);
-    const {
-        handleSubmit,
-        errors,
-        control,
-        register,
-        formState,
-        reset,
-    } = useForm<Event>({
-        defaultValues: event.eventData || {},
+    // const onLoad = useCallback(
+    //     (data: ListResponse<Shtab>) => {
+    //         setList(data.items);
+    //         closePopout();
+    //     },
+    //     [closePopout]
+    // );
+    // const { fetch } = useFetch(SoAPI.getShtabList, onLoad);
+    // useEffect(() => {
+    //     if (eventData) {
+    //         openPopout(<ScreenSpinner />);
+    //         fetch();
+    //     }
+    // }, [eventData, fetch, openPopout]);
+    const { handleSubmit, control, formState, reset } = useForm<Event>({
+        defaultValues: eventData || {},
         reValidateMode: "onChange",
         mode: "onChange",
     });
     const { isDirty, isValid, dirtyFields } = formState;
 
     const onSubmit = (values: Event) => {
-        router.openPopout(<ScreenSpinner />);
-        const fn = event.eventData ? SoAPI.updateEvent : SoAPI.createEvent;
-        const isNew = !!!event.eventData;
+        openPopout(<ScreenSpinner />);
+        const fn = eventData ? SoAPI.updateEvent : SoAPI.createEvent;
+        const isNew = !!!eventData;
         fn({
             ...dirtyValues(dirtyFields, values),
             id: values.id || undefined,
         }).then(({ data }) => {
-            event.setEvent(data);
-            router.closePopout();
+            setEvent(data);
+            closePopout();
             reset(data);
             setSnackBar(<SuccessSnackbar onClose={() => setSnackBar(null)} />);
-            isNew && event.reset();
-            router.goBack();
+            isNew && reset();
+            goBack();
         });
     };
     const onDelete = () => {
-        router.openPopout(
+        openPopout(
             <Alert
                 actions={[
                     {
@@ -83,13 +77,11 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
                         mode: "destructive",
                         autoclose: true,
                         action: () => {
-                            event.eventData &&
-                                SoAPI.removeEvent(event.eventData.id).then(
-                                    () => {
-                                        router.goBack(undefined, 2);
-                                        event.reset();
-                                    }
-                                );
+                            eventData &&
+                                SoAPI.removeEvent(eventData.id).then(() => {
+                                    goBack(undefined, 2);
+                                    reset();
+                                });
                         },
                     },
                     {
@@ -99,7 +91,7 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
                     },
                 ]}
                 actionsLayout="vertical"
-                onClose={router.closePopout}
+                onClose={closePopout}
                 header="Подтвердите действие"
                 text="Вы уверены, что хотите удалить это мероприятие?"
             />
@@ -108,38 +100,34 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
 
     return (
         <Panel id={id}>
-            <PanelHeader left={<PanelHeaderBack onClick={router.goBack} />}>
+            <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
                 <Title level="2" weight="bold">
-                    {event.eventData ? "Редактирование" : "Новое мероприятие"}
+                    {eventData ? "Редактирование" : "Новое мероприятие"}
                 </Title>
             </PanelHeader>
 
             <Group>
                 <FormLayout onSubmit={handleSubmit(onSubmit)}>
-                    <input type="hidden" ref={register} name="id" />
                     <Controller
                         control={control}
                         name="title"
                         rules={{ required: "Это поле необходимо заполнить" }}
-                        render={(
-                            { onChange, onBlur, value, name },
-                            { invalid }
-                        ) => (
+                        render={({ field, fieldState }) => (
                             <FormItem
                                 top="Название"
-                                status={invalid ? "error" : "default"}
+                                status={
+                                    fieldState.invalid ? "error" : "default"
+                                }
                                 bottom={
-                                    errors &&
-                                    errors["title"] &&
-                                    errors["title"].message
+                                    fieldState.error && fieldState.error.message
                                 }
                             >
                                 <Input
                                     type="text"
-                                    name={name}
-                                    value={value || ""}
-                                    onChange={onChange}
-                                    onBlur={onBlur}
+                                    name={field.name}
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
                                 />
                             </FormItem>
                         )}
@@ -148,25 +136,23 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
                         control={control}
                         name="description"
                         rules={{ required: false }}
-                        render={(
-                            { onChange, onBlur, value, name },
-                            { invalid }
-                        ) => (
+                        defaultValue=""
+                        render={({ field, fieldState }) => (
                             <FormItem
                                 top="Описание"
-                                status={invalid ? "error" : "default"}
+                                status={
+                                    fieldState.invalid ? "error" : "default"
+                                }
                                 bottom={
-                                    errors &&
-                                    errors["description"] &&
-                                    errors["description"].message
+                                    fieldState.error && fieldState.error.message
                                 }
                             >
                                 <Input
                                     type="text"
-                                    name={name}
-                                    value={value || ""}
-                                    onChange={onChange}
-                                    onBlur={onBlur}
+                                    name={field.name}
+                                    value={field.value || ""}
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
                                 />
                             </FormItem>
                         )}
@@ -175,25 +161,22 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
                         control={control}
                         name="location"
                         rules={{ required: false }}
-                        render={(
-                            { onChange, onBlur, value, name },
-                            { invalid }
-                        ) => (
+                        render={({ field, fieldState }) => (
                             <FormItem
                                 top="Место проведения"
-                                status={invalid ? "error" : "default"}
+                                status={
+                                    fieldState.invalid ? "error" : "default"
+                                }
                                 bottom={
-                                    errors &&
-                                    errors["location"] &&
-                                    errors["location"].message
+                                    fieldState.error && fieldState.error.message
                                 }
                             >
                                 <Input
                                     type="text"
-                                    name={name}
-                                    value={value || ""}
-                                    onChange={onChange}
-                                    onBlur={onBlur}
+                                    name={field.name}
+                                    value={field.value || undefined}
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
                                 />
                             </FormItem>
                         )}
@@ -202,19 +185,19 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
                         control={control}
                         name="worth"
                         rules={{ required: true }}
-                        render={({ onChange, value, name }, { invalid }) => (
+                        render={({ field, fieldState }) => (
                             <FormItem
                                 top="Тип мероприятия"
-                                status={invalid ? "error" : "default"}
+                                status={
+                                    fieldState.invalid ? "error" : "default"
+                                }
                                 bottom={
-                                    errors &&
-                                    errors["worth"] &&
-                                    errors["worth"].message
+                                    fieldState.error && fieldState.error.message
                                 }
                             >
                                 <Select
-                                    name={name}
-                                    defaultValue={value}
+                                    name={field.name}
+                                    defaultValue={field.value}
                                     placeholder="Не выбран"
                                     options={[
                                         { label: "Не учитывается", value: "0" },
@@ -223,7 +206,7 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
                                         { label: "Волонтерство", value: "3" },
                                         { label: "Городское", value: "4" },
                                     ]}
-                                    onChange={onChange}
+                                    onChange={field.onChange}
                                     renderOption={({
                                         option,
                                         ...restProps
@@ -231,24 +214,24 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
                                 />
                             </FormItem>
                         )}
-                    />{" "}
+                    />
                     <Controller
                         control={control}
                         name="shtab"
                         rules={{ required: false }}
-                        render={({ onChange, value, name }, { invalid }) => (
+                        render={({ field, fieldState }) => (
                             <FormItem
                                 top="Штаб-организатор"
-                                status={invalid ? "error" : "default"}
+                                status={
+                                    fieldState.invalid ? "error" : "default"
+                                }
                                 bottom={
-                                    errors &&
-                                    errors["shtab"] &&
-                                    errors["shtab"].message
+                                    fieldState.error && fieldState.error.message
                                 }
                             >
                                 <Select
-                                    name={name}
-                                    defaultValue={value}
+                                    name={field.name}
+                                    defaultValue={field.value || undefined}
                                     placeholder="Не выбран"
                                     options={
                                         shtabList
@@ -258,7 +241,7 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
                                               }))
                                             : []
                                     }
-                                    onChange={onChange}
+                                    onChange={field.onChange}
                                     renderOption={({
                                         option,
                                         ...restProps
@@ -271,25 +254,22 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
                         control={control}
                         name="startDate"
                         // rules={{ required: "Это поле необходимо заполнить" }}
-                        render={(
-                            { onChange, onBlur, value, name },
-                            { invalid }
-                        ) => (
+                        render={({ field, fieldState }) => (
                             <FormItem
                                 top="Дата начала"
-                                status={invalid ? "error" : "default"}
+                                status={
+                                    fieldState.invalid ? "error" : "default"
+                                }
                                 bottom={
-                                    errors &&
-                                    errors["startDate"] &&
-                                    errors["startDate"].message
+                                    fieldState.error && fieldState.error.message
                                 }
                             >
                                 <Input
-                                    type="date"
-                                    name={name}
-                                    value={value || ""}
-                                    onChange={onChange}
-                                    onBlur={onBlur}
+                                    type="text"
+                                    name={field.name}
+                                    value={field.value || undefined}
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
                                 />
                             </FormItem>
                         )}
@@ -298,25 +278,26 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
                         control={control}
                         name="startTime"
                         // rules={{ required: "Это поле необходимо заполнить" }}
-                        render={(
-                            { onChange, onBlur, value, name },
-                            { invalid }
-                        ) => (
+                        render={({ field, fieldState }) => (
                             <FormItem
                                 top="Время начала"
-                                status={invalid ? "error" : "default"}
+                                status={
+                                    fieldState.invalid ? "error" : "default"
+                                }
                                 bottom={
-                                    errors &&
-                                    errors["startTime"] &&
-                                    errors["startTime"].message
+                                    fieldState.error && fieldState.error.message
                                 }
                             >
                                 <Input
                                     type="time"
-                                    name={name}
-                                    value={value ? value.substring(0, 5) : ""}
-                                    onChange={onChange}
-                                    onBlur={onBlur}
+                                    name={field.name}
+                                    value={
+                                        field.value
+                                            ? field.value.substring(0, 5)
+                                            : ""
+                                    }
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
                                 />
                             </FormItem>
                         )}
@@ -327,19 +308,19 @@ export const EventEditPanel: FC<{ id: string }> = observer(({ id }) => {
                             stretched={true}
                             disabled={!isDirty || !isValid}
                         >
-                            {event.eventData ? "Сохранить" : "Создать"}
+                            {eventData ? "Сохранить" : "Создать"}
                         </Button>
                     </FormItem>
                 </FormLayout>
                 {SnackBar}
             </Group>
-            {event.eventData ? (
+            {eventData && (
                 <Group>
                     <CellButton mode="danger" onClick={onDelete}>
                         Удалить мероприятие
                     </CellButton>
                 </Group>
-            ) : null}
+            )}
         </Panel>
     );
 });

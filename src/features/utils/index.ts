@@ -1,4 +1,6 @@
-import { rootStore } from "../stores";
+import { observer } from "mobx-react-lite";
+import { useContext } from "react";
+import { appStore } from "../stores/app-store";
 
 export const smoothScrollToTop = () => {
     const c = document.documentElement.scrollTop || document.body.scrollTop;
@@ -13,8 +15,8 @@ export const smoothScrollToTop = () => {
     }
 };
 
-export const restoreScrollPosition = () => {
-    let scrolls = rootStore.app.componentScroll;
+export const restoreScrollPosition = observer(() => {
+    const { componentScroll: scrolls } = useContext(appStore);
     Object.keys(scrolls).forEach((component) => {
         let componentData = scrolls[component];
 
@@ -28,7 +30,8 @@ export const restoreScrollPosition = () => {
             element.scrollTop = componentData.y;
         }
     });
-};
+    return null;
+});
 
 // Map RHF's dirtyFields over the `data` received by `handleSubmit` and return the changed subset of that data.
 export function dirtyValues(

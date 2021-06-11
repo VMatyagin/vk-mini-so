@@ -2,6 +2,7 @@ import {
     Icon28CalendarOutline,
     Icon28ChevronRightOutline,
     Icon28StatisticsOutline,
+    Icon28UserSquareOutline,
     // Icon28HelpOutline,
     // Icon28MailOutline,
     // Icon28PollSquareOutline,
@@ -10,17 +11,17 @@ import {
     // Icon28UsersOutline,
 } from "@vkontakte/icons";
 import { Group, Panel, PanelHeader, SimpleCell, Switch } from "@vkontakte/vkui";
-import { observer } from "mobx-react";
-import { FC, useState } from "react";
+import { observer } from "mobx-react-lite";
+import { FC, useContext, useState } from "react";
 import { AbstractView } from "../../../ui/molecules/AbstractView";
-import { useMst } from "../../stores";
+import { routerStore } from "../../stores/router-store";
 
 export const ElseView: FC<{ id: string }> = observer(({ id }) => {
-    const store = useMst();
+    const { setPage } = useContext(routerStore);
     const [checked, setChecked] = useState(false);
     const handleClick = () => setChecked(!checked);
     const changeView = (view: string) => {
-        store.router.setPage(view, "base");
+        setPage(view, "base");
     };
     return (
         <AbstractView id={id}>
@@ -53,6 +54,33 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
                         onClick={() => changeView("else_rating")}
                     >
                         Рейтинг
+                    </SimpleCell>
+                    <SimpleCell
+                        before={<Icon28UserSquareOutline />}
+                        after={
+                            <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
+                        }
+                        onClick={() => changeView("brigades")}
+                    >
+                        Отряды
+                    </SimpleCell>
+                    <SimpleCell
+                        before={<Icon28UserSquareOutline />}
+                        after={
+                            <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
+                        }
+                        onClick={() => setPage("boec", "list")}
+                    >
+                        Поиск по бойцам
+                    </SimpleCell>
+                    <SimpleCell
+                        before={<Icon28UserSquareOutline />}
+                        after={
+                            <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
+                        }
+                        onClick={() => setPage("shtab", "list")}
+                    >
+                        Штабы
                     </SimpleCell>
                     {/* <SimpleCell
                         before={<Icon28ScanViewfinderOutline />}

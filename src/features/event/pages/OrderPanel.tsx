@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import {
     PanelHeader,
     Title,
@@ -13,116 +13,107 @@ import {
     Group,
     FormLayout,
 } from "@vkontakte/vkui";
-import { ChipsSelect } from "@vkontakte/vkui/dist/unstable";
 import "@vkontakte/vkui/dist/unstable.css";
 
-import { observer } from "mobx-react";
-import { useMst } from "../../stores";
+import { observer } from "mobx-react-lite";
 import { Controller, useForm } from "react-hook-form";
-import { Boec, Brigade, EventOrder } from "../../types";
-import { ListResponse } from "../../utils/types";
-import { useFetch } from "../../utils/useFetch";
+import { EventOrder } from "../../types";
 import { SoAPI } from "../../utils/api.service";
 import { Checkbox } from "@vkontakte/vkui/dist/components/Checkbox/Checkbox";
 import { dirtyValues } from "../../utils";
 import { SuccessSnackbar } from "../../../ui/molecules/SuccessSnackbar";
 import { ChipsInputOption } from "@vkontakte/vkui/dist/components/ChipsInput/ChipsInput";
-import { debounce } from "lodash";
+import { routerStore } from "../../stores/router-store";
+import { eventStore } from "../store/eventStore";
 
 interface FormType extends EventOrder {
     brigades_id: number[];
 }
 
 export const OrderPanel: FC<{ id: string }> = observer(({ id }) => {
-    const { router, event } = useMst();
+    const { openPopout, closePopout, goBack } = useContext(routerStore);
+    const { resetOrder, eventData, eventOrder, setEventOrder } =
+        useContext(eventStore);
+
     const [SnackBar, setSnackBar] = useState<React.ReactNode>(null);
-    const [brigadeList, setBrigades] = useState<Brigade[]>([]);
-    const onLoad = useCallback((data: ListResponse<Brigade>) => {
-        setBrigades(data.items);
-    }, []);
-    const { fetch } = useFetch(SoAPI.getBrigadesList, onLoad);
+    // const [, setBrigades] = useState<Brigade[]>([]);
+    // const onLoad = useCallback((data: ListResponse<Brigade>) => {
+    //     setBrigades(data.items);
+    // }, []);
+    // const { fetch } = useFetch(SoAPI.getBrigadesList, onLoad);
     const onBack = () => {
-        router.goBack();
-        event.resetOrder();
+        goBack();
+        resetOrder();
     };
 
-    const [fetchedUsers, setFetchedUsers] = useState<ChipsInputOption[]>([]);
-    const onUsersLoad = useCallback((data: ListResponse<Boec<true>>) => {
-        setFetchedUsers(
-            data.items.map((item) => ({
-                label: item.fullName,
-                value: item.id,
-            }))
-        );
-    }, []);
+    const [fetchedUsers] = useState<ChipsInputOption[]>([]);
+    // const onUsersLoad = useCallback((data: ListResponse<Boec>) => {
+    //     setFetchedUsers(
+    //         data.items.map((item) => ({
+    //             label: item.fullName,
+    //             value: item.id,
+    //         }))
+    //     );
+    // }, []);
 
-    const { fetch: getUsers, isLoading: isUsersFetching } = useFetch(
-        SoAPI.getList,
-        onUsersLoad
-    );
-    const fetchUsers = useMemo(
-        () => debounce(getUsers || (() => undefined), 750),
-        [getUsers]
-    );
-    const handleInput = useCallback(
-        (event?: React.ChangeEvent<HTMLInputElement>) => {
-            event &&
-                event.target.value &&
-                fetchUsers({
-                    limit: 20,
-                    offset: 0,
-                    search: event.target.value,
-                });
-        },
-        [fetchUsers]
-    );
-    const {
-        handleSubmit,
-        errors,
-        control,
-        register,
-        formState,
-        reset,
-    } = useForm<FormType>({
+    // const { fetch: getUsers, isLoading: isUsersFetching } = useFetch(
+    //     SoAPI.getList as any,
+    //     onUsersLoad
+    // );
+    // const fetchUsers = useMemo(
+    //     () => debounce(getUsers || (() => undefined), 750),
+    //     [getUsers]
+    // );
+    // const handleInput = useCallback(
+    //     (event?: React.ChangeEvent<HTMLInputElement>) => {
+    //         event &&
+    //             event.target.value &&
+    //             fetchUsers({
+    //                 limit: 20,
+    //                 offset: 0,
+    //                 search: event.target.value,
+    //             });
+    //     },
+    //     [fetchUsers]
+    // );
+    const { handleSubmit, control, formState, reset } = useForm<FormType>({
         defaultValues:
             {
-                ...event.eventOrder,
-                brigades_id: event.eventOrder
-                    ? event.eventOrder.brigades.map((item) => item.id)
+                ...eventOrder,
+                brigades_id: eventOrder
+                    ? eventOrder.brigades.map((item) => item.id)
                     : [],
                 participations: [
-                    ...(event.eventOrder
-                        ? event.eventOrder.participations
-                        : []),
+                    ...(eventOrder ? eventOrder.participations : []),
                 ],
             } || {},
         reValidateMode: "onChange",
         mode: "onChange",
     });
     const { isDirty, isValid, dirtyFields } = formState;
-    useEffect(() => {
-        fetch();
-    }, [fetch]);
+    // useEffect(() => {
+    //     fetch();
+    // }, [fetch]);
     useEffect(() => {
         return () => {
-            event.resetOrder();
+            resetOrder();
         };
-    }, [event]);
+    }, [resetOrder]);
     const onSubmit = (values: EventOrder) => {
-        router.openPopout(<ScreenSpinner />);
-        const fn = event.eventOrder ? SoAPI.updateOrder : SoAPI.createOrder;
-        const isNew = !!!event.eventOrder;
+        openPopout(<ScreenSpinner />);
+        const fn = eventOrder ? SoAPI.updateOrder : SoAPI.createOrder;
+        const isNew = !!!eventOrder;
         fn({
             ...dirtyValues(dirtyFields, values),
             id: values.id || undefined,
-            event: event.eventData!.id,
+            event: eventData!.id,
         }).then(({ data }) => {
-            event.setEventOrder(data);
-            router.closePopout();
+            setEventOrder(data);
+            closePopout();
             reset(data);
             setSnackBar(<SuccessSnackbar onClose={() => setSnackBar(null)} />);
-            isNew && event.resetOrder();
-            router.goBack();
+            isNew && resetOrder();
+            goBack();
         });
     };
     console.log(fetchedUsers);
@@ -131,44 +122,41 @@ export const OrderPanel: FC<{ id: string }> = observer(({ id }) => {
         <Panel id={id}>
             <PanelHeader left={<PanelHeaderBack onClick={onBack} />}>
                 <Title level="2" weight="bold">
-                    {event.eventOrder
-                        ? `Заявка ${event.eventOrder.brigades.reduce(
+                    {eventOrder
+                        ? `Заявка ${eventOrder.brigades.reduce(
                               (prev, cur) => (prev += ` ${cur.title}`),
                               ""
-                          )}  ${
-                              event.eventOrder.title &&
-                              `- ${event.eventOrder.title}`
-                          }
+                          )}  ${eventOrder.title && `- ${eventOrder.title}`}
                     `
                         : "Создание заявки"}
                 </Title>
             </PanelHeader>
             <Group>
                 <FormLayout onSubmit={handleSubmit(onSubmit)}>
-                    <input type="hidden" ref={register} name="id" />
-                    <input type="hidden" ref={register} name="event" />
-                    <Controller
+                    {/* <input type="hidden" ref={register} name="id" />
+                    <input type="hidden" ref={register} name="event" /> */}
+                    {/* <Controller
                         control={control}
                         name="participations"
                         rules={{ required: false }}
-                        render={({ onChange, value, name }, { invalid }) => (
+                        render={({ field, fieldState }) => (
                             <FormItem
                                 top="Участники"
-                                status={invalid ? "error" : "default"}
+                                status={
+                                    fieldState.invalid ? "error" : "default"
+                                }
                                 bottom={
-                                    errors &&
-                                    errors["participations"] &&
-                                    "Возникла ошибка"
+                                    fieldState.error && fieldState.error.message
                                 }
                             >
                                 <ChipsSelect
-                                    name={name}
+                                    name={field.name}
                                     showSelected={false}
                                     placeholder="Ничего не выбрано"
                                     filterFn={() => true}
                                     value={
-                                        value
-                                            ? value.map((item: Boec<true>) => ({
+                                        field.value
+                                            ? field.value.map((item: Boec) => ({
                                                   value: item.id,
                                                   label: item.fullName,
                                               }))
@@ -176,7 +164,7 @@ export const OrderPanel: FC<{ id: string }> = observer(({ id }) => {
                                     }
                                     options={fetchedUsers}
                                     onChange={(items) =>
-                                        onChange(
+                                        field.onChange(
                                             items.map((item) => ({
                                                 id: item.value,
                                                 fullName: item.label,
@@ -196,29 +184,32 @@ export const OrderPanel: FC<{ id: string }> = observer(({ id }) => {
                     <Controller
                         control={control}
                         name="brigades_id"
-                        placeholder="Ничего не выбрано"
                         rules={{ required: false }}
-                        render={({ onChange, value, name }, { invalid }) => (
+                        render={({ field, fieldState }) => (
                             <FormItem
                                 top="Отряд"
-                                status={invalid ? "error" : "default"}
+                                status={
+                                    fieldState.invalid ? "error" : "default"
+                                }
                                 bottom={
-                                    errors &&
-                                    errors["brigades_id"] &&
-                                    "Возникла ошибка"
+                                    fieldState.error && fieldState.error.message
                                 }
                             >
                                 <ChipsSelect
-                                    name={name}
+                                    placeholder="Ничего не выбрано"
+                                    name={field.name}
                                     value={
-                                        value
-                                            ? value.map((item: number) => ({
-                                                  value: item,
-                                                  label: brigadeList.find(
-                                                      (subItem) =>
-                                                          subItem.id === item
-                                                  )?.title,
-                                              }))
+                                        field.value
+                                            ? field.value.map(
+                                                  (item: number) => ({
+                                                      value: item,
+                                                      label: brigadeList.find(
+                                                          (subItem) =>
+                                                              subItem.id ===
+                                                              item
+                                                      )?.title,
+                                                  })
+                                              )
                                             : []
                                     }
                                     emptyText="Не выбран"
@@ -231,7 +222,7 @@ export const OrderPanel: FC<{ id: string }> = observer(({ id }) => {
                                             : []
                                     }
                                     onChange={(items) =>
-                                        onChange(
+                                        field.onChange(
                                             items.map((item) => item.value)
                                         )
                                     }
@@ -242,29 +233,26 @@ export const OrderPanel: FC<{ id: string }> = observer(({ id }) => {
                                 />
                             </FormItem>
                         )}
-                    />
+                    /> */}
                     <Controller
                         control={control}
                         name="title"
-                        render={(
-                            { onChange, onBlur, value, name },
-                            { invalid }
-                        ) => (
+                        render={({ field, fieldState }) => (
                             <FormItem
                                 top="Название"
-                                status={invalid ? "error" : "default"}
+                                status={
+                                    fieldState.invalid ? "error" : "default"
+                                }
                                 bottom={
-                                    errors &&
-                                    errors["title"] &&
-                                    errors["title"].message
+                                    fieldState.error && fieldState.error.message
                                 }
                             >
                                 <Input
                                     type="text"
-                                    name={name}
-                                    value={value || ""}
-                                    onChange={onChange}
-                                    onBlur={onBlur}
+                                    name={field.name}
+                                    value={field.value || undefined}
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
                                 />
                             </FormItem>
                         )}
@@ -273,23 +261,20 @@ export const OrderPanel: FC<{ id: string }> = observer(({ id }) => {
                         control={control}
                         name="isСontender"
                         rules={{ required: false }}
-                        render={(
-                            { onChange, onBlur, value, name },
-                            { invalid }
-                        ) => (
+                        render={({ field, fieldState }) => (
                             <FormItem
-                                status={invalid ? "error" : "default"}
+                                status={
+                                    fieldState.invalid ? "error" : "default"
+                                }
                                 bottom={
-                                    errors &&
-                                    errors["isСontender"] &&
-                                    errors["isСontender"].message
+                                    fieldState.error && fieldState.error.message
                                 }
                             >
                                 <Checkbox
-                                    onBlur={onBlur}
-                                    checked={value}
-                                    onChange={onChange}
-                                    name={name}
+                                    onBlur={field.onBlur}
+                                    checked={field.value}
+                                    onChange={field.onChange}
+                                    name={field.name}
                                 >
                                     Прошел в конкурсную программу (или плей-офф)
                                 </Checkbox>
@@ -300,19 +285,19 @@ export const OrderPanel: FC<{ id: string }> = observer(({ id }) => {
                         control={control}
                         name="place"
                         rules={{ required: false }}
-                        render={({ onChange, value, name }, { invalid }) => (
+                        render={({ field, fieldState }) => (
                             <FormItem
                                 top="Занятое место"
-                                status={invalid ? "error" : "default"}
+                                status={
+                                    fieldState.invalid ? "error" : "default"
+                                }
                                 bottom={
-                                    errors &&
-                                    errors["place"] &&
-                                    errors["place"].message
+                                    fieldState.error && fieldState.error.message
                                 }
                             >
                                 <Select
-                                    name={name}
-                                    value={value}
+                                    name={field.name}
+                                    value={field.value || undefined}
                                     placeholder="Не выбран"
                                     options={[
                                         {
@@ -328,7 +313,7 @@ export const OrderPanel: FC<{ id: string }> = observer(({ id }) => {
                                             value: "3",
                                         },
                                     ]}
-                                    onChange={onChange}
+                                    onChange={field.onChange}
                                     renderOption={({
                                         option,
                                         ...restProps
@@ -343,7 +328,7 @@ export const OrderPanel: FC<{ id: string }> = observer(({ id }) => {
                             stretched={true}
                             disabled={!isDirty || !isValid}
                         >
-                            {event.eventOrder ? "Сохранить" : "Создать"}
+                            {eventOrder ? "Сохранить" : "Создать"}
                         </Button>
                     </FormItem>
                 </FormLayout>

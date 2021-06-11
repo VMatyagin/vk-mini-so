@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import {
     PanelHeader,
     Title,
@@ -13,15 +13,13 @@ import {
 } from "@vkontakte/vkui";
 import Icon28WalletOutline from "@vkontakte/icons/dist/28/wallet_outline";
 import Icon28ReplyOutline from "@vkontakte/icons/dist/28/reply_outline";
-import { useMst } from "../../stores";
+import { routerStore } from "../../stores/router-store";
 
 export const WalletPanel: FC<{ id: string }> = ({ id }) => {
-    const store = useMst();
+    const { goBack, openModal } = useContext(routerStore);
     return (
         <Panel id={id}>
-            <PanelHeader
-                left={<PanelHeaderBack onClick={store.router.goBack} />}
-            >
+            <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
                 <Title level="2" weight="bold">
                     Билеты
                 </Title>
@@ -37,9 +35,7 @@ export const WalletPanel: FC<{ id: string }> = ({ id }) => {
                             600 шт.
                         </Text>
                     }
-                    onClick={() =>
-                        store.router.openModal("MODAL_ELSE_WALLET_COUNT")
-                    }
+                    onClick={() => openModal("MODAL_ELSE_WALLET_COUNT")}
                 >
                     Всего билетов
                 </SimpleCell>

@@ -1,52 +1,28 @@
 import { View, ViewProps } from "@vkontakte/vkui";
-import { observer } from "mobx-react";
-import React, { createContext, FC, useCallback, useState } from "react";
-import { useMst } from "../../../features/stores";
+import { observer } from "mobx-react-lite";
+import { FC, useContext } from "react";
+import { routerStore } from "../../../features/stores/router-store";
 
 interface AbstractViewProps extends Omit<ViewProps, "activePanel"> {
     id: string;
 }
-export interface ModelContextInstance<F extends VoidFunction> {
-    onClose: F;
-    setOnClose: Function;
-}
-
-export const ModalContext = createContext<ModelContextInstance<VoidFunction>>({
-    setOnClose: () => undefined,
-    onClose: () => () => undefined,
-});
-
 export const AbstractView: FC<AbstractViewProps> = observer(
-    ({ id, children, modal }) => {
-        const store = useMst();
-        const [onClose, setOnClose] = useState<() => VoidFunction>(() => () =>
-            undefined
-        );
+    ({ id, children }) => {
+        const { panelsHistory, getActivePanel, goBack } =
+            useContext(routerStore);
 
-        let history =
-            store.router.panelsHistory[id] === undefined
-                ? [id]
-                : store.router.panelsHistory[id];
-        const set = useCallback((fn: VoidFunction) => {
-            setOnClose(() => () => fn);
-        }, []);
+        const history =
+            panelsHistory[id] === undefined ? [id] : panelsHistory[id];
+
         return (
-            <ModalContext.Provider
-                value={{
-                    onClose: onClose(),
-                    setOnClose: set,
-                }}
+            <View
+                id={id}
+                activePanel={getActivePanel(id)}
+                history={history}
+                onSwipeBack={goBack}
             >
-                <View
-                    id={id}
-                    activePanel={store.router.getActivePanel(id)}
-                    history={history}
-                    modal={modal}
-                    onSwipeBack={() => store.router.goBack()}
-                >
-                    {children}
-                </View>
-            </ModalContext.Provider>
+                {children}
+            </View>
         );
     }
 );

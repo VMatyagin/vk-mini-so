@@ -1,94 +1,62 @@
-import { types } from "mobx-state-tree";
+import { AppearanceSchemeType, UserInfo } from "@vkontakte/vk-bridge";
+import { makeAutoObservable } from "mobx";
+import { createContext } from "react";
+import { ScrollPosition } from "../../types";
+import VKBridge from "@vkontakte/vk-bridge";
+import { APP_ID, initApp } from "../../VKBridge";
 
-interface Position {
-    x: number;
-    y: number;
+export class AppStore {
+    isLoading: boolean = true;
+    accessToken: string | null = null;
+    userData: UserInfo | null = null;
+    colorSchema: AppearanceSchemeType = "client_light";
+    activeTab: Record<string, string> = {};
+    componentScroll: Record<string, ScrollPosition> = {};
+
+    constructor() {
+        makeAutoObservable(this);
+        this.load();
+    }
+
+    async load() {
+        const user = await VKBridge.send("VKWebAppGetUserInfo");
+        const token = await VKBridge.send("VKWebAppGetAuthToken", {
+            app_id: APP_ID,
+            scope: "groups",
+        });
+        this.userData = user;
+        this.accessToken = token.access_token;
+        initApp();
+    }
+
+    setLoading = (status: boolean) => {
+        this.isLoading = status;
+    };
+    setColorScheme = (colorSchema: AppearanceSchemeType) => {
+        this.colorSchema = colorSchema;
+    };
+    setUserData = (data: UserInfo) => {
+        this.userData = data;
+    };
+    setAccessToken = (accessToken: string | null) => {
+        this.accessToken = accessToken;
+    };
+    setActiveTab = (component: string, tab: string) => {
+        this.activeTab = { ...this.activeTab, [component]: tab };
+    };
+    setScrollPosition = (component: string, position: ScrollPosition) => {
+        this.componentScroll[component] = position;
+    };
+    setScrollPositionById = (component: string) => {
+        const element = document
+            .getElementById(component)!
+            .getElementsByClassName("HorizontalScroll__in")[0];
+        const x = element.scrollLeft;
+        const y = element.scrollTop;
+        this.componentScroll[component] = { x, y };
+    };
 }
 
-interface User {
-    id: number;
-    last_name: string;
-    first_name: string;
-    photo: string;
-}
-interface SoDataType {
-    level: string;
-    position: string;
-    id: number;
-}
+export const AppStoreInstance = new AppStore();
 
-export const AppStore = types
-    .model("AppStore", {
-        loading: types.optional(types.boolean, true),
-        accessToken: types.optional(types.string, ""),
-        userData: types.optional(
-            types.model({
-                id: types.number,
-                first_name: types.string,
-                last_name: types.string,
-                photo: types.string,
-            }),
-            {
-                id: 0,
-                first_name: "",
-                last_name: "",
-                photo: "",
-            }
-        ),
-        soData: types.optional(
-            types.model({
-                level: types.string,
-                position: types.string,
-                id: types.number,
-            }),
-            { level: "0", position: "", id: 0 }
-        ),
-        colorSchema: types.optional(
-            types.union(
-                types.literal("client_light"),
-                types.literal("client_dark"),
-                types.literal("space_gray"),
-                types.literal("bright_light")
-            ),
-            "client_light"
-        ),
-        activeTab: types.map(types.frozen<string>()),
-        componentScroll: types.frozen<{ [propName: string]: Position }>({}),
-    })
-    .actions((self) => ({
-        setLoading(key: boolean) {
-            self.loading = key;
-        },
-        setColorScheme(
-            colorSchema:
-                | "client_light"
-                | "client_dark"
-                | "space_gray"
-                | "bright_light"
-        ) {
-            self.colorSchema = colorSchema;
-        },
-        setUserData(data: User) {
-            self.userData = data;
-        },
-        async setSoData(data: SoDataType) {
-            self.soData = data;
-        },
-        setAccessToken(accessToken: string) {
-            self.accessToken = accessToken;
-        },
-        setActiveTab(component: string, tab: string) {
-            self.activeTab.set(component, tab);
-        },
-        setScrollPosition(component: string, position: Position) {
-            self.componentScroll[component] = position;
-        },
-        setScrollPositionById(component: string) {
-            const element = document
-                .getElementById(component)!
-                .getElementsByClassName("HorizontalScroll__in")[0];
-            const x = element.scrollLeft;
-            const y = element.scrollTop;
-            self.componentScroll[component] = { x, y };
-        },
-    }));
+export const appStore = createContext(AppStoreInstance);

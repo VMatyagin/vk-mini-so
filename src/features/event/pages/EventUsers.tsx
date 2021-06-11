@@ -1,23 +1,19 @@
-import { FC, useCallback, useEffect, useState } from "react";
+import { FC, useContext, useState } from "react";
 import {
     PanelHeader,
     PanelHeaderBack,
     Title,
     Group,
-    SimpleCell,
     Panel,
     Header,
     CellButton,
-    Alert,
 } from "@vkontakte/vkui";
-import { observer } from "mobx-react";
+import { observer } from "mobx-react-lite";
 
-import { useMst } from "../../stores";
 import { Boec } from "../../types";
-import { useFetch } from "../../utils/useFetch";
-import { SoAPI } from "../../utils/api.service";
-import { Icon24Add, Icon24Cancel } from "@vkontakte/icons";
-import { ItemsList } from "../molecules/ItemsList";
+import { Icon24Add } from "@vkontakte/icons";
+import { routerStore } from "../../stores/router-store";
+import { eventStore } from "../store/eventStore";
 
 const titles = {
     organizers: {
@@ -34,58 +30,60 @@ export const EventUsers: FC<{
     id: string;
     type: "organizers" | "volonteers";
 }> = observer(({ id, type }) => {
-    const { event, router } = useMst();
-    const [data, setData] = useState<Boec<true>[]>();
+    const { setPage, goBack } = useContext(routerStore);
+    const { eventData } = useContext(eventStore);
 
-    const onLoad = useCallback((data: Boec<true>[]) => {
-        setData(data);
-    }, []);
+    const [data, setData] = useState<Boec[]>();
 
-    const { fetch, errors, isLoading } = useFetch(SoAPI.getEventUsers, onLoad);
+    // const onLoad = useCallback((data: Boec[]) => {
+    //     setData(data);
+    // }, []);
 
-    useEffect(() => {
-        event.eventData && fetch(event.eventData.id, type);
-    }, [fetch, event, type]);
+    // const { fetch, errors, isLoading } = useFetch(SoAPI.getEventUsers, onLoad);
+
+    // useEffect(() => {
+    //     eventData && fetch(eventData.id, type);
+    // }, [fetch, eventData, type]);
 
     const onAdd = () => {
-        router.setPage("else_event_handle", `event_find_${type}`);
+        setPage("else_event_handle", `event_find_${type}`);
     };
-    const onDelete = (clickEvent: React.MouseEvent<HTMLElement>) => {
-        const userId = clickEvent.currentTarget.dataset.userid;
-        router.openPopout(
-            <Alert
-                actions={[
-                    {
-                        title: "Удалить",
-                        mode: "destructive",
-                        autoclose: true,
-                        action: () => {
-                            if (userId && event.eventData) {
-                                SoAPI.removeEventUser(
-                                    event.eventData.id,
-                                    type,
-                                    Number(userId)
-                                ).then(({ data }) => setData(data));
-                            }
-                        },
-                    },
-                    {
-                        title: "Отмена",
-                        autoclose: true,
-                        mode: "cancel",
-                    },
-                ]}
-                actionsLayout="vertical"
-                onClose={router.closePopout}
-                header="Подтвердите действие"
-                text="Вы уверены, что хотите удалить это мероприятие?"
-            />
-        );
-    };
+    // const onDelete = (clickEvent: React.MouseEvent<HTMLElement>) => {
+    //     const userId = clickEvent.currentTarget.dataset.userid;
+    //     openPopout(
+    //         <Alert
+    //             actions={[
+    //                 {
+    //                     title: "Удалить",
+    //                     mode: "destructive",
+    //                     autoclose: true,
+    //                     action: () => {
+    //                         if (userId && eventData) {
+    //                             SoAPI.removeEventUser(
+    //                                 eventData.id,
+    //                                 type,
+    //                                 Number(userId)
+    //                             ).then(({ data }) => setData(data));
+    //                         }
+    //                     },
+    //                 },
+    //                 {
+    //                     title: "Отмена",
+    //                     autoclose: true,
+    //                     mode: "cancel",
+    //                 },
+    //             ]}
+    //             actionsLayout="vertical"
+    //             onClose={closePopout}
+    //             header="Подтвердите действие"
+    //             text="Вы уверены, что хотите удалить это мероприятие?"
+    //         />
+    //     );
+    // };
 
     return (
         <Panel id={id}>
-            <PanelHeader left={<PanelHeaderBack onClick={router.goBack} />}>
+            <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
                 <Title level="2" weight="bold">
                     {titles[type].title}
                 </Title>
@@ -100,7 +98,7 @@ export const EventUsers: FC<{
                 <CellButton before={<Icon24Add />} onClick={onAdd}>
                     Добавить {titles[type].btn}
                 </CellButton>
-                <ItemsList
+                {/* <ItemsList
                     data={data}
                     isLoading={isLoading}
                     isError={!!errors}
@@ -117,7 +115,7 @@ export const EventUsers: FC<{
                             {item.fullName}
                         </SimpleCell>
                     )}
-                />
+                /> */}
             </Group>
         </Panel>
     );
