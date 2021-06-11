@@ -15,6 +15,7 @@ import {
 import { observer } from "mobx-react-lite";
 import { FC, useContext } from "react";
 import { useMutation, useQuery } from "react-query";
+import { boecStore } from "../../../../boec/store/boecStore";
 import { routerStore } from "../../../../stores/router-store";
 import { Position } from "../../../../types";
 import { BrigadesAPI } from "../../../../utils/requests/brigades-request";
@@ -26,7 +27,9 @@ interface BrigadeLeadersProps {
 }
 export const BrigadeLeaders: FC<BrigadeLeadersProps> = observer(
     ({ brigadeId, isEditing }) => {
-        const { openPopout, closePopout } = useContext(routerStore);
+        const { openPopout, closePopout, setPage } = useContext(routerStore);
+        const { setBoecId } = useContext(boecStore);
+
         const {
             data: brigadePositions,
             isLoading: isPositionsLoading,
@@ -86,6 +89,10 @@ export const BrigadeLeaders: FC<BrigadeLeadersProps> = observer(
                 </ActionSheet>
             );
         };
+        const changeView = (id: number) => {
+            setBoecId(id);
+            setPage("boec", "base");
+        };
         return (
             <>
                 {isPositionsLoading && (
@@ -99,7 +106,9 @@ export const BrigadeLeaders: FC<BrigadeLeadersProps> = observer(
                             <Cell
                                 description={positions[item.position].title}
                                 onClick={() =>
-                                    isEditing && handleOpenActionSheet(item.id)
+                                    isEditing
+                                        ? handleOpenActionSheet(item.id)
+                                        : changeView(item.boec.id)
                                 }
                             >
                                 {item.boec.fullName}

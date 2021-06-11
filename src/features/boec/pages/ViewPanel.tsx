@@ -24,6 +24,7 @@ import { Boec, PanelProps } from "../../types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { UsersAPI } from "../../utils/requests/user-request";
 import { selectVKUsers } from "../../VKBridge";
+import { UserPositions } from "../ui/molecules/UserPositions";
 
 export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
     const { goBack, setPage, openPopout, closePopout } =
@@ -149,6 +150,9 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                                     {season.brigade.title}
                                 </SimpleCell>
                             ))}
+                    </Group>
+                    <Group header={<Header mode="secondary">Должности</Header>}>
+                        <UserPositions />
                     </Group>
                     {seasons && (
                         <Group>

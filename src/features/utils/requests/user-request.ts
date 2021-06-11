@@ -1,5 +1,5 @@
 import axios, { Canceler } from "axios";
-import { Boec, Seasons } from "../../types";
+import { Boec, Position, Seasons } from "../../types";
 import { get, remove } from "../axiosConfig";
 import { ListResponse } from "../types";
 
@@ -46,6 +46,10 @@ export const UsersAPI = {
     },
     async getUserSeasons(userId: number): Promise<Seasons[]> {
         const { data } = await get(`/api/so/boec/${userId}/seasons/`);
+        return data;
+    },
+    async getUserPositions(userId: number): Promise<Position[]> {
+        const { data } = await get(`/api/so/boec/${userId}/positions/`);
         return data;
     },
 };
