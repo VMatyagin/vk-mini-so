@@ -2,10 +2,8 @@ import { CellButton, Group, Header, ScreenSpinner } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { FC, useContext } from "react";
 import { useMutation, useQueryClient } from "react-query";
-import {
-    MODAL_BOEC_LIST,
-    MODAL_BOEC_POSITION_SELECT,
-} from "../../../../../ui/organisms/Modals";
+import { MODAL_BOEC_LIST } from "../../../../boec/ui/modals/BoecListModal";
+import { MODAL_BOEC_POSITION_SELECT } from "../../../../boec/ui/modals/LeaderPositionModal";
 import { routerStore } from "../../../../stores/router-store";
 import { Boec, Position } from "../../../../types";
 import { BrigadesAPI } from "../../../../utils/requests/brigades-request";

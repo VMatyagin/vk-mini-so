@@ -19,8 +19,8 @@ import { useMutation, useQuery } from "react-query";
 import { Boec, CompetitionParticipant, PanelProps } from "../../types";
 import { eventStore } from "../store/eventStore";
 import { EventAPI } from "../../utils/requests/event-request";
-import { MODAL_BOEC_SELECTING } from "../../../ui/organisms/Modals";
 import { COMPETITIVE_PARTICIPANT_TITLES } from "../helpers";
+import { MODAL_BOEC_SELECTING } from "../../boec/ui/modals/BoecSelectModal";
 
 export const CompetitionViewPanel: FC<PanelProps> = observer(
     ({ id, viewId }) => {

@@ -16,7 +16,7 @@ import { Icon24Filter } from "@vkontakte/icons";
 import { debounce } from "@vkontakte/vkjs";
 import { PanelProps } from "../../types";
 import { UsersAPI } from "../../utils/requests/user-request";
-import { MODAL_BOEC_FILTER } from "../../../ui/organisms/Modals";
+import { MODAL_BOEC_FILTER } from "../ui/modals/BoecFilterModal";
 
 export const ListPanel: FC<PanelProps> = observer(({ id }) => {
     const { goBack, openModal, closeModal, setPage, setModalCallback } =

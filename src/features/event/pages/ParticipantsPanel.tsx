@@ -16,7 +16,6 @@ import { PanelHeader, Title } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { routerStore } from "../../stores/router-store";
 import { Boec, PanelProps, Participant } from "../../types";
-import { MODAL_BOEC_LIST } from "../../../ui/organisms/Modals";
 import { eventStore } from "../store/eventStore";
 import { LazyList } from "../../../ui/organisms/LazyList";
 import { EventAPI } from "../../utils/requests/event-request";
@@ -26,6 +25,7 @@ import {
     Icon28DeleteOutlineAndroid,
 } from "@vkontakte/icons";
 import { PARTICIPANT_TITLES } from "../helpers";
+import { MODAL_BOEC_LIST } from "../../boec/ui/modals/BoecListModal";
 
 interface ParticipantsPanelProps extends PanelProps {
     worth: Participant["worth"];

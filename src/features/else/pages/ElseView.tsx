@@ -1,6 +1,5 @@
 import {
     Icon28CalendarOutline,
-    Icon28ChevronRightOutline,
     Icon28StatisticsOutline,
     Icon28UserSquareOutline,
     // Icon28HelpOutline,
@@ -39,45 +38,30 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
                 <Group>
                     <SimpleCell
                         before={<Icon28CalendarOutline />}
-                        after={
-                            <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
-                        }
                         onClick={() => changeView("event")}
                     >
                         Управление мероприятиями
                     </SimpleCell>
                     <SimpleCell
                         before={<Icon28StatisticsOutline />}
-                        after={
-                            <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
-                        }
                         onClick={() => changeView("else_rating")}
                     >
                         Рейтинг
                     </SimpleCell>
                     <SimpleCell
                         before={<Icon28UserSquareOutline />}
-                        after={
-                            <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
-                        }
                         onClick={() => changeView("brigades")}
                     >
                         Отряды
                     </SimpleCell>
                     <SimpleCell
                         before={<Icon28UserSquareOutline />}
-                        after={
-                            <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
-                        }
                         onClick={() => setPage("boec", "list")}
                     >
                         Поиск по бойцам
                     </SimpleCell>
                     <SimpleCell
                         before={<Icon28UserSquareOutline />}
-                        after={
-                            <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
-                        }
                         onClick={() => setPage("shtab", "list")}
                     >
                         Штабы

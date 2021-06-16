@@ -110,5 +110,7 @@ export interface Nomination {
     id: number;
     title: string;
     competition: number;
-    owner: CompetitionParticipant | null;
+    owner: CompetitionParticipant[] | null;
+    isRated: boolean;
+    sportPlace: number | null;
 }

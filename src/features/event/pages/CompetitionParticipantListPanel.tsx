@@ -26,7 +26,7 @@ import {
 } from "@vkontakte/icons";
 import { useMutation, useQueryClient } from "react-query";
 import { COMPETITIVE_PARTICIPANT_TITLES } from "../helpers";
-import { MODAL_EVENT_NOMINATION_SELECT } from "../../../ui/organisms/Modals";
+import { MODAL_EVENT_NOMINATION_SELECT } from "../ui/modals/NominationSelectModal";
 
 interface CompetitionParticipantListPanelProps extends PanelProps {
     worth: CompetitionParticipant["worth"];
