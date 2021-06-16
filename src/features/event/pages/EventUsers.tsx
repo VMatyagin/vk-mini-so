@@ -31,7 +31,6 @@ export const EventUsers: FC<{
     type: "organizers" | "volonteers";
 }> = observer(({ id, type }) => {
     const { setPage, goBack } = useContext(routerStore);
-    const { eventData } = useContext(eventStore);
 
     const [data, setData] = useState<Boec[]>();
 

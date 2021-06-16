@@ -91,7 +91,8 @@ export const LazyList: FC<LazyUsersListProps> = observer(
                 {flatData &&
                     flatData.length === 0 &&
                     !isLoading &&
-                    !isFetching && !isError && <Footer>Ничего не найдено</Footer>}
+                    !isFetching &&
+                    !isError && <Footer>Ничего не найдено</Footer>}
                 {isError && <Footer>Ошибка соединения</Footer>}
             </>
         );

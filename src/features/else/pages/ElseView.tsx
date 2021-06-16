@@ -42,7 +42,7 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
                         after={
                             <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
                         }
-                        onClick={() => changeView("else_event_handle")}
+                        onClick={() => changeView("event")}
                     >
                         Управление мероприятиями
                     </SimpleCell>

@@ -52,4 +52,7 @@ export const UsersAPI = {
         const { data } = await get(`/api/so/boec/${userId}/positions/`);
         return data;
     },
+    async getEvent(id: number): Promise<Event> {
+        return get(`/api/event/${id}/`);
+    },
 };

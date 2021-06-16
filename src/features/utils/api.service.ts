@@ -1,5 +1,5 @@
 import axios, { Canceler } from "axios";
-import { Boec, Event, EventOrder, Seasons, Shtab } from "../types";
+import { Boec, EventType, Seasons, Shtab } from "../types";
 import { get, patch, post, remove } from "./axiosConfig";
 import { SuccessResponse } from "./types";
 
@@ -46,10 +46,12 @@ export const SoAPI = {
     deleteSeason(id: number): Promise<SuccessResponse<Seasons>> {
         return remove(`/api/so/season/${id}/`);
     },
-    getEvent(id: string): Promise<SuccessResponse<Event, false>> {
+    getEvent(id: string): Promise<SuccessResponse<EventType, false>> {
         return get(`/api/event/${id}/`);
     },
-    createEvent(data: Partial<Event>): Promise<SuccessResponse<Event, false>> {
+    createEvent(
+        data: Partial<EventType>
+    ): Promise<SuccessResponse<EventType, false>> {
         return post(`/api/event/`, data);
     },
     getEventList({
@@ -60,7 +62,7 @@ export const SoAPI = {
         offset: number;
         limit: number;
         search?: string;
-    }): Promise<SuccessResponse<Event, true>> {
+    }): Promise<SuccessResponse<EventType, true>> {
         if (cancel) {
             cancel();
         }
@@ -84,13 +86,17 @@ export const SoAPI = {
             params: filter,
         });
     },
-    updateEvent(data: Partial<Event>): Promise<SuccessResponse<Event, false>> {
+    updateEvent(
+        data: Partial<EventType>
+    ): Promise<SuccessResponse<EventType, false>> {
         return patch(`/api/event/${data.id}/`, data);
     },
     removeEvent(id: number): Promise<undefined> {
         return remove(`/api/event/${id}/`);
     },
-    toggleEventVisibility(id: number): Promise<SuccessResponse<Event, false>> {
+    toggleEventVisibility(
+        id: number
+    ): Promise<SuccessResponse<EventType, false>> {
         return get(`/api/event/${id}/toggle/`);
     },
     getEventUsers(
@@ -99,22 +105,7 @@ export const SoAPI = {
     ): Promise<SuccessResponse<Boec[], false>> {
         return get(`/api/event/${id}/${type}/`);
     },
-    getEventOrders(id: number): Promise<SuccessResponse<EventOrder[], false>> {
-        return get(`/api/event/${id}/orders/`);
-    },
-    getEventOrder(id: number): Promise<SuccessResponse<EventOrder, false>> {
-        return get(`/api/event/orders/${id}/`);
-    },
-    createOrder(
-        data: Partial<EventOrder<true>>
-    ): Promise<SuccessResponse<EventOrder, false>> {
-        return post(`/api/event/orders/`, data);
-    },
-    updateOrder(
-        data: Partial<EventOrder<true>>
-    ): Promise<SuccessResponse<EventOrder, false>> {
-        return patch(`/api/event/orders/${data.id}/`, data);
-    },
+
     addEventUser(
         id: number,
         type: "volonteers" | "organizers",

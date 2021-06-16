@@ -1,9 +1,9 @@
 import { RichCell, Avatar, Caption, Headline } from "@vkontakte/vkui";
 import React, { FC } from "react";
-import { Event } from "../../../features/types";
+import { EventType } from "../../../features/types";
 
 interface EventCardProps
-    extends Pick<Event, "title" | "description" | "startDate" | "startTime"> {
+    extends Pick<EventType, "title" | "description" | "startDate" | "startTime"> {
     onClick?: () => void;
 }
 export const EventCard: FC<EventCardProps> = ({

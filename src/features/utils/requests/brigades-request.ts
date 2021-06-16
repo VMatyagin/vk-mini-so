@@ -1,5 +1,5 @@
 import { Area, Brigade, Position, Seasons } from "../../types";
-import { get, patch, post, remove } from "../axiosConfig";
+import { get, patch, post } from "../axiosConfig";
 import { ListResponse } from "../types";
 
 export const BrigadesAPI = {

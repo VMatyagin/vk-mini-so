@@ -7,7 +7,7 @@ import {
     MODAL_BOEC_POSITION_SELECT,
 } from "../../../../../ui/organisms/Modals";
 import { routerStore } from "../../../../stores/router-store";
-import { Position } from "../../../../types";
+import { Boec, Position } from "../../../../types";
 import { BrigadesAPI } from "../../../../utils/requests/brigades-request";
 import { brigadeStore } from "../../../store/brigadeStore";
 import { BrigadeLeaders } from "../BrigadeLeaders";
@@ -49,8 +49,14 @@ export const PositionsForm: FC<PositionsFormProps> = observer(() => {
             position: Number(position),
         });
     };
+    const openPositionSelecting = (boec: Boec) => {
+        openModal(MODAL_BOEC_POSITION_SELECT);
+        setModalCallback(MODAL_BOEC_POSITION_SELECT, (position) =>
+            selectPosition(boec.id, position)
+        );
+    };
     const onAddClick = () => {
-        setModalCallback(MODAL_BOEC_POSITION_SELECT, selectPosition);
+        setModalCallback(MODAL_BOEC_LIST, openPositionSelecting);
         openModal(MODAL_BOEC_LIST);
     };
     return (

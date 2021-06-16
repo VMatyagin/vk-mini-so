@@ -14,10 +14,10 @@ interface LazySelectProps {
     extraFnProp?: Record<string, unknown>;
     queryKey: string;
     name: string;
-    value: number | null;
+    value: number | null | undefined;
     onChange: React.ChangeEventHandler<HTMLSelectElement>;
 }
-const limit = 2;
+const limit = 20;
 
 export const LazySelect: FC<LazySelectProps> = ({
     fetchFn,

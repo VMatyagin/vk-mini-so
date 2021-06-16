@@ -24,7 +24,7 @@ export const ListPanel: FC<PanelProps> = observer(({ id, viewId }) => {
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ["shtab-list"],
-        queryFn: () => ShtabsAPI.getShtabs(),
+        queryFn: () => ShtabsAPI.getShtabs({}),
         retry: 1,
         refetchOnWindowFocus: false,
     });

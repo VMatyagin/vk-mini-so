@@ -31,29 +31,22 @@ export interface Boec extends WithId {
     fullName: string;
 }
 
-export interface Event extends WithId {
+export interface EventType {
+    id: number;
     status: number;
     title: string;
     description: string | null;
     location: string | null;
-    shtab: number | null;
+    shtab: Shtab | null;
+    shtabId: number | null;
     startDate: string | null;
     startTime: string | null;
     organizer: any[];
     volonteer: any[];
     visibility: boolean;
-    worth: string;
+    worth: number;
 }
 export interface Shtab extends WithId {
-    title: string;
-}
-
-export interface EventOrder<IsUPDATE extends boolean = false> extends WithId {
-    brigades: IsUPDATE extends true ? undefined : any[];
-    event: number;
-    participations: any[];
-    isСontender: boolean;
-    place: string | null;
     title: string;
 }
 
@@ -81,4 +74,41 @@ export interface Position<isExtended extends boolean = true> {
     shtab: isExtended extends true ? Shtab : number | null;
     fromDate: string;
     toDate: string | null;
+}
+
+export interface Participant {
+    id: number;
+    boec: Boec;
+    boecId: number;
+    event: Event;
+    eventId: number;
+    worth: number;
+}
+
+export interface Competition {
+    id: number;
+    event: number;
+    title: string;
+    participant_count: number;
+    ivolvement_count: number;
+    winner_count: number;
+    notwinner_count: number;
+}
+
+export interface CompetitionParticipant {
+    id: number;
+    competition: number;
+    boec: number[] | Boec[];
+    worth: 0 | 1 | 2 | 3;
+    brigades: Brigade[];
+    nomination: Nomination[];
+    // only for updating
+    nominationId: number;
+}
+
+export interface Nomination {
+    id: number;
+    title: string;
+    competition: number;
+    owner: CompetitionParticipant | null;
 }

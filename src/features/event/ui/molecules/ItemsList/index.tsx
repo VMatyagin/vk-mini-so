@@ -1,6 +1,6 @@
 import { Footer, Spinner } from "@vkontakte/vkui";
 
-import { ArrayElement } from "../../../types";
+import { ArrayElement } from "../../../../types";
 
 interface ItemsListProps<T extends Array<ArrayElement<T>>> {
     data?: T;

@@ -1,9 +1,13 @@
 import { Icon24Done, Icon24Filter } from "@vkontakte/icons";
 import { debounce } from "@vkontakte/vkjs";
 import {
+    Cell,
+    CellButton,
     CustomSelectOption,
+    Footer,
     FormItem,
     Group,
+    Header,
     IOS,
     ModalPage,
     ModalPageHeader,
@@ -22,16 +26,21 @@ import { observer } from "mobx-react-lite";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { positions } from "../../../features/brigades/helpers";
+import { eventStore } from "../../../features/event/store/eventStore";
 
 import { routerStore } from "../../../features/stores/router-store";
-import { Boec } from "../../../features/types";
+import { Boec, Nomination } from "../../../features/types";
 import { BrigadesAPI } from "../../../features/utils/requests/brigades-request";
+import { EventAPI } from "../../../features/utils/requests/event-request";
 import { UsersAPI } from "../../../features/utils/requests/user-request";
 import { LazyList } from "../LazyList";
+import { LazySelect } from "../LazySelect";
 
 export const MODAL_BOEC_FILTER = "MODAL_BOEC_FILTER";
 export const MODAL_BOEC_LIST = "MODAL_BOEC_LIST";
 export const MODAL_BOEC_POSITION_SELECT = "MODAL_BOEC_POSITION_SELECT";
+export const MODAL_BOEC_SELECTING = "MODAL_BOEC_SELECTING";
+export const MODAL_EVENT_NOMINATION_SELECT = "MODAL_EVENT_NOMINATION_SELECT";
 
 export const Modals = observer(() => {
     const {
@@ -42,9 +51,11 @@ export const Modals = observer(() => {
         openModal,
         closeModalStack,
     } = useContext(routerStore);
+    const { competitionId } = useContext(eventStore);
     const [selectedBrigade, setBrigade] = useState<string>();
+    const [boecs, setBoecs] = useState<Boec[]>([]);
     const [selectedPosition, setPosition] = useState<string>();
-    const [selectedUser, setBoec] = useState<Boec>();
+    const [selectedNomination, setNomination] = useState<number>();
 
     const { data: brigadesList } = useQuery({
         queryKey: ["brigades"],
@@ -66,6 +77,13 @@ export const Modals = observer(() => {
     });
 
     const setFilterD = useMemo(() => debounce(setFilter, 750), [setFilter]);
+    const resetListFilter = () => {
+        setFilter({
+            brigadeId: undefined,
+            search: undefined,
+        });
+        setSearch("");
+    };
     const handleChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
             setSearch(event.target.value);
@@ -96,32 +114,56 @@ export const Modals = observer(() => {
     };
 
     const onPositionSelect = () => {
-        modalCallback[MODAL_BOEC_POSITION_SELECT](
-            selectedUser!.id,
-            selectedPosition
-        );
-        setBoec(undefined);
+        modalCallback[MODAL_BOEC_POSITION_SELECT](selectedPosition);
         closeModalStack();
         setPosition(undefined);
     };
 
-    const openPositionSelecting = (boec: Boec) => {
-        setBoec(boec);
-        openModal(MODAL_BOEC_POSITION_SELECT);
-    };
-
     const onBoecListClose = () => {
         closeModal();
-        setFilter({
-            brigadeId: undefined,
-            search: undefined,
-        });
-        setSearch("");
+        resetListFilter();
     };
 
     const onSelectPositionClose = () => {
         closeModal();
         setPosition(undefined);
+    };
+
+    const onBoecSelecting = () => {
+        modalCallback[MODAL_BOEC_SELECTING](boecs);
+        closeModal();
+        setBoecs([]);
+    };
+    const onBoecSelectingClose = () => {
+        closeModal();
+        setBoecs([]);
+    };
+    const openBoecListModal = () => {
+        setModalCallback(MODAL_BOEC_LIST, (boec: Boec) => {
+            setBoecs((prev) => {
+                if (prev.includes(boec)) {
+                    return prev;
+                } else {
+                    return [...prev, boec];
+                }
+            });
+            closeModal();
+        });
+        openModal(MODAL_BOEC_LIST);
+    };
+    const handleRemove = (boec: Boec) => {
+        setBoecs((prev) => prev.filter((item) => item !== boec));
+    };
+
+    const onSelectNominationClose = () => {
+        closeModal();
+        setNomination(undefined);
+    };
+
+    const onNominationSelect = () => {
+        modalCallback[MODAL_EVENT_NOMINATION_SELECT](selectedNomination);
+        setNomination(undefined);
+        closeModal();
     };
     return (
         <MRoot activeModal={activeModal} onClose={closeModal}>
@@ -210,7 +252,10 @@ export const Modals = observer(() => {
                     renderItem={(item) => (
                         <SimpleCell
                             key={item.id}
-                            onClick={() => openPositionSelecting(item)}
+                            onClick={() => {
+                                modalCallback[MODAL_BOEC_LIST](item);
+                                resetListFilter();
+                            }}
                         >
                             {item.fullName}
                         </SimpleCell>
@@ -230,7 +275,6 @@ export const Modals = observer(() => {
                             )
                         }
                         right={
-                            selectedUser &&
                             selectedPosition && (
                                 <PanelHeaderButton onClick={onPositionSelect}>
                                     {platform === IOS ? (
@@ -248,7 +292,7 @@ export const Modals = observer(() => {
                 onClose={onSelectPositionClose}
             >
                 <Group style={{ minHeight: 300 }}>
-                    <FormItem top={selectedUser?.fullName}>
+                    <FormItem top="Должность">
                         <Select
                             placeholder="Не выбран"
                             value={selectedPosition}
@@ -262,6 +306,103 @@ export const Modals = observer(() => {
                             renderOption={({ option, ...restProps }) => (
                                 <CustomSelectOption {...restProps} />
                             )}
+                        />
+                    </FormItem>
+                </Group>
+            </ModalPage>
+            <ModalPage
+                id={MODAL_BOEC_SELECTING}
+                settlingHeight={100}
+                header={
+                    <ModalPageHeader
+                        left={
+                            isMobile && (
+                                <PanelHeaderClose
+                                    onClick={onBoecSelectingClose}
+                                />
+                            )
+                        }
+                        right={
+                            boecs.length > 0 && (
+                                <PanelHeaderButton onClick={onBoecSelecting}>
+                                    {platform === IOS ? (
+                                        "Готово"
+                                    ) : (
+                                        <Icon24Done />
+                                    )}
+                                </PanelHeaderButton>
+                            )
+                        }
+                    >
+                        Выбор бойцов
+                    </ModalPageHeader>
+                }
+                onClose={onBoecSelectingClose}
+            >
+                <Group>
+                    <CellButton onClick={openBoecListModal}>Выбрать</CellButton>
+                </Group>
+                <Group header={<Header mode="secondary">Выбрано</Header>}>
+                    {boecs.length === 0 ? (
+                        <Footer>Ничего не выбрано</Footer>
+                    ) : (
+                        boecs.map((boec) => (
+                            <Cell
+                                removable={true}
+                                onRemove={() => handleRemove(boec)}
+                                key={boec.id}
+                            >
+                                {boec.fullName}
+                            </Cell>
+                        ))
+                    )}
+                </Group>
+            </ModalPage>
+
+            <ModalPage
+                id={MODAL_EVENT_NOMINATION_SELECT}
+                settlingHeight={100}
+                header={
+                    <ModalPageHeader
+                        left={
+                            isMobile && (
+                                <PanelHeaderClose
+                                    onClick={onSelectNominationClose}
+                                />
+                            )
+                        }
+                        right={
+                            selectedNomination && (
+                                <PanelHeaderButton onClick={onNominationSelect}>
+                                    {platform === IOS ? (
+                                        "Готово"
+                                    ) : (
+                                        <Icon24Done />
+                                    )}
+                                </PanelHeaderButton>
+                            )
+                        }
+                    >
+                        Выбор номинации
+                    </ModalPageHeader>
+                }
+                onClose={onSelectNominationClose}
+            >
+                <Group style={{ minHeight: 300 }}>
+                    <FormItem top="Номинация">
+                        <LazySelect
+                            name={"nominations"}
+                            onChange={(value) =>
+                                setNomination(Number(value.target.value))
+                            }
+                            value={selectedNomination}
+                            fetchFn={EventAPI.getCompetitionNominations}
+                            extraFnProp={{ competitionId }}
+                            queryKey={`nominations-${competitionId}`}
+                            parseItem={(nomination: Nomination) => ({
+                                label: nomination.title,
+                                value: nomination.id,
+                            })}
                         />
                     </FormItem>
                 </Group>
