@@ -47,6 +47,8 @@ export const CompetitionViewPanel: FC<PanelProps> = observer(
             retry: 1,
             refetchOnWindowFocus: false,
             onSuccess: closePopout,
+            onError: closePopout,
+            onSettled: closePopout,
         });
         const { mutate } = useMutation<CompetitionParticipant, Error, number[]>(
             (boecIds) => {
@@ -133,7 +135,7 @@ export const CompetitionViewPanel: FC<PanelProps> = observer(
                 <Group header={<Header mode="secondary">Номинации</Header>}>
                     <SimpleCell
                         before={<Icon28Like />}
-                        // onClick={createParticipant}
+                        onClick={() => openPanel("nominations-list")}
                     >
                         Редактировать номинации
                     </SimpleCell>

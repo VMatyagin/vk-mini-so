@@ -12,6 +12,7 @@ import { CompetitionsListPanel } from "../pages/CompetitionsListPanel";
 import { CompetitionViewPanel } from "../pages/CompetitionViewPanel";
 import { CompetitionParticipantListPanel } from "../pages/CompetitionParticipantListPanel";
 import { CompetitionEditPanel } from "../pages/CompetitionEditPanel";
+import { NomiantionsListPanel } from "../pages/NomiantionsListPanel";
 
 export const EventView: FC<ViewProps> = observer(({ id }) => {
     return (
@@ -48,6 +49,8 @@ export const EventView: FC<ViewProps> = observer(({ id }) => {
                 worth={3}
                 viewId={id}
             />
+
+            <NomiantionsListPanel id="nominations-list" viewId={id} />
         </AbstractView>
     );
 });

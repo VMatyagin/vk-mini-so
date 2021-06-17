@@ -4,6 +4,7 @@ import { createContext } from "react";
 export class EventStore {
     eventId: number | null = null;
     competitionId: number | null = null;
+    nominationId: number | null = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -14,9 +15,8 @@ export class EventStore {
     setCompetitionId = (id: number | null) => {
         this.competitionId = id;
     };
-
-    reset = () => {
-        this.eventId = null;
+    setNominationId = (id: number | null) => {
+        this.nominationId = id;
     };
 }
 

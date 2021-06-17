@@ -3,6 +3,7 @@ import {
     Competition,
     CompetitionParticipant,
     EventType,
+    Nomination,
     Participant,
 } from "../../types";
 import { get, patch, post, remove } from "../axiosConfig";
@@ -238,16 +239,14 @@ export const EventAPI = {
     },
     async updateCompetitionNomination({
         competitionId,
-        nominationId,
-        participant,
+        nomination,
     }: {
-        nominationId: number;
         competitionId: number;
-        participant: Partial<CompetitionParticipant>;
-    }): Promise<CompetitionParticipant> {
+        nomination: Nomination;
+    }): Promise<Nomination> {
         const { data } = await patch(
-            `/api/competition/${competitionId}/nominations/${nominationId}/`,
-            participant
+            `/api/competition/${competitionId}/nominations/${nomination.id}/`,
+            nomination
         );
         return data;
     },
@@ -270,6 +269,43 @@ export const EventAPI = {
         const { data } = await post(
             `/api/event/${eventId}/competitions/`,
             competition
+        );
+        return data;
+    },
+    async removeCompetitionNomination({
+        competitionId,
+        nominationId,
+    }: {
+        nominationId: number;
+        competitionId: number;
+    }): Promise<Nomination> {
+        const { data } = await remove(
+            `/api/competition/${competitionId}/nominations/${nominationId}/`
+        );
+        return data;
+    },
+    async getCompetitionNomination({
+        competitionId,
+        nominationId,
+    }: {
+        nominationId: number;
+        competitionId: number;
+    }): Promise<Nomination> {
+        const { data } = await get(
+            `/api/competition/${competitionId}/nominations/${nominationId}/`
+        );
+        return data;
+    },
+    async createCompetitionNomination({
+        competitionId,
+        nomination,
+    }: {
+        competitionId: number;
+        nomination: Nomination;
+    }): Promise<Nomination> {
+        const { data } = await post(
+            `/api/competition/${competitionId}/nominations/`,
+            nomination
         );
         return data;
     },

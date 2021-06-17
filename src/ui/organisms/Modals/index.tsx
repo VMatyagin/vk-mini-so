@@ -5,6 +5,7 @@ import { BoecFilterModal } from "../../../features/boec/ui/modals/BoecFilterModa
 import { BoecListModal } from "../../../features/boec/ui/modals/BoecListModal";
 import { BoecSelectModal } from "../../../features/boec/ui/modals/BoecSelectModal";
 import { LeaderPositionModal } from "../../../features/boec/ui/modals/LeaderPositionModal";
+import { NominationEditModal } from "../../../features/event/ui/modals/NominationEditModal";
 import { NominationSelectModal } from "../../../features/event/ui/modals/NominationSelectModal";
 
 import { routerStore } from "../../../features/stores/router-store";
@@ -19,6 +20,7 @@ export const Modals = observer(() => {
             {LeaderPositionModal()}
             {BoecSelectModal()}
             {NominationSelectModal()}
+            {NominationEditModal()}
         </MRoot>
     );
 });
