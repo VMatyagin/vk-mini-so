@@ -12,9 +12,6 @@ export const EVENT_WORTH = [
         title: "Волонтерство",
     },
     {
-        title: "Образовательный",
-    },
-    {
         title: "Городское",
     },
 ];
