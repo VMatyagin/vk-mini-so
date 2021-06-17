@@ -1,6 +1,6 @@
 import { Area, Brigade, Position, Seasons } from "../../types";
-import { get, patch, post } from "../axiosConfig";
-import { ListResponse } from "../types";
+import { get, patch, post, remove } from "../axiosConfig";
+import { ListResponse, SuccessResponse } from "../types";
 
 export const BrigadesAPI = {
     async getAreas({ shtab }: { shtab?: number }): Promise<ListResponse<Area>> {
@@ -87,5 +87,40 @@ export const BrigadesAPI = {
             `/api/so/brigade/${brigadeId}/positions/${positionId}/remove/`
         );
         return data;
+    },
+    updateSeason({
+        brigadeId,
+        boecId,
+        id,
+        year,
+    }: {
+        brigadeId: number;
+        boecId: number;
+        id: number;
+        year: number;
+    }): Promise<SuccessResponse<Seasons>> {
+        return patch(`/api/so/season/${id}/`, {
+            brigadeId,
+            boecId,
+            year,
+        });
+    },
+    setSeason({
+        brigadeId,
+        boecId,
+        year,
+    }: {
+        brigadeId: number;
+        boecId: number;
+        year: number;
+    }): Promise<SuccessResponse<Seasons>> {
+        return post(`/api/so/season/`, {
+            brigadeId,
+            boecId,
+            year,
+        });
+    },
+    deleteSeason(id: number): Promise<SuccessResponse<Seasons>> {
+        return remove(`/api/so/season/${id}/`);
     },
 };

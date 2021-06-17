@@ -1,7 +1,7 @@
 import axios, { Canceler } from "axios";
 import { Boec, Position, Seasons } from "../../types";
-import { get, remove } from "../axiosConfig";
-import { ListResponse } from "../types";
+import { get, patch, remove } from "../axiosConfig";
+import { ListResponse, SuccessResponse } from "../types";
 
 const CancelToken = axios.CancelToken;
 let cancel: Canceler | undefined;
@@ -52,7 +52,7 @@ export const UsersAPI = {
         const { data } = await get(`/api/so/boec/${userId}/positions/`);
         return data;
     },
-    async getEvent(id: number): Promise<Event> {
-        return get(`/api/event/${id}/`);
+    updateBoecData(data: Partial<Boec>): Promise<SuccessResponse<Boec, false>> {
+        return patch(`/api/so/boec/${data.id}/`, data);
     },
 };

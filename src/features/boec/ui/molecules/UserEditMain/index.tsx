@@ -15,7 +15,6 @@ import { useQuery } from "react-query";
 import { SuccessSnackbar } from "../../../../../ui/molecules/SuccessSnackbar";
 import { routerStore } from "../../../../stores/router-store";
 import { Boec } from "../../../../types";
-import { SoAPI } from "../../../../utils/api.service";
 import { UsersAPI } from "../../../../utils/requests/user-request";
 import { boecStore } from "../../../store/boecStore";
 import { useQueryClient } from "react-query";
@@ -43,7 +42,7 @@ export const UserEditMain: FC = observer(() => {
 
     const onSubmit = (values: Boec) => {
         openPopout(<ScreenSpinner />);
-        SoAPI.updateBoecData(values).then(({ data }) => {
+        UsersAPI.updateBoecData(values).then(({ data }) => {
             queryClient.setQueryData(["boec", boecId!], data);
             closePopout();
             reset(data);

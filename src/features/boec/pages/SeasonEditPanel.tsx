@@ -20,7 +20,6 @@ import { SuccessSnackbar } from "../../../ui/molecules/SuccessSnackbar";
 import { routerStore } from "../../stores/router-store";
 
 import { PanelProps, Seasons } from "../../types";
-import { SoAPI } from "../../utils/api.service";
 import { BrigadesAPI } from "../../utils/requests/brigades-request";
 import { boecStore } from "../store/boecStore";
 
@@ -68,13 +67,13 @@ export const SeasonEditPanel: FC<PanelProps> = observer(({ id, viewId }) => {
     const onSubmit = async (values: Record<keyof Seasons, string>) => {
         openPopout(<ScreenSpinner />);
         const { data } = await (currentSeason
-            ? SoAPI.updateSeason({
+            ? BrigadesAPI.updateSeason({
                   brigadeId: Number(values.brigade),
                   boecId: boecId!,
                   id: currentSeason.id,
                   year: Number(values.year),
               })
-            : SoAPI.setSeason({
+            : BrigadesAPI.setSeason({
                   brigadeId: Number(values.brigade),
                   boecId: boecId!,
                   year: Number(values.year),
@@ -88,7 +87,7 @@ export const SeasonEditPanel: FC<PanelProps> = observer(({ id, viewId }) => {
         () => {
             openPopout(<ScreenSpinner />);
 
-            return SoAPI.deleteSeason(currentSeason!.id);
+            return BrigadesAPI.deleteSeason(currentSeason!.id);
         },
         {
             onSuccess: () => {
