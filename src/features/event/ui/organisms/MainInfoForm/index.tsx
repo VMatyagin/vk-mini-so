@@ -135,7 +135,7 @@ export const MainInfoForm: FC = observer(() => {
             <Controller
                 control={control}
                 name="shtabId"
-                rules={{ required: "Это поле необходимо заполнить" }}
+                // rules={{ required: "Это поле необходимо заполнить" }}
                 render={({ field, fieldState }) => (
                     <FormItem
                         top="Штаб-организатор"
@@ -203,7 +203,7 @@ export const MainInfoForm: FC = observer(() => {
             <Controller
                 control={control}
                 name="startTime"
-                rules={{ required: "Это поле необходимо заполнить" }}
+                // rules={{ required: "Это поле необходимо заполнить" }}
                 render={({ field, fieldState }) => (
                     <FormItem
                         top="Время начала"
