@@ -26,7 +26,7 @@ import { EventStoreInstance } from "../../store/eventStore";
 export const MODAL_EVENT_NOMINATION_EDIT = "MODAL_EVENT_NOMINATION_EDIT";
 
 export const NominationEditModal = () => {
-    const { closeModal, modalCallback, openPopout, closePopout } =
+    const { closeModal, modalCallback, openPopout, closePopout,activeModal } =
         RouterStoreInstance;
     const { competitionId, nominationId, eventId } = EventStoreInstance;
 
@@ -99,6 +99,8 @@ export const NominationEditModal = () => {
         },
         retry: 1,
         refetchOnWindowFocus: false,
+        enabled: activeModal === MODAL_EVENT_NOMINATION_EDIT,
+
     });
 
     return (
