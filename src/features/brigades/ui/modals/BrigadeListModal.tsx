@@ -1,4 +1,3 @@
-import { Icon24Filter } from "@vkontakte/icons";
 import { debounce } from "@vkontakte/vkjs";
 import {
     ModalPage,
@@ -12,26 +11,21 @@ import {
 import { useState, useMemo, useCallback } from "react";
 import { LazyList } from "../../../../ui/organisms/LazyList";
 import { RouterStoreInstance } from "../../../stores/router-store";
-import { UsersAPI } from "../../../utils/requests/user-request";
-import { MODAL_BOEC_FILTER } from "./BoecFilterModal";
+import { BrigadesAPI } from "../../../utils/requests/brigades-request";
 
-export const MODAL_BOEC_LIST = "MODAL_BOEC_LIST";
+export const MODAL_BRIGADE_LIST = "MODAL_BRIGADE_LIST";
 
-export const BoecListModal = () => {
-    const { closeModal, modalCallback, setModalCallback, openModal } =
-        RouterStoreInstance;
+export const BrigadeListModal = () => {
+    const { closeModal, modalCallback } = RouterStoreInstance;
 
     const [search, setSearch] = useState<string>("");
     const [filter, setFilter] = useState({
         search: undefined as string | undefined,
-
-        brigadeId: undefined as string | undefined,
     });
 
     const setFilterD = useMemo(() => debounce(setFilter, 750), [setFilter]);
     const resetListFilter = () => {
         setFilter({
-            brigadeId: undefined,
             search: undefined,
         });
         setSearch("");
@@ -39,31 +33,12 @@ export const BoecListModal = () => {
     const handleChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
             setSearch(event.target.value);
-            setFilterD((prev) => ({
+            setFilterD({
                 search: event.target.value,
-
-                brigadeId: prev.brigadeId,
-            }));
+            });
         },
         [setFilterD]
     );
-
-    const setFn = useCallback(
-        (id?: string) => {
-            setFilter((prev) => ({
-                search: prev.search,
-
-                brigadeId: id,
-            }));
-            closeModal();
-        },
-        [closeModal]
-    );
-
-    const onFilterClick = () => {
-        setModalCallback(MODAL_BOEC_FILTER, setFn);
-        openModal(MODAL_BOEC_FILTER);
-    };
 
     const onBoecListClose = () => {
         closeModal();
@@ -75,7 +50,7 @@ export const BoecListModal = () => {
 
     return (
         <ModalPage
-            id={MODAL_BOEC_LIST}
+            id={MODAL_BRIGADE_LIST}
             settlingHeight={100}
             dynamicContentHeight={true}
             header={
@@ -86,35 +61,28 @@ export const BoecListModal = () => {
                         )
                     }
                 >
-                    Выбор бойца
+                    Выбор отряда
                 </ModalPageHeader>
             }
             onClose={onBoecListClose}
         >
-            <Search
-                value={search}
-                onChange={handleChange}
-                icon={<Icon24Filter />}
-                onIconClick={onFilterClick}
-                autoFocus={true}
-            />
+            <Search value={search} onChange={handleChange} autoFocus={true} />
             <LazyList
-                title="Бойцы"
-                fetchFn={UsersAPI.getList}
-                queryKey={"boec-list"}
+                title="Отряды"
+                fetchFn={BrigadesAPI.getBrigadesList}
+                queryKey={"brigade-list"}
                 extraFnProp={{
                     search: filter.search,
-                    brigadeId: filter.brigadeId,
                 }}
                 renderItem={(item) => (
                     <SimpleCell
                         key={item.id}
                         onClick={() => {
-                            modalCallback[MODAL_BOEC_LIST](item);
+                            modalCallback[MODAL_BRIGADE_LIST](item);
                             resetListFilter();
                         }}
                     >
-                        {item.fullName}
+                        {item.title}
                     </SimpleCell>
                 )}
             />

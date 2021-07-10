@@ -18,10 +18,12 @@ import { Boec } from "../../../../types";
 import { UsersAPI } from "../../../../utils/requests/user-request";
 import { boecStore } from "../../../store/boecStore";
 import { useQueryClient } from "react-query";
+import { brigadeStore } from "../../../../brigades/store/brigadeStore";
 
 export const UserEditMain: FC = observer(() => {
     const { openPopout, closePopout } = useContext(routerStore);
-    const { boecId } = useContext(boecStore);
+    const { boecId, setBoecId } = useContext(boecStore);
+    const { brigadeId } = useContext(brigadeStore);
     const [SnackBar, setSnackBar] = useState<React.ReactNode>(null);
     const queryClient = useQueryClient();
 
@@ -32,6 +34,7 @@ export const UserEditMain: FC = observer(() => {
         },
         retry: 1,
         refetchOnWindowFocus: false,
+        enabled: !!boecId,
     });
 
     const { handleSubmit, control, formState, reset } = useForm<Boec>({
@@ -42,12 +45,27 @@ export const UserEditMain: FC = observer(() => {
 
     const onSubmit = (values: Boec) => {
         openPopout(<ScreenSpinner />);
-        UsersAPI.updateBoecData(values).then(({ data }) => {
-            queryClient.setQueryData(["boec", boecId!], data);
-            closePopout();
-            reset(data);
-            setSnackBar(<SuccessSnackbar onClose={() => setSnackBar(null)} />);
-        });
+        if (boecId) {
+            UsersAPI.updateBoecData(values).then(({ data }) => {
+                queryClient.setQueryData(["boec", boecId!], data);
+                closePopout();
+                reset(data);
+                setSnackBar(
+                    <SuccessSnackbar onClose={() => setSnackBar(null)} />
+                );
+            });
+        } else {
+            UsersAPI.createBoec({ ...values, brigadeId: brigadeId! }).then(
+                (boec) => {
+                    setBoecId(boec.id);
+                    closePopout();
+                    reset(boec);
+                    setSnackBar(
+                        <SuccessSnackbar onClose={() => setSnackBar(null)} />
+                    );
+                }
+            );
+        }
     };
     return (
         <Group>
@@ -99,7 +117,7 @@ export const UserEditMain: FC = observer(() => {
                 <Controller
                     control={control}
                     name="middleName"
-                    rules={{ required: "Это поле необходимо заполнить" }}
+                    // rules={{ required: "Это поле необходимо заполнить" }}
                     render={({ field, fieldState }) => (
                         <FormItem
                             top="Отчество"

@@ -16,11 +16,13 @@ import { observer } from "mobx-react-lite";
 import { routerStore } from "../../stores/router-store";
 import { Icon28Like, Icon28UsersOutline } from "@vkontakte/icons";
 import { useMutation, useQuery } from "react-query";
-import { Boec, CompetitionParticipant, PanelProps } from "../../types";
+import { Boec, Brigade, CompetitionParticipant, PanelProps } from "../../types";
 import { eventStore } from "../store/eventStore";
 import { EventAPI } from "../../utils/requests/event-request";
 import { COMPETITIVE_PARTICIPANT_TITLES } from "../helpers";
 import { MODAL_BOEC_SELECTING } from "../../boec/ui/modals/BoecSelectModal";
+import { MODAL_BRIGADE_SELECTING } from "../../brigades/ui/modals/BrigadeSelectModal";
+import { MODAL_EVENT_PARTICIPANT_TITLE } from "../ui/modals/ParticipantTitleModal";
 
 export const CompetitionViewPanel: FC<PanelProps> = observer(
     ({ id, viewId }) => {
@@ -50,13 +52,23 @@ export const CompetitionViewPanel: FC<PanelProps> = observer(
             onError: closePopout,
             onSettled: closePopout,
         });
-        const { mutate } = useMutation<CompetitionParticipant, Error, number[]>(
-            (boecIds) => {
+        const { mutate } = useMutation<
+            CompetitionParticipant,
+            Error,
+            {
+                boec: number[];
+                brigadesIds: number[] | undefined;
+                title: string;
+            }
+        >(
+            ({ boec, brigadesIds, title }) => {
                 openPopout(<ScreenSpinner />);
 
                 return EventAPI.createCompetitionParticipant({
-                    boec: boecIds,
+                    boec,
+                    brigadesIds,
                     competitionId: competitionId!,
+                    title,
                 });
             },
             {
@@ -66,11 +78,34 @@ export const CompetitionViewPanel: FC<PanelProps> = observer(
                 },
             }
         );
+        const brigadeSelectCallback = (data: {
+            boec: number[];
+            brigadesIds: number[] | undefined;
+            title: string;
+        }) => {
+            mutate(data);
+        };
+        const boecSelectCallback = (boecList: Boec[], title: string) => {
+            setModalCallback(MODAL_BRIGADE_SELECTING, (brigades: Brigade[]) =>
+                brigadeSelectCallback({
+                    boec: boecList.map((item) => item.id),
+                    brigadesIds:
+                        brigades.length > 0
+                            ? brigades.map((item) => item.id)
+                            : undefined,
+                    title,
+                })
+            );
+            openModal(MODAL_BRIGADE_SELECTING);
+        };
         const createParticipant = () => {
-            setModalCallback(MODAL_BOEC_SELECTING, (boecList: Boec[]) => {
-                mutate(boecList.map((boec) => boec.id));
+            setModalCallback(MODAL_EVENT_PARTICIPANT_TITLE, (title: string) => {
+                openModal(MODAL_BOEC_SELECTING);
+                setModalCallback(MODAL_BOEC_SELECTING, (boecList: Boec[]) =>
+                    boecSelectCallback(boecList, title)
+                );
             });
-            openModal(MODAL_BOEC_SELECTING);
+            openModal(MODAL_EVENT_PARTICIPANT_TITLE);
         };
         return (
             <Panel id={id}>

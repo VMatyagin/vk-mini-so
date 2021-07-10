@@ -21,6 +21,7 @@ export const BoecView: FC<ViewProps> = observer(({ id }) => {
         retry: 1,
         refetchOnWindowFocus: false,
         onSuccess: setSeasons,
+        enabled: !!boecId,
     });
 
     return (

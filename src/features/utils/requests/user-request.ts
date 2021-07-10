@@ -1,12 +1,16 @@
 import axios, { Canceler } from "axios";
-import { Boec, Position, Seasons } from "../../types";
-import { get, patch, remove } from "../axiosConfig";
+import { Boec, Position, Seasons, User } from "../../types";
+import { get, patch, post, remove } from "../axiosConfig";
 import { ListResponse, SuccessResponse } from "../types";
 
 const CancelToken = axios.CancelToken;
 let cancel: Canceler | undefined;
 
 export const UsersAPI = {
+    async getMeData(id: number): Promise<User> {
+        const { data } = await get("/api/me/");
+        return data;
+    },
     async getList({
         limit,
         offset,
@@ -54,5 +58,9 @@ export const UsersAPI = {
     },
     updateBoecData(data: Partial<Boec>): Promise<SuccessResponse<Boec, false>> {
         return patch(`/api/so/boec/${data.id}/`, data);
+    },
+    async createBoec(boec: Partial<Boec>): Promise<Boec> {
+        const { data } = await post(`/api/so/boec/`, boec);
+        return data;
     },
 };

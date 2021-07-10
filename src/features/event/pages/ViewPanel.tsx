@@ -59,7 +59,7 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
             >
                 <SimpleCell>
                     <InfoRow header="Штаб-организатор">
-                        {data?.shtab?.title}
+                        {data?.shtab?.title || "Без организатора"}
                     </InfoRow>
                 </SimpleCell>
                 <SimpleCell>
@@ -78,7 +78,7 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                 </SimpleCell>
                 <SimpleCell>
                     <InfoRow header="Время проведения">
-                        {data?.startTime?.slice(0, -3)}
+                        {data?.startTime?.slice(0, -3) || 'Не указано'}
                     </InfoRow>
                 </SimpleCell>
                 <CellButton onClick={() => openPanel("edit")}>

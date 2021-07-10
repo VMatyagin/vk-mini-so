@@ -63,7 +63,7 @@ export const ListPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                             onClick={() => changeView(item.id)}
                             description={item.description}
                         >
-                            {`${item.title} | ${item.shtab?.title}`}
+                            {`${item.title} | ${item.shtab?.title || 'Без организатора'}`}
                         </SimpleCell>
                     )}
                 />

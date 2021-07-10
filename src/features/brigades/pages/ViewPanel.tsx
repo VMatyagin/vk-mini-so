@@ -21,11 +21,13 @@ import { useQuery } from "react-query";
 import { BrigadesAPI } from "../../utils/requests/brigades-request";
 import { PanelProps } from "../../types";
 import { BrigadeLeaders } from "../ui/molecules/BrigadeLeaders";
+import { boecStore } from "../../boec/store/boecStore";
 
 export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
     const { goBack, setPage, openPopout, closePopout } =
         useContext(routerStore);
     const { brigadeId } = useContext(brigadeStore);
+    const { setBoecId } = useContext(boecStore);
 
     const handleOpenList = () => {
         setPage(viewId, "details_boecs_list");
@@ -46,6 +48,11 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
         enabled: !!brigadeId,
         onSuccess: closePopout,
     });
+
+    const handleAddBoec = () => {
+        setBoecId(null);
+        setPage("boec", "edit");
+    };
 
     return (
         <Panel id={id}>
@@ -101,6 +108,9 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                             onClick={handleBrigadeEdit}
                         >
                             Редактировать
+                        </CellButton>
+                        <CellButton onClick={handleAddBoec}>
+                            Добавить бойца
                         </CellButton>
                     </Group>
                 </>

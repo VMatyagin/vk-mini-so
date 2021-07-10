@@ -16,17 +16,19 @@ export class BoecStore {
     };
 
     updateSeasons = (season: Seasons) => {
-        if (this.seasons) {
+        const seasons = this.seasons;
+        if (seasons) {
             let newSeasons = [];
-            if (this.seasons.map((item) => item.id).includes(season.id)) {
-                newSeasons = this.seasons.filter((item) => {
+
+            if (seasons.map((item) => item.id).includes(season.id)) {
+                newSeasons = seasons.map((item) => {
                     if (item.id === season.id) {
                         return season;
                     }
                     return item;
                 });
             } else {
-                newSeasons = [...this.seasons, season];
+                newSeasons = [...seasons, season];
             }
 
             this.seasons = newSeasons.sort((a, b) => a.year - b.year);

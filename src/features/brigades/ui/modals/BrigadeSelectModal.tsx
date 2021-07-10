@@ -16,40 +16,40 @@ import {
 } from "@vkontakte/vkui";
 import { useState } from "react";
 import { RouterStoreInstance } from "../../../stores/router-store";
-import { Boec } from "../../../types";
-import { MODAL_BOEC_LIST } from "./BoecListModal";
+import { Brigade } from "../../../types";
+import { MODAL_BRIGADE_LIST } from "./BrigadeListModal";
 
-export const MODAL_BOEC_SELECTING = "MODAL_BOEC_SELECTING";
+export const MODAL_BRIGADE_SELECTING = "MODAL_BRIGADE_SELECTING";
 
-export const BoecSelectModal = () => {
+export const BrigadeSelectModal = () => {
     const { closeModal, modalCallback, setModalCallback, openModal } =
         RouterStoreInstance;
-    const [boecs, setBoecs] = useState<Boec[]>([]);
+    const [brigades, setBrigades] = useState<Brigade[]>([]);
 
     const onBoecSelecting = () => {
+        modalCallback[MODAL_BRIGADE_SELECTING](brigades);
         closeModal();
-        modalCallback[MODAL_BOEC_SELECTING](boecs);
-        setBoecs([]);
+        setBrigades([]);
     };
-    const onBoecSelectingClose = () => {
+    const onBrigadeSelectingClose = () => {
         closeModal();
-        setBoecs([]);
+        setBrigades([]);
     };
-    const openBoecListModal = () => {
-        setModalCallback(MODAL_BOEC_LIST, (boec: Boec) => {
-            setBoecs((prev) => {
-                if (prev.includes(boec)) {
+    const openBrigadeListModal = () => {
+        setModalCallback(MODAL_BRIGADE_LIST, (brigade: Brigade) => {
+            setBrigades((prev) => {
+                if (prev.includes(brigade)) {
                     return prev;
                 } else {
-                    return [...prev, boec];
+                    return [...prev, brigade];
                 }
             });
             closeModal();
         });
-        openModal(MODAL_BOEC_LIST);
+        openModal(MODAL_BRIGADE_LIST);
     };
-    const handleRemove = (boec: Boec) => {
-        setBoecs((prev) => prev.filter((item) => item !== boec));
+    const handleRemove = (brigade: Brigade) => {
+        setBrigades((prev) => prev.filter((item) => item !== brigade));
     };
 
     const platform = usePlatform();
@@ -58,13 +58,15 @@ export const BoecSelectModal = () => {
 
     return (
         <ModalPage
-            id={MODAL_BOEC_SELECTING}
+            id={MODAL_BRIGADE_SELECTING}
             settlingHeight={100}
             header={
                 <ModalPageHeader
                     left={
                         isMobile && (
-                            <PanelHeaderClose onClick={onBoecSelectingClose} />
+                            <PanelHeaderClose
+                                onClick={onBrigadeSelectingClose}
+                            />
                         )
                     }
                     right={
@@ -73,28 +75,28 @@ export const BoecSelectModal = () => {
                         </PanelHeaderButton>
                     }
                 >
-                    Выбор бойцов
+                    Выбор отряда
                 </ModalPageHeader>
             }
-            onClose={onBoecSelectingClose}
+            onClose={onBrigadeSelectingClose}
         >
             <Group>
-                <CellButton onClick={openBoecListModal}>Выбрать</CellButton>
+                <CellButton onClick={openBrigadeListModal}>Выбрать</CellButton>
                 <Footer>
-                    Можно не выбирать, но нужно будет выбрать отряд
+                    Если не выбрать, то подтянется из последнего сезона бойцов
                 </Footer>
             </Group>
             <Group header={<Header mode="secondary">Выбрано</Header>}>
-                {boecs.length === 0 ? (
+                {brigades.length === 0 ? (
                     <Footer>Ничего не выбрано</Footer>
                 ) : (
-                    boecs.map((boec) => (
+                    brigades.map((brigade) => (
                         <Cell
                             removable={true}
-                            onRemove={() => handleRemove(boec)}
-                            key={boec.id}
+                            onRemove={() => handleRemove(brigade)}
+                            key={brigade.id}
                         >
-                            {boec.fullName}
+                            {brigade.title}
                         </Cell>
                     ))
                 )}

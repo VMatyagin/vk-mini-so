@@ -5,8 +5,11 @@ import { BoecFilterModal } from "../../../features/boec/ui/modals/BoecFilterModa
 import { BoecListModal } from "../../../features/boec/ui/modals/BoecListModal";
 import { BoecSelectModal } from "../../../features/boec/ui/modals/BoecSelectModal";
 import { LeaderPositionModal } from "../../../features/boec/ui/modals/LeaderPositionModal";
+import { BrigadeListModal } from "../../../features/brigades/ui/modals/BrigadeListModal";
+import { BrigadeSelectModal } from "../../../features/brigades/ui/modals/BrigadeSelectModal";
 import { NominationEditModal } from "../../../features/event/ui/modals/NominationEditModal";
 import { NominationSelectModal } from "../../../features/event/ui/modals/NominationSelectModal";
+import { ParticipantTitleModal } from "../../../features/event/ui/modals/ParticipantTitleModal";
 
 import { routerStore } from "../../../features/stores/router-store";
 
@@ -21,6 +24,9 @@ export const Modals = observer(() => {
             {BoecSelectModal()}
             {NominationSelectModal()}
             {NominationEditModal()}
+            {BrigadeSelectModal()}
+            {BrigadeListModal()}
+            {ParticipantTitleModal()}
         </MRoot>
     );
 });

@@ -20,12 +20,16 @@ import { routerStore } from "../../../../stores/router-store";
 export const UserEditSeasons: FC<{ viewId: string }> = observer(
     ({ viewId }) => {
         const { setPage } = useContext(routerStore);
-        const { selectSeason, seasons } = useContext(boecStore);
+        const { selectSeason, seasons, boecId } = useContext(boecStore);
 
         const onCellClick = (id?: number) => {
             id && selectSeason(id);
             setPage(viewId, "season");
         };
+
+        if (!boecId) {
+            return null;
+        }
 
         return (
             <Group header={<Header>Года выезда</Header>}>

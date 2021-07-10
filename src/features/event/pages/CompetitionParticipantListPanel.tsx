@@ -102,7 +102,7 @@ export const CompetitionParticipantListPanel: FC<CompetitionParticipantListPanel
                         participantId: participant.id,
                         competitionId: competitionId!,
                         participant: {
-                            worth: 2,
+                            worth: 1,
                             nominationId,
                         },
                     });
@@ -143,7 +143,7 @@ export const CompetitionParticipantListPanel: FC<CompetitionParticipantListPanel
                             before={<Icon28DoneOutline />}
                             onClick={() => setBigWorth(participant)}
                         >
-                            Призовое место/номинация
+                            Выбор номинации
                         </ActionSheetItem>
                     )}
                     {worth !== 0 && (
@@ -155,10 +155,9 @@ export const CompetitionParticipantListPanel: FC<CompetitionParticipantListPanel
                                     participantId: participant.id,
                                     competitionId: competitionId!,
                                     participant: {
-                                        worth: (participant.worth > 2
-                                            ? participant.worth - 2
-                                            : participant.worth -
-                                              1) as CompetitionParticipant["worth"],
+                                        worth: (participant.worth === 1
+                                            ? 0
+                                            : 1) as CompetitionParticipant["worth"],
                                     },
                                 })
                             }
@@ -223,7 +222,7 @@ export const CompetitionParticipantListPanel: FC<CompetitionParticipantListPanel
                                             index === 0 ? "" : "|";
                                         return `${prev} ${delimiter} ${current.title}`;
                                     },
-                                    ""
+                                    `${item.title ? `${item.title} | ` : ""} `
                                 )}
                             </SimpleCell>
                         )}

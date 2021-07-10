@@ -4,6 +4,7 @@ import {
     Input,
     Button,
     ScreenSpinner,
+    Checkbox,
 } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { FC, useContext } from "react";
@@ -63,6 +64,7 @@ export const CompetitionMainInfoForm: FC = observer(() => {
         defaultValues: {
             id: data?.id,
             title: data?.title,
+            ratingless: data?.ratingless,
         },
         reValidateMode: "onChange",
         mode: "onChange",
@@ -98,7 +100,25 @@ export const CompetitionMainInfoForm: FC = observer(() => {
                     </FormItem>
                 )}
             />
-
+            <Controller
+                control={control}
+                name="ratingless"
+                render={({ field, fieldState }) => (
+                    <FormItem
+                        status={fieldState.invalid ? "error" : "default"}
+                        bottom={fieldState.error && fieldState.error.message}
+                    >
+                        <Checkbox
+                            name={field.name}
+                            checked={field.value}
+                            onChange={field.onChange}
+                            onBlur={field.onBlur}
+                        >
+                            Не учитывать в рейтинге
+                        </Checkbox>
+                    </FormItem>
+                )}
+            />
             <FormItem>
                 <Button
                     size="l"

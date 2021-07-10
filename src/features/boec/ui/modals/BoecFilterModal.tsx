@@ -31,7 +31,7 @@ export const BoecFilterModal = () => {
 
     const { data: brigadesList } = useQuery({
         queryKey: ["brigades"],
-        queryFn: () => BrigadesAPI.getBrigadesList({ limit: 200 }),
+        queryFn: () => BrigadesAPI.getBrigadesList({ limit: 1000 }),
         retry: 1,
         refetchOnWindowFocus: false,
         enabled: activeModal === MODAL_BOEC_FILTER,

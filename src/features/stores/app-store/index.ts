@@ -1,9 +1,10 @@
 import { AppearanceSchemeType, UserInfo } from "@vkontakte/vk-bridge";
 import { makeAutoObservable } from "mobx";
 import { createContext } from "react";
-import { ScrollPosition } from "../../types";
+import { ScrollPosition, User } from "../../types";
 import VKBridge from "@vkontakte/vk-bridge";
 import { APP_ID, initApp } from "../../VKBridge";
+import { UsersAPI } from "../../utils/requests/user-request";
 
 export class AppStore {
     isLoading: boolean = true;
@@ -12,6 +13,7 @@ export class AppStore {
     colorSchema: AppearanceSchemeType = "client_light";
     activeTab: Record<string, string> = {};
     componentScroll: Record<string, ScrollPosition> = {};
+    user: User | null = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -24,6 +26,8 @@ export class AppStore {
             app_id: APP_ID,
             scope: "groups",
         });
+        const meData = await UsersAPI.getMeData(user.id);
+        this.user = meData;
         this.userData = user;
         this.accessToken = token.access_token;
         initApp();

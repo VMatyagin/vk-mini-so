@@ -182,14 +182,20 @@ export const EventAPI = {
     async createCompetitionParticipant({
         competitionId,
         boec,
+        brigadesIds,
+        title,
     }: {
         boec: number[];
+        brigadesIds?: number[];
         competitionId: number;
+        title: string;
     }): Promise<CompetitionParticipant> {
         const { data } = await post(
             `/api/competition/${competitionId}/participants/`,
             {
                 boec,
+                brigadesIds,
+                title,
             }
         );
         return data;

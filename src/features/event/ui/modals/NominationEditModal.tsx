@@ -15,7 +15,6 @@ import {
     Checkbox,
     ScreenSpinner,
 } from "@vkontakte/vkui";
-import { useLayoutEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation, useQuery } from "react-query";
 import { RouterStoreInstance } from "../../../stores/router-store";
@@ -26,7 +25,7 @@ import { EventStoreInstance } from "../../store/eventStore";
 export const MODAL_EVENT_NOMINATION_EDIT = "MODAL_EVENT_NOMINATION_EDIT";
 
 export const NominationEditModal = () => {
-    const { closeModal, modalCallback, openPopout, closePopout,activeModal } =
+    const { closeModal, modalCallback, openPopout, closePopout, activeModal } =
         RouterStoreInstance;
     const { competitionId, nominationId, eventId } = EventStoreInstance;
 
@@ -59,8 +58,12 @@ export const NominationEditModal = () => {
     const onNominationSelect = (values: Nomination) => {
         mutate(values);
     };
+    const handleClose = () => {
+        closeModal();
+        reset({ isRated: true });
+    };
 
-    const { data } = useQuery({
+    useQuery({
         queryKey: ["nomination", nominationId],
         queryFn: () => {
             return EventAPI.getCompetitionNomination({
@@ -71,6 +74,9 @@ export const NominationEditModal = () => {
         retry: 1,
         refetchOnWindowFocus: false,
         enabled: !!nominationId,
+        onSuccess: (data) => {
+            reset(data);
+        },
     });
 
     const { handleSubmit, control, formState, reset, watch } =
@@ -78,19 +84,9 @@ export const NominationEditModal = () => {
             mode: "onChange",
             defaultValues: {
                 isRated: true,
-                ...data,
             },
         });
     const { isDirty, isValid } = formState;
-
-    useLayoutEffect(() => {
-        if (data) {
-            reset(data);
-        }
-        return () => {
-            reset({ isRated: true });
-        };
-    }, [data, reset]);
 
     const { data: event } = useQuery({
         queryKey: ["event", eventId],
@@ -100,7 +96,6 @@ export const NominationEditModal = () => {
         retry: 1,
         refetchOnWindowFocus: false,
         enabled: activeModal === MODAL_EVENT_NOMINATION_EDIT,
-
     });
 
     return (
@@ -109,7 +104,9 @@ export const NominationEditModal = () => {
             settlingHeight={100}
             header={
                 <ModalPageHeader
-                    left={isMobile && <PanelHeaderClose onClick={closeModal} />}
+                    left={
+                        isMobile && <PanelHeaderClose onClick={handleClose} />
+                    }
                     right={
                         !(!isDirty || !isValid) && (
                             <PanelHeaderButton
@@ -123,7 +120,7 @@ export const NominationEditModal = () => {
                     {nominationId ? "Редактирование" : "Создание"}
                 </ModalPageHeader>
             }
-            onClose={closeModal}
+            onClose={handleClose}
         >
             <Group style={{ minHeight: 300 }}>
                 <FormLayout onSubmit={handleSubmit(onNominationSelect)}>

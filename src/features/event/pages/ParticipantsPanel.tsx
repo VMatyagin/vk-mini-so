@@ -144,6 +144,8 @@ export const ParticipantsPanel: FC<ParticipantsPanelProps> = observer(
                     </Title>
                 </PanelHeader>
                 <Group>
+                    <CellButton onClick={onAddClick}>Добавить</CellButton>
+
                     <LazyList
                         title={PARTICIPANT_TITLES[worth].title}
                         fetchFn={EventAPI.getEventParticipants}
@@ -161,7 +163,6 @@ export const ParticipantsPanel: FC<ParticipantsPanelProps> = observer(
                             </SimpleCell>
                         )}
                     />
-                    <CellButton onClick={onAddClick}>Добавить</CellButton>
                 </Group>
             </Panel>
         );

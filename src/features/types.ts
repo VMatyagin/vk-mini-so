@@ -1,3 +1,11 @@
+export interface User {
+    id: number;
+    boec: Boec;
+    brigades: Brigade[];
+    shtabs: Shtab[];
+    is_staff: boolean
+}
+
 export interface WithId {
     id: number;
 }
@@ -29,6 +37,9 @@ export interface Boec extends WithId {
     middleName: string | undefined;
     DOB: string | null;
     fullName: string;
+
+    // for post
+    brigadeId: number;
 }
 
 export interface EventType {
@@ -93,6 +104,7 @@ export interface Competition {
     ivolvement_count: number;
     winner_count: number;
     notwinner_count: number;
+    ratingless: boolean;
 }
 
 export interface CompetitionParticipant {
@@ -101,6 +113,8 @@ export interface CompetitionParticipant {
     boec: number[] | Boec[];
     worth: 0 | 1 | 2 | 3;
     brigades: Brigade[];
+    brigadesIds: number[];
+    title: string | null;
     nomination: Nomination[];
     // only for updating
     nominationId: number;

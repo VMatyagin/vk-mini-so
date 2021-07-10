@@ -15,6 +15,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { LazySelect } from "../../../../../ui/organisms/LazySelect";
 import { routerStore } from "../../../../stores/router-store";
 import { EventType, Shtab } from "../../../../types";
+import { dirtyValues } from "../../../../utils";
 import { EventAPI } from "../../../../utils/requests/event-request";
 import { ShtabsAPI } from "../../../../utils/requests/shtab-request";
 import { EVENT_WORTH } from "../../../helpers";
@@ -40,13 +41,16 @@ export const MainInfoForm: FC = observer(() => {
         reValidateMode: "onChange",
         mode: "onChange",
     });
-    const { isDirty, isValid } = formState;
+    const { isDirty, isValid, dirtyFields } = formState;
 
     const { mutate } = useMutation<EventType, Error, EventType>(
         (values) => {
             openPopout(<ScreenSpinner />);
             if (eventId) {
-                return EventAPI.updateEvent(values);
+                return EventAPI.updateEvent({
+                    ...dirtyValues(dirtyFields, values),
+                    id: values.id,
+                });
             }
             return EventAPI.createEvent(values);
         },
