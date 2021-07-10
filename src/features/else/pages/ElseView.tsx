@@ -13,10 +13,14 @@ import { Group, Panel, PanelHeader, SimpleCell, Switch } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { FC, useContext, useState } from "react";
 import { AbstractView } from "../../../ui/molecules/AbstractView";
+import { appStore } from "../../stores/app-store";
 import { routerStore } from "../../stores/router-store";
+import { CollectiveCell } from "../ui/molecules/CollectiveCell";
 
 export const ElseView: FC<{ id: string }> = observer(({ id }) => {
     const { setPage } = useContext(routerStore);
+    const { user } = useContext(appStore);
+
     const [checked, setChecked] = useState(false);
     const handleClick = () => setChecked(!checked);
     const changeView = (view: string) => {
@@ -36,36 +40,40 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
                     </SimpleCell>
                 </Group>
                 <Group>
-                    <SimpleCell
-                        before={<Icon28CalendarOutline />}
-                        onClick={() => changeView("event")}
-                    >
-                        Управление мероприятиями
-                    </SimpleCell>
-                    {/* <SimpleCell
-                        before={<Icon28StatisticsOutline />}
-                        onClick={() => changeView("else_rating")}
-                    >
-                        Рейтинг
-                    </SimpleCell> */}
-                    <SimpleCell
-                        before={<Icon28UserSquareOutline />}
-                        onClick={() => changeView("brigades")}
-                    >
-                        Отряды
-                    </SimpleCell>
-                    <SimpleCell
-                        before={<Icon28UserSquareOutline />}
-                        onClick={() => setPage("boec", "list")}
-                    >
-                        Поиск по бойцам
-                    </SimpleCell>
-                    <SimpleCell
-                        before={<Icon28UserSquareOutline />}
-                        onClick={() => setPage("shtab", "list")}
-                    >
-                        Штабы
-                    </SimpleCell>
+                    {/* TODO add spinner if !user */}
+                    {user !== null && user.shtabs.length > 0 && (
+                        <>
+                            <SimpleCell
+                                before={<Icon28CalendarOutline />}
+                                onClick={() => changeView("event")}
+                            >
+                                Управление мероприятиями
+                            </SimpleCell>
+                            <SimpleCell
+                                before={<Icon28UserSquareOutline />}
+                                onClick={() => changeView("brigades")}
+                            >
+                                Отряды
+                            </SimpleCell>
+                            <SimpleCell
+                                before={<Icon28UserSquareOutline />}
+                                onClick={() => setPage("boec", "list")}
+                            >
+                                Поиск по бойцам
+                            </SimpleCell>
+                        </>
+                    )}
+                    {user &&
+                        (user.brigades.length !== 0 ||
+                            user.shtabs.length !== 0) && <CollectiveCell />}
+                    {user && user.is_staff && (
+                        <SimpleCell
+                            before={<Icon28UserSquareOutline />}
+                            onClick={() => setPage("shtab", "list")}
+                        >
+                            Штабы
+                        </SimpleCell>
+                    )}
                     {/* <SimpleCell
                         before={<Icon28ScanViewfinderOutline />}
                         after={
@@ -74,15 +82,6 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
                     >
                         Контроль билетов
                     </SimpleCell>
-                    <SimpleCell
-                        before={<Icon28UsersOutline />}
-                        after={
-                            <Icon28ChevronRightOutline fill="var(--icon_tertiary)" />
-                        }
-                    >
-                        Мой отряд / штаб
-                    </SimpleCell>
-                
                     <SimpleCell
                         before={<Icon28MailOutline />}
                         after={
