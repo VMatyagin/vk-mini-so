@@ -1,5 +1,6 @@
 import {
     Icon28CalendarOutline,
+    Icon28EmployeeOutline,
     // Icon28StatisticsOutline,
     Icon28UserSquareOutline,
     // Icon28HelpOutline,
@@ -13,6 +14,7 @@ import { Group, Panel, PanelHeader, SimpleCell, Switch } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { FC, useContext, useState } from "react";
 import { AbstractView } from "../../../ui/molecules/AbstractView";
+import { boecStore } from "../../boec/store/boecStore";
 import { appStore } from "../../stores/app-store";
 import { routerStore } from "../../stores/router-store";
 import { CollectiveCell } from "../ui/molecules/CollectiveCell";
@@ -20,11 +22,16 @@ import { CollectiveCell } from "../ui/molecules/CollectiveCell";
 export const ElseView: FC<{ id: string }> = observer(({ id }) => {
     const { setPage } = useContext(routerStore);
     const { user } = useContext(appStore);
+    const { setBoecId } = useContext(boecStore);
 
     const [checked, setChecked] = useState(false);
     const handleClick = () => setChecked(!checked);
     const changeView = (view: string) => {
         setPage(view, "base");
+    };
+    const openProfile = () => {
+        setBoecId(user!.boec.id);
+        setPage("boec", "base");
     };
     return (
         <AbstractView id={id}>
@@ -74,6 +81,12 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
                             Штабы
                         </SimpleCell>
                     )}
+                    <SimpleCell
+                        onClick={openProfile}
+                        before={<Icon28EmployeeOutline />}
+                    >
+                        Профиль
+                    </SimpleCell>
                     {/* <SimpleCell
                         before={<Icon28ScanViewfinderOutline />}
                         after={

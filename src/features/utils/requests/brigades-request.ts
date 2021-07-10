@@ -1,6 +1,10 @@
+import axios, { Canceler } from "axios";
 import { Area, Brigade, Position, Seasons } from "../../types";
 import { get, patch, post, remove } from "../axiosConfig";
 import { ListResponse, SuccessResponse } from "../types";
+
+const CancelToken = axios.CancelToken;
+let cancel: Canceler | undefined;
 
 export const BrigadesAPI = {
     async getAreas({ shtab }: { shtab?: number }): Promise<ListResponse<Area>> {
@@ -34,11 +38,31 @@ export const BrigadesAPI = {
         return data;
     },
     async getBrigadeSeasons({
+        limit,
+        offset,
+        search,
         brigadeId,
     }: {
-        brigadeId: number;
-    }): Promise<Seasons[]> {
-        const { data } = await get(`/api/so/brigade/${brigadeId}/seasons/`);
+        offset: number;
+        limit: number;
+        search?: string;
+        brigadeId?: string;
+    }): Promise<ListResponse<Seasons>> {
+        if (cancel) {
+            cancel();
+        }
+        const params = {
+            offset,
+            limit,
+            search,
+        };
+
+        const { data } = await get(`/api/so/brigade/${brigadeId}/seasons/`, {
+            cancelToken: new CancelToken(function executor(c) {
+                cancel = c;
+            }),
+            params,
+        });
         return data;
     },
     async updateBrigade({
@@ -91,22 +115,12 @@ export const BrigadesAPI = {
         );
         return data;
     },
-    updateSeason({
-        brigadeId,
-        boecId,
-        id,
-        year,
-    }: {
-        brigadeId: number;
-        boecId: number;
-        id: number;
-        year: number;
-    }): Promise<SuccessResponse<Seasons>> {
-        return patch(`/api/so/season/${id}/`, {
-            brigadeId,
-            boecId,
-            year,
-        });
+    async updateSeason(
+        id: number,
+        formData: Partial<Seasons>
+    ): Promise<SuccessResponse<Seasons>> {
+        const { data } = await patch(`/api/so/season/${id}/`, formData);
+        return data;
     },
     setSeason({
         brigadeId,

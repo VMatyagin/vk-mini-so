@@ -1,145 +1,121 @@
-import { FC, useContext, useState } from "react";
-import {
-    Group,
-    Header,
-    Link,
-    Panel,
-    PanelHeaderBack,
-    PanelSpinner,
-    ScreenSpinner,
-    SimpleCell,
-    Title,
-} from "@vkontakte/vkui";
+import { FC, useCallback, useContext, useMemo, useState } from "react";
+import { Group, Panel, PanelHeaderBack, Search, Title } from "@vkontakte/vkui";
 import { PanelHeader } from "@vkontakte/vkui";
 
 import { observer } from "mobx-react-lite";
 import { routerStore } from "../../stores/router-store";
 import { brigadeStore } from "../store/brigadeStore";
-import { Boec, Seasons } from "../../types";
-import { toJS } from "mobx";
-import { boecStore } from "../../boec/store/boecStore";
+import { Seasons } from "../../types";
 import { BrigadesAPI } from "../../utils/requests/brigades-request";
-import { useQuery } from "react-query";
+import { LazyList } from "../../../ui/organisms/LazyList";
+import { debounce } from "@vkontakte/vkjs";
+import { SeasonCell } from "../ui/molecules/SeasonCell";
 
-const sortByFirstSeason = (seasons: Seasons[]) => {
-    let usedUsers = new Set();
-    return Object.entries(
-        seasons
-            .sort((a, b) => a.year - b.year)
-            .reduce((prev, current) => {
-                if (usedUsers.has(toJS(current.boec.id))) {
-                    return prev;
-                }
-                usedUsers.add(toJS(current.boec.id));
+// const sortByFirstSeason = (seasons: Seasons[]) => {
+//     let usedUsers = new Set();
+//     return Object.entries(
+//         seasons
+//             .sort((a, b) => a.year - b.year)
+//             .reduce((prev, current) => {
+//                 if (usedUsers.has(toJS(current.boec.id))) {
+//                     return prev;
+//                 }
+//                 usedUsers.add(toJS(current.boec.id));
 
-                return {
-                    ...prev,
-                    [current.year]: [
-                        ...(prev[current.year] || []),
-                        current.boec,
-                    ],
-                };
-            }, {} as Record<string, Boec[]>)
-    );
-};
+//                 return {
+//                     ...prev,
+//                     [current.year]: [
+//                         ...(prev[current.year] || []),
+//                         current.boec,
+//                     ],
+//                 };
+//             }, {} as Record<string, Boec[]>)
+//     );
+// };
 
-const sortByYear = (seasons: Seasons[]) => {
-    return Object.entries(
-        seasons
-            .sort((a, b) => a.year - b.year)
-            .reduce(
-                (prev, current) => ({
-                    ...prev,
-                    [current.year]: [
-                        ...(prev[current.year] || []),
-                        current.boec,
-                    ],
-                }),
-                {} as Record<string, Boec[]>
-            )
-    );
-};
+// const sortByYear = (seasons: Seasons[]) => {
+//     return Object.entries(
+//         seasons
+//             .sort((a, b) => a.year - b.year)
+//             .reduce(
+//                 (prev, current) => ({
+//                     ...prev,
+//                     [current.year]: [
+//                         ...(prev[current.year] || []),
+//                         current.boec,
+//                     ],
+//                 }),
+//                 {} as Record<string, Boec[]>
+//             )
+//     );
+// };
 
 export const BoecListPanel: FC<{ id: string }> = observer(({ id }) => {
-    const { goBack, setPage, openPopout, closePopout } =
-        useContext(routerStore);
+    const { goBack } = useContext(routerStore);
     const { brigadeId } = useContext(brigadeStore);
-    const { setBoecId } = useContext(boecStore);
-    const [sort, setSortType] = useState<boolean>(false);
 
-    const { data: seasons } = useQuery({
-        queryKey: ["seasons", brigadeId],
-        queryFn: ({ queryKey }) => {
-            openPopout(<ScreenSpinner />);
-            return BrigadesAPI.getBrigadeSeasons({
-                brigadeId: queryKey[1] as number,
-            });
-        },
-        retry: 1,
-        refetchOnWindowFocus: false,
-        enabled: !!brigadeId,
-        onSuccess: closePopout,
+    // const { data: seasons } = useQuery({
+    //     queryKey: ["seasons", brigadeId],
+    //     queryFn: ({ queryKey }) => {
+    //         openPopout(<ScreenSpinner />);
+    //         return BrigadesAPI.getBrigadeSeasons({
+    //             brigadeId: queryKey[1] as number,
+    //         });
+    //     },
+    //     retry: 1,
+    //     refetchOnWindowFocus: false,
+    //     enabled: !!brigadeId,
+    //     onSuccess: closePopout,
+    // });
+
+    // const { data: brigade } = useQuery({
+    //     queryKey: ["brigade", brigadeId],
+    //     queryFn: ({ queryKey }) => {
+    //         openPopout(<ScreenSpinner />);
+    //         return BrigadesAPI.getBrigade(queryKey[1] as number);
+    //     },
+    //     retry: 1,
+    //     refetchOnWindowFocus: false,
+    //     enabled: !!brigadeId,
+    //     onSuccess: closePopout,
+    // });
+
+    const [search, setSearch] = useState<string>();
+    const [filter, setFilter] = useState({
+        search: undefined as string | undefined,
     });
 
-    const { data: brigade } = useQuery({
-        queryKey: ["brigade", brigadeId],
-        queryFn: ({ queryKey }) => {
-            openPopout(<ScreenSpinner />);
-            return BrigadesAPI.getBrigade(queryKey[1] as number);
+    const setFilterD = useMemo(() => debounce(setFilter, 750), [setFilter]);
+    const handleChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>) => {
+            setSearch(event.target.value);
+            setFilterD(() => ({
+                search: event.target.value,
+            }));
         },
-        retry: 1,
-        refetchOnWindowFocus: false,
-        enabled: !!brigadeId,
-        onSuccess: closePopout,
-    });
-
-    const openBoec = (boecId: number) => {
-        setBoecId(boecId);
-        setPage("boec", "base");
-    };
-
+        [setFilterD]
+    );
     return (
         <Panel id={id}>
             <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
                 <Title level="2" weight="bold">
-                    {brigade?.title}
+                    Отчеты от сезонах
                 </Title>
             </PanelHeader>
-            <Header
-                mode="primary"
-                aside={
-                    <Link onClick={() => setSortType((prev) => !prev)}>
-                        {sort === false ? "По году выезда" : "По году набора"}
-                    </Link>
-                }
-            >
-                Бойцы
-            </Header>
 
-            {seasons ? (
-                (sort === true
-                    ? sortByYear(seasons)
-                    : sortByFirstSeason(seasons)
-                )
-                    .sort((a, b) => Number(b[0]) - Number(a[0]))
-                    .map((item) => (
-                        <Group
-                            key={item[0]}
-                            header={<Header mode="secondary">{item[0]}</Header>}
-                        >
-                            {item[1].map((boec: Boec) => (
-                                <SimpleCell
-                                    key={boec.id}
-                                    onClick={() => openBoec(boec.id)}
-                                >
-                                    {boec.fullName}
-                                </SimpleCell>
-                            ))}
-                        </Group>
-                    ))
-            ) : (
-                <PanelSpinner />
-            )}
+            <Group>
+                <Search value={search} onChange={handleChange} />
+                <LazyList
+                    title="Бойцы"
+                    fetchFn={BrigadesAPI.getBrigadeSeasons}
+                    queryKey={`brigade-seasons-${brigadeId}`}
+                    extraFnProp={{
+                        brigadeId,
+                        search: filter.search,
+                    }}
+                    renderItem={(item: Seasons) => <SeasonCell season={item} />}
+                />
+            </Group>
         </Panel>
     );
 });

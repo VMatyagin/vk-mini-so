@@ -3,7 +3,7 @@ export interface User {
     boec: Boec;
     brigades: Brigade[];
     shtabs: Shtab[];
-    is_staff: boolean
+    is_staff: boolean;
 }
 
 export interface WithId {
@@ -29,6 +29,9 @@ export interface Seasons extends WithId {
     boec: Boec;
     year: number;
     brigade: Brigade;
+    brigadeId: number;
+    isCandidate: boolean;
+    isAccepted: boolean;
 }
 
 export interface Boec extends WithId {

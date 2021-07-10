@@ -4,7 +4,6 @@ import { Seasons } from "../../types";
 
 export class BoecStore {
     boecId: number | null = null;
-    selectedSeason: number | null = null;
     seasons: Seasons[] | null = null;
 
     constructor() {
@@ -43,10 +42,6 @@ export class BoecStore {
     };
     setSeasons = (data: Seasons[]) => {
         this.seasons = data.sort((a, b) => a.year - b.year);
-    };
-
-    selectSeason = (id: number) => {
-        this.selectedSeason = id;
     };
 }
 

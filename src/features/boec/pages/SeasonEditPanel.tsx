@@ -1,5 +1,4 @@
 import {
-    Alert,
     Button,
     CustomSelectOption,
     FormItem,
@@ -13,9 +12,9 @@ import {
     Spinner,
 } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
-import React, { FC, useContext, useMemo, useState } from "react";
+import React, { FC, useContext, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { SuccessSnackbar } from "../../../ui/molecules/SuccessSnackbar";
 import { routerStore } from "../../stores/router-store";
 
@@ -23,10 +22,9 @@ import { PanelProps, Seasons } from "../../types";
 import { BrigadesAPI } from "../../utils/requests/brigades-request";
 import { boecStore } from "../store/boecStore";
 
-export const SeasonEditPanel: FC<PanelProps> = observer(({ id, viewId }) => {
+export const SeasonEditPanel: FC<PanelProps> = observer(({ id }) => {
     const { openPopout, closePopout, goBack } = useContext(routerStore);
-    const { boecId, selectedSeason, seasons, removeSeason, updateSeasons } =
-        useContext(boecStore);
+    const { boecId, updateSeasons } = useContext(boecStore);
 
     const [SnackBar, setSnackBar] = useState<React.ReactNode>(null);
 
@@ -37,27 +35,13 @@ export const SeasonEditPanel: FC<PanelProps> = observer(({ id, viewId }) => {
         refetchOnWindowFocus: false,
     });
 
-    const currentSeason = useMemo<Seasons | null>(
-        () =>
-            seasons
-                ? seasons!.find((item) => item.id === selectedSeason)!
-                : null,
-        [seasons, selectedSeason]
-    );
-
     const { handleSubmit, control, formState } = useForm<{
         brigade: string;
         year: string;
     }>({
         defaultValues: {
-            brigade:
-                currentSeason && currentSeason.brigade
-                    ? currentSeason.brigade.id.toString()
-                    : undefined,
-            year:
-                currentSeason && currentSeason.year
-                    ? currentSeason.year.toString()
-                    : new Date().getFullYear().toString(),
+            brigade: undefined,
+            year: new Date().getFullYear().toString(),
         },
         mode: "onChange",
     });
@@ -66,60 +50,17 @@ export const SeasonEditPanel: FC<PanelProps> = observer(({ id, viewId }) => {
 
     const onSubmit = async (values: Record<keyof Seasons, string>) => {
         openPopout(<ScreenSpinner />);
-        const { data } = await (currentSeason
-            ? BrigadesAPI.updateSeason({
-                  brigadeId: Number(values.brigade),
-                  boecId: boecId!,
-                  id: currentSeason.id,
-                  year: Number(values.year),
-              })
-            : BrigadesAPI.setSeason({
-                  brigadeId: Number(values.brigade),
-                  boecId: boecId!,
-                  year: Number(values.year),
-              }));
+        const { data } = await BrigadesAPI.setSeason({
+            brigadeId: Number(values.brigade),
+            boecId: boecId!,
+            year: Number(values.year),
+        });
         closePopout();
         updateSeasons(data);
         goBack();
         setSnackBar(<SuccessSnackbar onClose={() => setSnackBar(null)} />);
     };
-    const mutation = useMutation(
-        () => {
-            openPopout(<ScreenSpinner />);
 
-            return BrigadesAPI.deleteSeason(currentSeason!.id);
-        },
-        {
-            onSuccess: () => {
-                closePopout();
-                goBack();
-                removeSeason(currentSeason!.id);
-            },
-        }
-    );
-    const onDelete = () => {
-        openPopout(
-            <Alert
-                actions={[
-                    {
-                        title: "Удалить",
-                        mode: "destructive",
-                        autoclose: true,
-                        action: mutation.mutate,
-                    },
-                    {
-                        title: "Отмена",
-                        autoclose: true,
-                        mode: "cancel",
-                    },
-                ]}
-                actionsLayout="vertical"
-                onClose={closePopout}
-                header="Подтвердите действие"
-                text="Вы уверены, что хотите удалить это Сезон?"
-            />
-        );
-    };
     return (
         <Panel id={id}>
             <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
@@ -206,18 +147,6 @@ export const SeasonEditPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                     </Button>
                 </FormItem>
             </FormLayout>
-            {currentSeason && (
-                <FormItem>
-                    <Button
-                        onClick={onDelete}
-                        size="l"
-                        stretched={true}
-                        mode="outline"
-                    >
-                        Удалить
-                    </Button>
-                </FormItem>
-            )}
             {SnackBar}
         </Panel>
     );

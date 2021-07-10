@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from "react";
+import { FC, useContext, useMemo, useState } from "react";
 import {
     Alert,
     Avatar,
@@ -25,10 +25,12 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { UsersAPI } from "../../utils/requests/user-request";
 import { selectVKUsers } from "../../VKBridge";
 import { UserPositions } from "../ui/molecules/UserPositions";
+import { appStore } from "../../stores/app-store";
 
 export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
     const { goBack, setPage, openPopout, closePopout } =
         useContext(routerStore);
+    const { user } = useContext(appStore);
     const { seasons, boecId, setBoecId } = useContext(boecStore);
     const [SnackBar, setSnackBar] = useState<React.ReactNode>(null);
     const queryClient = useQueryClient();
@@ -110,6 +112,18 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
             />
         );
     };
+
+    const userCanAttach = useMemo(() => {
+        // проверяем на пересечение сезонов бойца и доступных отрядов
+        // для редактированию пользователя
+        return (
+            (seasons || [])
+                .map((item) => item.brigadeId)
+                .filter((id) =>
+                    user!.brigades.map((brigade) => brigade.id).includes(id)
+                ).length > 0
+        );
+    }, [seasons, user]);
     return (
         <Panel id={id}>
             <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
@@ -147,7 +161,7 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                                     indicator={season.year}
                                     before={<Icon28PlaneOutline />}
                                 >
-                                    {season.brigade.title}
+                                    {season.brigade.title}{season.isCandidate && <i> | Кандидат</i>}
                                 </SimpleCell>
                             ))}
                     </Group>
@@ -159,19 +173,23 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                             <CellButton expandable={true} onClick={handleEdit}>
                                 Редактировать
                             </CellButton>
-                            <CellButton
-                                expandable={true}
-                                onClick={handleSelectUser}
-                            >
-                                Привязать к странице ВК
-                            </CellButton>
-                            <CellButton
-                                expandable={true}
-                                mode="danger"
-                                onClick={handleDelete}
-                            >
-                                Удалить
-                            </CellButton>
+                            {userCanAttach && (
+                                <CellButton
+                                    expandable={true}
+                                    onClick={handleSelectUser}
+                                >
+                                    Привязать к странице ВК
+                                </CellButton>
+                            )}
+                            {user!.is_staff && (
+                                <CellButton
+                                    expandable={true}
+                                    mode="danger"
+                                    onClick={handleDelete}
+                                >
+                                    Удалить
+                                </CellButton>
+                            )}
                         </Group>
                     )}
                 </>

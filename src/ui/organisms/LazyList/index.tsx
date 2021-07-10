@@ -1,8 +1,12 @@
 import { debounce } from "@vkontakte/vkjs";
 import { Footer, Header, Spinner } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
-import { FC, useCallback, useMemo } from "react";
-import { useInfiniteQuery } from "react-query";
+import { createContext, FC, useCallback, useMemo } from "react";
+import {
+    InfiniteData,
+    QueryObserverResult,
+    useInfiniteQuery,
+} from "react-query";
 import { useIntersect } from "../../../features/utils/hooks/useIntersect";
 import { ListResponse } from "../../../features/utils/types";
 
@@ -15,6 +19,12 @@ interface LazyUsersListProps {
 }
 const limit = 20;
 
+export const LazyListContext = createContext({
+    refetch: () =>
+        undefined as unknown as Promise<
+            QueryObserverResult<InfiniteData<ListResponse<any>>, Error>
+        >,
+});
 export const LazyList: FC<LazyUsersListProps> = observer(
     ({ renderItem, fetchFn, queryKey, extraFnProp, title }) => {
         const queryFn = useCallback(
@@ -36,6 +46,7 @@ export const LazyList: FC<LazyUsersListProps> = observer(
             hasNextPage,
             isLoading,
             isError,
+            refetch,
         } = useInfiniteQuery<ListResponse<any>, Error>({
             queryKey: [queryKey, extraFnProp],
             queryFn,
@@ -71,7 +82,11 @@ export const LazyList: FC<LazyUsersListProps> = observer(
         }, [hasNextPage, setNode]);
 
         return (
-            <>
+            <LazyListContext.Provider
+                value={{
+                    refetch,
+                }}
+            >
                 {title && (
                     <Header
                         mode="tertiary"
@@ -94,7 +109,7 @@ export const LazyList: FC<LazyUsersListProps> = observer(
                     !isFetching &&
                     !isError && <Footer>Ничего не найдено</Footer>}
                 {isError && <Footer>Ошибка соединения</Footer>}
-            </>
+            </LazyListContext.Provider>
         );
     }
 );
