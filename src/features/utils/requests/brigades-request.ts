@@ -82,10 +82,15 @@ export const BrigadesAPI = {
     },
     async getBrigadePositions({
         brigadeId,
+        hideLast,
     }: {
         brigadeId: number;
+        hideLast?: boolean;
     }): Promise<Position[]> {
-        const { data } = await get(`/api/so/brigade/${brigadeId}/positions/`);
+        const params = { hideLast };
+        const { data } = await get(`/api/so/brigade/${brigadeId}/positions/`, {
+            params,
+        });
         return data;
     },
     async setBrigadePosition({
@@ -109,9 +114,17 @@ export const BrigadesAPI = {
     }: {
         positionId: number;
         brigadeId: number;
-    }): Promise<Position<false>> {
-        const { data } = await post(
-            `/api/so/brigade/${brigadeId}/positions/${positionId}/remove/`
+    }): Promise<Position> {
+        const { data } = await remove(
+            `/api/so/brigade/${brigadeId}/positions/${positionId}/`
+        );
+        return data;
+    },
+    async updateBrigadePosition(position: Position): Promise<Position> {
+        const { id, brigade, shtab, ...rest } = position;
+        const { data } = await patch(
+            `/api/so/brigade/${brigade.id}/positions/${id}/`,
+            rest
         );
         return data;
     },

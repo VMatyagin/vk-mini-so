@@ -30,6 +30,7 @@ export const UserPositions = observer(() => {
                             description={`${new Date(
                                 item.fromDate!
                             ).toLocaleString("ru", {
+                                day: "2-digit",
                                 month: "2-digit",
                                 year: "2-digit",
                             })} - ${
@@ -37,6 +38,7 @@ export const UserPositions = observer(() => {
                                     ? new Date(item.toDate!).toLocaleString(
                                           "ru",
                                           {
+                                              day: "2-digit",
                                               month: "2-digit",
                                               year: "2-digit",
                                           }

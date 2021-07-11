@@ -41,15 +41,15 @@ export const PositionsForm: FC<PositionsFormProps> = observer(() => {
             },
         }
     );
-    const selectPosition = (userId: number, position: string) => {
+    const selectPosition = (userId: number, position: number) => {
         mutate({
             boec: userId,
-            position: Number(position),
+            position,
         });
     };
     const openPositionSelecting = (boec: Boec) => {
         openModal(MODAL_BOEC_POSITION_SELECT);
-        setModalCallback(MODAL_BOEC_POSITION_SELECT, (position) =>
+        setModalCallback(MODAL_BOEC_POSITION_SELECT, ({ position }: Position) =>
             selectPosition(boec.id, position)
         );
     };

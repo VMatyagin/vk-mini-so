@@ -1,10 +1,11 @@
 import { makeAutoObservable } from "mobx";
 import { createContext } from "react";
-import { Seasons } from "../../types";
+import { Position, Seasons } from "../../types";
 
 export class BoecStore {
     boecId: number | null = null;
     seasons: Seasons[] | null = null;
+    selectedPosition: Position | null = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -42,6 +43,13 @@ export class BoecStore {
     };
     setSeasons = (data: Seasons[]) => {
         this.seasons = data.sort((a, b) => a.year - b.year);
+    };
+
+    setPosition = (pos: Position) => {
+        this.selectedPosition = pos;
+    };
+    clearPosition = () => {
+        this.selectedPosition = null;
     };
 }
 

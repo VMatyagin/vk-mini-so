@@ -12,30 +12,54 @@ import {
     ViewWidth,
     useAdaptivity,
     usePlatform,
+    FormLayout,
+    DatePicker,
+    Checkbox,
 } from "@vkontakte/vkui";
-import { useState } from "react";
+import { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { positions } from "../../../brigades/helpers";
 import { RouterStoreInstance } from "../../../stores/router-store";
+import { Position } from "../../../types";
+import { BoecStoreInstance } from "../../store/boecStore";
 
 export const MODAL_BOEC_POSITION_SELECT = "MODAL_BOEC_POSITION_SELECT";
 
 export const LeaderPositionModal = () => {
     const { closeModal, modalCallback, closeModalStack } = RouterStoreInstance;
-    const [selectedPosition, setPosition] = useState<string>();
-
+    const { selectedPosition, clearPosition } = BoecStoreInstance;
     const onPositionSelect = () => {
-        modalCallback[MODAL_BOEC_POSITION_SELECT](selectedPosition);
+        modalCallback[MODAL_BOEC_POSITION_SELECT](getValues());
         closeModalStack();
-        setPosition(undefined);
+        clearPosition();
+        reset({
+            toDate: null,
+        });
     };
 
     const onSelectPositionClose = () => {
         closeModal();
-        setPosition(undefined);
+        clearPosition();
+        reset({
+            toDate: null,
+        });
     };
     const platform = usePlatform();
     const { viewWidth = 100 } = useAdaptivity();
     const isMobile = viewWidth <= ViewWidth.MOBILE;
+
+    const { handleSubmit, control, formState, reset, getValues } =
+        useForm<Position>({
+            mode: "onChange",
+        });
+    useEffect(() => {
+        if (selectedPosition) {
+            reset(selectedPosition);
+        } else {
+            reset({ toDate: null });
+        }
+    }, [reset, selectedPosition]);
+    const { isDirty, isValid } = formState;
 
     return (
         <ModalPage
@@ -49,7 +73,7 @@ export const LeaderPositionModal = () => {
                         )
                     }
                     right={
-                        selectedPosition && (
+                        !(!isDirty || !isValid) && (
                             <PanelHeaderButton onClick={onPositionSelect}>
                                 {platform === IOS ? "Готово" : <Icon24Done />}
                             </PanelHeaderButton>
@@ -61,23 +85,182 @@ export const LeaderPositionModal = () => {
             }
             onClose={onSelectPositionClose}
         >
-            <Group style={{ minHeight: 300 }}>
-                <FormItem top="Должность">
-                    <Select
-                        placeholder="Не выбран"
-                        value={selectedPosition}
-                        options={positions.map((position, index) => ({
-                            label: position.title,
-                            value: index,
-                        }))}
-                        onChange={(e) => {
-                            setPosition(e.target.value);
+            <Group style={{ minHeight: "100%" }}>
+                <FormLayout onSubmit={handleSubmit(onPositionSelect)}>
+                    <Controller
+                        control={control}
+                        name="position"
+                        rules={{
+                            required: "Это поле необходимо заполнить",
                         }}
-                        renderOption={({ option, ...restProps }) => (
-                            <CustomSelectOption {...restProps} />
+                        render={({
+                            field: { name, value, onChange },
+                            fieldState,
+                        }) => (
+                            <FormItem
+                                top="Должность"
+                                status={
+                                    fieldState.invalid ? "error" : "default"
+                                }
+                                bottom={
+                                    fieldState.error && fieldState.error.message
+                                }
+                            >
+                                <Select
+                                    name={name}
+                                    placeholder="Не выбран"
+                                    value={value}
+                                    options={positions.map(
+                                        (position, index) => ({
+                                            label: position.title,
+                                            value: index,
+                                        })
+                                    )}
+                                    onChange={onChange}
+                                    renderOption={({
+                                        option,
+                                        ...restProps
+                                    }) => <CustomSelectOption {...restProps} />}
+                                />
+                            </FormItem>
                         )}
                     />
-                </FormItem>
+                    <Controller
+                        control={control}
+                        name="fromDate"
+                        render={({ field }) => (
+                            <FormItem top="Дата вступления">
+                                <DatePicker
+                                    name={field.name}
+                                    min={{
+                                        day: 1,
+                                        month: 1,
+                                        year: new Date().getFullYear() - 1,
+                                    }}
+                                    max={{
+                                        day: 1,
+                                        month: 1,
+                                        year: new Date().getFullYear() + 1,
+                                    }}
+                                    onDateChange={({ day, month, year }) => {
+                                        field.onChange(
+                                            new Date(
+                                                year,
+                                                month - 1,
+                                                day
+                                            ).toISOString()
+                                        );
+                                    }}
+                                    defaultValue={
+                                        field.value
+                                            ? {
+                                                  day: new Date(
+                                                      field.value
+                                                  ).getDate(),
+                                                  month:
+                                                      new Date(
+                                                          field.value
+                                                      ).getMonth() + 1,
+                                                  year: new Date(
+                                                      field.value
+                                                  ).getFullYear(),
+                                              }
+                                            : {
+                                                  day: new Date().getDate(),
+                                                  month:
+                                                      new Date().getMonth() + 1,
+                                                  year: new Date().getFullYear(),
+                                              }
+                                    }
+                                    dayPlaceholder="ДД"
+                                    monthPlaceholder="ММММ"
+                                    yearPlaceholder="ГГГГ"
+                                />
+                            </FormItem>
+                        )}
+                    />
+                    <Controller
+                        control={control}
+                        name="toDate"
+                        defaultValue={null}
+                        render={({ field }) => (
+                            <>
+                                <Checkbox
+                                    checked={field.value === null}
+                                    onChange={() =>
+                                        field.onChange(
+                                            field.value === null
+                                                ? new Date().toISOString()
+                                                : null
+                                        )
+                                    }
+                                >
+                                    По настоящее время
+                                </Checkbox>
+
+                                {field.value !== null && (
+                                    <FormItem top="Дата окончания">
+                                        <DatePicker
+                                            name={field.name}
+                                            min={{
+                                                day: 1,
+                                                month: 1,
+                                                year:
+                                                    new Date().getFullYear() -
+                                                    1,
+                                            }}
+                                            max={{
+                                                day: 1,
+                                                month: 1,
+                                                year:
+                                                    new Date().getFullYear() +
+                                                    1,
+                                            }}
+                                            onDateChange={({
+                                                day,
+                                                month,
+                                                year,
+                                            }) => {
+                                                field.onChange(
+                                                    new Date(
+                                                        year,
+                                                        month - 1,
+                                                        day
+                                                    ).toISOString()
+                                                );
+                                            }}
+                                            defaultValue={
+                                                field.value !== null
+                                                    ? {
+                                                          day: new Date(
+                                                              field.value
+                                                          ).getDate(),
+                                                          month:
+                                                              new Date(
+                                                                  field.value
+                                                              ).getMonth() + 1,
+                                                          year: new Date(
+                                                              field.value
+                                                          ).getFullYear(),
+                                                      }
+                                                    : {
+                                                          day: new Date().getDate(),
+                                                          month:
+                                                              new Date().getMonth() +
+                                                              1,
+                                                          year: new Date().getFullYear(),
+                                                      }
+                                            }
+                                            dayPlaceholder="ДД"
+                                            monthPlaceholder="ММММ"
+                                            yearPlaceholder="ГГГГ"
+                                        />
+                                    </FormItem>
+                                )}
+                            </>
+                        )}
+                    />
+                </FormLayout>
             </Group>
         </ModalPage>
     );
