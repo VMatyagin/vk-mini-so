@@ -20,14 +20,16 @@ import { MODAL_BOEC_POSITION_SELECT } from "../../../../boec/ui/modals/LeaderPos
 import { routerStore } from "../../../../stores/router-store";
 import { Position } from "../../../../types";
 import { BrigadesAPI } from "../../../../utils/requests/brigades-request";
+import { ShtabsAPI } from "../../../../utils/requests/shtab-request";
 import { positions } from "../../../helpers";
 
 interface BrigadeLeadersProps {
-    brigadeId: number;
+    brigadeId?: number;
+    shtabId?: number;
     isEditing?: boolean;
 }
 export const BrigadeLeaders: FC<BrigadeLeadersProps> = observer(
-    ({ brigadeId, isEditing }) => {
+    ({ brigadeId, shtabId, isEditing }) => {
         const {
             openPopout,
             closePopout,
@@ -38,19 +40,30 @@ export const BrigadeLeaders: FC<BrigadeLeadersProps> = observer(
         const { setBoecId, setPosition } = useContext(boecStore);
 
         const {
-            data: brigadePositions,
+            data,
             isLoading: isPositionsLoading,
             refetch,
         } = useQuery({
-            queryKey: ["brigade-positions", brigadeId],
+            queryKey: [
+                brigadeId ? "brigade-positions" : "shtab-positions",
+                brigadeId || shtabId,
+            ],
             queryFn: ({ queryKey }) => {
-                return BrigadesAPI.getBrigadePositions({
-                    brigadeId: queryKey[1] as number,
-                    hideLast: isEditing ? false : true,
-                });
+                if (brigadeId) {
+                    return BrigadesAPI.getBrigadePositions({
+                        brigadeId: queryKey[1] as number,
+                        hideLast: isEditing ? false : true,
+                    });
+                } else {
+                    return ShtabsAPI.getShtabPositions({
+                        shtabId: queryKey[1] as number,
+                        hideLast: isEditing ? false : true,
+                    });
+                }
             },
             retry: 1,
             refetchOnWindowFocus: false,
+            enabled: !!brigadeId || !!shtabId,
         });
         const { mutate: updatePosition } = useMutation<
             Position,
@@ -59,7 +72,10 @@ export const BrigadeLeaders: FC<BrigadeLeadersProps> = observer(
         >(
             (data) => {
                 openPopout(<ScreenSpinner />);
-                return BrigadesAPI.updateBrigadePosition(data);
+                if (brigadeId) {
+                    return BrigadesAPI.updateBrigadePosition(data);
+                }
+                return ShtabsAPI.updateShtabPosition(data);
             },
             {
                 onSuccess: () => {
@@ -75,8 +91,14 @@ export const BrigadeLeaders: FC<BrigadeLeadersProps> = observer(
         >(
             (data) => {
                 openPopout(<ScreenSpinner />);
-                return BrigadesAPI.removeBrigadePosition({
-                    brigadeId: data.brigade.id,
+                if (brigadeId) {
+                    return BrigadesAPI.removeBrigadePosition({
+                        brigadeId: data.brigade.id,
+                        positionId: data.id,
+                    });
+                }
+                return ShtabsAPI.removeShtabPosition({
+                    shtabId: data.shtab.id,
                     positionId: data.id,
                 });
             },
@@ -138,11 +160,11 @@ export const BrigadeLeaders: FC<BrigadeLeadersProps> = observer(
                 {isPositionsLoading && (
                     <Spinner size="small" style={{ margin: "20px 0" }} />
                 )}
-                {brigadePositions &&
-                    (brigadePositions.length === 0 ? (
+                {data &&
+                    (data.length === 0 ? (
                         <Footer>Ничего не найдено</Footer>
                     ) : (
-                        brigadePositions.map((item) => (
+                        data.map((item) => (
                             <SimpleCell
                                 // description={positions[item.position].title}
                                 description={`${new Date(

@@ -46,9 +46,9 @@ export const UserPositions = observer(() => {
                                     : "настоящее время"
                             }`}
                         >
-                            {`${item.brigade.title} | ${
-                                positions[item.position].title
-                            }`}
+                            {`${
+                                item.brigade?.title || item.shtab?.title || "-"
+                            } | ${positions[item.position].title}`}
                         </Cell>
                     ))
                 ))}

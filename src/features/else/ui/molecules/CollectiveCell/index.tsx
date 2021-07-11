@@ -3,7 +3,7 @@ import { ActionSheet, ActionSheetItem, SimpleCell } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { useContext } from "react";
 import { brigadeStore } from "../../../../brigades/store/brigadeStore";
-import { shtabStore } from "../../../../shtab/store/brigadeStore";
+import { shtabStore } from "../../../../shtab/store/shtabStore";
 import { appStore } from "../../../../stores/app-store";
 import { routerStore } from "../../../../stores/router-store";
 

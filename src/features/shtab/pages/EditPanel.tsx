@@ -7,27 +7,27 @@ import { routerStore } from "../../stores/router-store";
 import { PanelProps } from "../../types";
 import { SuccessSnackbar } from "../../../ui/molecules/SuccessSnackbar";
 import { MainInfoForm } from "../ui/molecules/MainInfoForm";
-import { PositionsForm } from "../ui/molecules/PositionsForm";
-import { brigadeStore } from "../store/brigadeStore";
+import { PositionsForm } from "../../brigades/ui/molecules/PositionsForm";
+import { shtabStore } from "../store/shtabStore";
 
 export const EditPanel: FC<PanelProps> = observer(({ id, viewId }) => {
     const { goBack } = useContext(routerStore);
     const [SnackBar, setSnackBar] = useState<React.ReactNode>(null);
-    const { brigadeId } = useContext(brigadeStore);
     const onSuccess = () => {
         setSnackBar(<SuccessSnackbar onClose={() => setSnackBar(null)} />);
     };
+    const { shtabId } = useContext(shtabStore);
 
     return (
         <Panel id={id}>
             <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
                 <Title level="2" weight="bold">
-                    Редактирование отряда
+                    Редактирование штаба
                 </Title>
             </PanelHeader>
 
             <MainInfoForm onSuccess={onSuccess} />
-            <PositionsForm brigadeId={brigadeId!} />
+            <PositionsForm shtabId={shtabId!} />
             {SnackBar}
         </Panel>
     );

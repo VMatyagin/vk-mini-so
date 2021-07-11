@@ -14,7 +14,7 @@ import { PanelHeader, Title } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { routerStore } from "../../stores/router-store";
 import { useQuery } from "react-query";
-import { shtabStore } from "../store/brigadeStore";
+import { shtabStore } from "../store/shtabStore";
 import { ShtabsAPI } from "../../utils/requests/shtab-request";
 import { PanelProps } from "../../types";
 
