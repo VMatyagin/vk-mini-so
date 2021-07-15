@@ -7,7 +7,7 @@ import { APP_ID, initApp } from "../../VKBridge";
 import { UsersAPI } from "../../utils/requests/user-request";
 
 export class AppStore {
-    isLoading: boolean = true;
+    isInitialization: boolean = true;
     accessToken: string | null = null;
     userData: UserInfo | null = null;
     colorSchema: AppearanceSchemeType = "client_light";
@@ -30,12 +30,10 @@ export class AppStore {
         this.user = meData;
         this.userData = user;
         this.accessToken = token.access_token;
-        initApp();
+        await initApp();
+        this.isInitialization = false;
     }
 
-    setLoading = (status: boolean) => {
-        this.isLoading = status;
-    };
     setColorScheme = (colorSchema: AppearanceSchemeType) => {
         this.colorSchema = colorSchema;
     };
