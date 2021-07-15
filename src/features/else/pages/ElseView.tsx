@@ -1,6 +1,5 @@
 import {
     Icon28CalendarOutline,
-    Icon28EmployeeOutline,
     Icon28UsersOutline,
     // Icon28StatisticsOutline,
     Icon28UserSquareOutline,
@@ -15,7 +14,6 @@ import { Group, Panel, PanelHeader, SimpleCell, Switch } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { FC, useContext, useState } from "react";
 import { AbstractView } from "../../../ui/molecules/AbstractView";
-import { boecStore } from "../../boec/store/boecStore";
 import { brigadeStore } from "../../brigades/store/brigadeStore";
 import { shtabStore } from "../../shtab/store/shtabStore";
 import { appStore } from "../../stores/app-store";
@@ -25,7 +23,6 @@ import { SubjectSelectingCell } from "../ui/molecules/SubjectSelectingCell";
 export const ElseView: FC<{ id: string }> = observer(({ id }) => {
     const { setPage } = useContext(routerStore);
     const { user } = useContext(appStore);
-    const { setBoecId } = useContext(boecStore);
     const { setBrigadeId } = useContext(brigadeStore);
     const { setShtabId } = useContext(shtabStore);
 
@@ -37,10 +34,7 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
     const openEvents = () => {
         setPage("event", "list");
     };
-    const openProfile = () => {
-        setBoecId(user!.boec.id);
-        setPage("boec", "base");
-    };
+
     const selectBrigade = (id: number) => {
         setBrigadeId(id);
         setPage("brigades", "details");
@@ -111,12 +105,7 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
                             Штабы
                         </SimpleCell>
                     )}
-                    <SimpleCell
-                        onClick={openProfile}
-                        before={<Icon28EmployeeOutline />}
-                    >
-                        Профиль
-                    </SimpleCell>
+
                     <SimpleCell
                         before={<Icon28CalendarOutline />}
                         onClick={openEvents}

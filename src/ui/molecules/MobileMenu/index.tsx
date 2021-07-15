@@ -1,4 +1,4 @@
-import { Icon28Newsfeed } from "@vkontakte/icons";
+import { Icon28Newsfeed, Icon28UserSquareOutline } from "@vkontakte/icons";
 import { Tabbar, TabbarItem } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { useContext } from "react";
@@ -15,6 +15,13 @@ export const MobileMenu = observer(() => {
                 text="Ещё"
             >
                 <Icon28Newsfeed />
+            </TabbarItem>
+            <TabbarItem
+                onClick={() => setStory("profile", "base")}
+                selected={activeStory === "profile"}
+                text="Профиль"
+            >
+                <Icon28UserSquareOutline />
             </TabbarItem>
         </Tabbar>
     );

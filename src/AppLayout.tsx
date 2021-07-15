@@ -17,6 +17,7 @@ import { MobileMenu } from "./ui/molecules/MobileMenu";
 import { Modals } from "./ui/organisms/Modals";
 import { elseRoutes } from "./features/else/elseRoutes";
 import { toJS } from "mobx";
+import { profileRoutes } from "./features/boec/profileRoutes";
 
 export const AppLayout: FC = observer(() => {
     const {
@@ -74,6 +75,7 @@ export const AppLayout: FC = observer(() => {
                     tabbar={!isDesktop && <MobileMenu />}
                 >
                     {elseRoutes(activeView)}
+                    {profileRoutes(activeView)}
                 </Epic>
             </SplitCol>
             {isDesktop && <DesktopMenu />}

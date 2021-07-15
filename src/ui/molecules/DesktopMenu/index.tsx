@@ -1,4 +1,4 @@
-import { Icon28Newsfeed } from "@vkontakte/icons";
+import { Icon28Newsfeed, Icon28UserSquareOutline } from "@vkontakte/icons";
 import {
     Cell,
     Group,
@@ -38,6 +38,22 @@ export const DesktopMenu = observer(() => {
                         before={<Icon28Newsfeed />}
                     >
                         Ещё
+                    </Cell>
+                    <Cell
+                        disabled={activeStory === "profile"}
+                        style={
+                            activeStory === "profile"
+                                ? {
+                                      backgroundColor:
+                                          "var(--button_secondary_background)",
+                                      borderRadius: 8,
+                                  }
+                                : {}
+                        }
+                        onClick={() => setStory("profile", "base")}
+                        before={<Icon28UserSquareOutline />}
+                    >
+                        Профиль
                     </Cell>
                 </Group>
             </Panel>

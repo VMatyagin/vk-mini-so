@@ -9,6 +9,7 @@ import {
     Header,
     Panel,
     PanelHeaderBack,
+    PanelSpinner,
     SimpleCell,
     Snackbar,
     Spinner,
@@ -20,7 +21,7 @@ import { Icon16WarningTriangle, Icon28PlaneOutline } from "@vkontakte/icons";
 import { observer } from "mobx-react-lite";
 import { routerStore } from "../../stores/router-store";
 import { boecStore } from "../../boec/store/boecStore";
-import { Boec, PanelProps } from "../../types";
+import { Boec, PanelProps, Seasons } from "../../types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { UsersAPI } from "../../utils/requests/user-request";
 import { selectVKUsers } from "../../VKBridge";
@@ -28,13 +29,21 @@ import { UserPositions } from "../ui/molecules/UserPositions";
 import { appStore } from "../../stores/app-store";
 
 export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
-    const { goBack, setPage, openPopout, closePopout } =
+    const { goBack, setPage, openPopout, closePopout, history } =
         useContext(routerStore);
+
     const { user } = useContext(appStore);
-    const { seasons, boecId, setBoecId } = useContext(boecStore);
+    const { boecId, setBoecId } = useContext(boecStore);
     const [SnackBar, setSnackBar] = useState<React.ReactNode>(null);
     const queryClient = useQueryClient();
-
+    const { data: seasons } = useQuery<Seasons[]>({
+        queryKey: ["seasons", boecId],
+        queryFn: ({ queryKey }) =>
+            UsersAPI.getUserSeasons(queryKey[1] as number),
+        retry: 1,
+        refetchOnWindowFocus: false,
+        enabled: !!boecId,
+    });
     const {
         data: boec,
         isLoading,
@@ -129,13 +138,19 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
     }, [seasons, user]);
     return (
         <Panel id={id}>
-            <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
+            <PanelHeader
+                left={
+                    history.length > 1 && <PanelHeaderBack onClick={goBack} />
+                }
+            >
                 <Title level="2" weight="bold">
                     Боец
                 </Title>
             </PanelHeader>
             {isLoading || isError ? (
-                <Spinner size="small" style={{ margin: "20px 0" }} />
+                <Group>
+                    <PanelSpinner size="small" style={{ margin: "20px 0" }} />
+                </Group>
             ) : (
                 <>
                     <Group>

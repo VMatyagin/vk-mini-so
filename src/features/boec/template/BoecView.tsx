@@ -1,29 +1,25 @@
-import { FC, useContext } from "react";
+import { FC, useContext, useEffect } from "react";
 
 import { observer } from "mobx-react-lite";
 import { AbstractView } from "../../../ui/molecules/AbstractView";
-import { Seasons, ViewProps } from "../../types";
-import { useQuery } from "react-query";
+import { ViewProps } from "../../types";
 import { boecStore } from "../store/boecStore";
-import { UsersAPI } from "../../utils/requests/user-request";
 import { ViewPanel } from "../pages/ViewPanel";
 import { EditPanel } from "../pages/EditPanel";
 import { SeasonEditPanel } from "../pages/SeasonEditPanel";
 import { ListPanel } from "../pages/ListPanel";
 import { AchievementsPanel } from "../pages/AchievementsPanel";
+import { appStore } from "../../stores/app-store";
 
 export const BoecView: FC<ViewProps> = observer(({ id }) => {
-    const { boecId, setSeasons } = useContext(boecStore);
+    const { boecId, setBoecId } = useContext(boecStore);
+    const { user } = useContext(appStore);
 
-    useQuery<Seasons[]>({
-        queryKey: ["seasons", boecId],
-        queryFn: ({ queryKey }) =>
-            UsersAPI.getUserSeasons(queryKey[1] as number),
-        retry: 1,
-        refetchOnWindowFocus: false,
-        onSuccess: setSeasons,
-        enabled: !!boecId,
-    });
+    useEffect(() => {
+        if (user && !boecId) {
+            setBoecId(user.boec.id);
+        }
+    }, [boecId, setBoecId, user]);
 
     return (
         <AbstractView id={id}>

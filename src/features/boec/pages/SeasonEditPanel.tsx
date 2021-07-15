@@ -14,7 +14,7 @@ import {
 import { observer } from "mobx-react-lite";
 import React, { FC, useContext, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { SuccessSnackbar } from "../../../ui/molecules/SuccessSnackbar";
 import { routerStore } from "../../stores/router-store";
 
@@ -24,7 +24,8 @@ import { boecStore } from "../store/boecStore";
 
 export const SeasonEditPanel: FC<PanelProps> = observer(({ id }) => {
     const { openPopout, closePopout, goBack } = useContext(routerStore);
-    const { boecId, updateSeasons } = useContext(boecStore);
+    const { boecId } = useContext(boecStore);
+    const queryClient = useQueryClient();
 
     const [SnackBar, setSnackBar] = useState<React.ReactNode>(null);
 
@@ -50,13 +51,14 @@ export const SeasonEditPanel: FC<PanelProps> = observer(({ id }) => {
 
     const onSubmit = async (values: Record<keyof Seasons, string>) => {
         openPopout(<ScreenSpinner />);
-        const { data } = await BrigadesAPI.setSeason({
+        await BrigadesAPI.setSeason({
             brigadeId: Number(values.brigade),
             boecId: boecId!,
             year: Number(values.year),
         });
         closePopout();
-        updateSeasons(data);
+        queryClient.refetchQueries(["seasons", boecId]);
+
         goBack();
         setSnackBar(<SuccessSnackbar onClose={() => setSnackBar(null)} />);
     };
