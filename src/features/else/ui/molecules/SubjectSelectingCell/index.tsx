@@ -1,6 +1,6 @@
 import { ActionSheet, ActionSheetItem } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
-import { FC, useContext } from "react";
+import React, { FC, useContext, useRef } from "react";
 import { appStore } from "../../../../stores/app-store";
 import { routerStore } from "../../../../stores/router-store";
 
@@ -8,15 +8,20 @@ interface SubjectSelectingCellProps {
     onlyBrigades?: boolean;
     onBrigadeClick: (id: number) => void;
     onShtabClick?: (id: number) => void;
-    children: (props: { handleClick: () => void }) => React.ReactElement;
+    children: (props: {
+        handleClick: () => void;
+        ref: React.RefObject<HTMLElement>;
+    }) => React.ReactElement;
     isForBoec?: boolean;
 }
 export const SubjectSelectingCell: FC<SubjectSelectingCellProps> = observer(
     ({ children, onlyBrigades, onBrigadeClick, onShtabClick, isForBoec }) => {
+        const ref = useRef<HTMLElement>(null);
+
         const { user } = useContext(appStore);
         const { openPopout, closePopout } = useContext(routerStore);
 
-        const handleClick = () => {
+        const handleClick = (toggleRef: Element) => {
             if (isForBoec) {
                 const count = user!.seasonBrigades.length;
                 openPopout(
@@ -27,6 +32,7 @@ export const SubjectSelectingCell: FC<SubjectSelectingCellProps> = observer(
                                 Отменить
                             </ActionSheetItem>
                         }
+                        toggleRef={toggleRef}
                     >
                         {count !== 0 &&
                             user!.seasonBrigades.map(({ id, title }) => (
@@ -61,6 +67,7 @@ export const SubjectSelectingCell: FC<SubjectSelectingCellProps> = observer(
                                     Отменить
                                 </ActionSheetItem>
                             }
+                            toggleRef={toggleRef}
                         >
                             {user!.brigades.map(({ id, title }) => (
                                 <ActionSheetItem
@@ -97,7 +104,8 @@ export const SubjectSelectingCell: FC<SubjectSelectingCellProps> = observer(
         };
 
         return children({
-            handleClick,
+            handleClick: () => handleClick(ref.current as Element),
+            ref,
         });
     }
 );

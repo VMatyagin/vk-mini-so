@@ -87,8 +87,9 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
                                 onBrigadeClick={selectBrigade}
                                 onShtabClick={selectShtab}
                             >
-                                {({ handleClick }) => (
+                                {({ handleClick, ref }) => (
                                     <SimpleCell
+                                        getRootRef={ref}
                                         onClick={handleClick}
                                         before={<Icon28UsersOutline />}
                                     >

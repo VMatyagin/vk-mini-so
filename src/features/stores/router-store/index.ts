@@ -22,7 +22,7 @@ export class RouterStore {
     };
     activeModals: Record<string, string | null> = {};
     modalHistory: Record<string, string[]> = {};
-    popouts: Record<string, (() => JSX.Element) | null> = {};
+    popouts: Record<string, JSX.Element | null> = {};
     modalCallback: Record<string, (...args: any[]) => void> = {};
 
     scrollPosition: Record<string, number> = {};
@@ -39,7 +39,7 @@ export class RouterStore {
     }
     get popout() {
         return this.popouts[this.activeView] === undefined
-            ? () => undefined
+            ? null
             : this.popouts[this.activeView];
     }
     get activeModal() {
@@ -279,7 +279,7 @@ export class RouterStore {
 
         this.popouts = {
             ...this.popouts,
-            [this.activeView]: () => popout,
+            [this.activeView]: popout,
         };
     };
     closePopout = () => {

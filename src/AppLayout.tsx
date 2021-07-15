@@ -60,7 +60,7 @@ export const AppLayout: FC = observer(() => {
     return (
         <SplitLayout
             modal={<Modals />}
-            popout={popout && popout()}
+            popout={popout}
             header={hasHeader && <PanelHeader separator={false} />}
             style={{ justifyContent: "center" }}
         >

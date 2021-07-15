@@ -206,8 +206,9 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                         onBrigadeClick={openBrigadeParticipant}
                         onlyBrigades={true}
                     >
-                        {({ handleClick }) => (
+                        {({ handleClick, ref }) => (
                             <SimpleCell
+                                getRootRef={ref}
                                 onClick={handleClick}
                                 before={<Icon28UsersOutline />}
                             >
@@ -222,8 +223,8 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                         onlyBrigades={true}
                         isForBoec={true}
                     >
-                        {({ handleClick }) => (
-                            <CellButton onClick={handleClick}>
+                        {({ handleClick, ref }) => (
+                            <CellButton getRootRef={ref} onClick={handleClick}>
                                 Подать заявку
                             </CellButton>
                         )}
