@@ -3,7 +3,7 @@ export interface User {
     boec: Boec;
     brigades: Brigade[];
     shtabs: Shtab[];
-    seasonBrigades: Brigade[]
+    seasonBrigades: Brigade[];
     is_staff: boolean;
 }
 
@@ -44,6 +44,16 @@ export interface Boec extends WithId {
 
     // for post
     brigadeId: number;
+}
+
+interface CompetitionParticipantWithEvent extends CompetitionParticipant<true> {
+    event: {
+        title: string;
+    };
+}
+export interface Achievements {
+    event_participant: Participant[];
+    competition_participant: CompetitionParticipantWithEvent[];
 }
 
 export interface EventType {
@@ -96,7 +106,7 @@ export interface Participant {
     id: number;
     boec: Boec;
     boecId: number;
-    event: Event;
+    event: EventType;
     eventId: number;
     worth: number;
     brigade: number;
@@ -113,9 +123,9 @@ export interface Competition {
     ratingless: boolean;
 }
 
-export interface CompetitionParticipant {
+export interface CompetitionParticipant<IsFull extends boolean = false> {
     id: number;
-    competition: number;
+    competition: IsFull extends false ? number : Competition;
     boec: number[] | Boec[];
     worth: 0 | 1 | 2 | 3;
     brigades: Brigade[];

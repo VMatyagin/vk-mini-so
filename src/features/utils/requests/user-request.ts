@@ -1,5 +1,5 @@
 import axios, { Canceler } from "axios";
-import { Boec, Position, Seasons, User } from "../../types";
+import { Achievements, Boec, Position, Seasons, User } from "../../types";
 import { get, patch, post, remove } from "../axiosConfig";
 import { ListResponse, SuccessResponse } from "../types";
 
@@ -61,6 +61,10 @@ export const UsersAPI = {
     },
     async createBoec(boec: Partial<Boec>): Promise<Boec> {
         const { data } = await post(`/api/so/boec/`, boec);
+        return data;
+    },
+    async getBoecAchievements(userId: number): Promise<Achievements> {
+        const { data } = await get(`/api/so/boec/${userId}/achievements/`);
         return data;
     },
 };

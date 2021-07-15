@@ -10,6 +10,7 @@ import { ViewPanel } from "../pages/ViewPanel";
 import { EditPanel } from "../pages/EditPanel";
 import { SeasonEditPanel } from "../pages/SeasonEditPanel";
 import { ListPanel } from "../pages/ListPanel";
+import { AchievementsPanel } from "../pages/AchievementsPanel";
 
 export const BoecView: FC<ViewProps> = observer(({ id }) => {
     const { boecId, setSeasons } = useContext(boecStore);
@@ -29,6 +30,7 @@ export const BoecView: FC<ViewProps> = observer(({ id }) => {
             <ViewPanel id="base" viewId={id} />
             <EditPanel id="edit" viewId={id} />
             <SeasonEditPanel id="season" viewId={id} />
+            <AchievementsPanel id="achievements" viewId={id} />
             <ListPanel id="list" viewId={id} />
         </AbstractView>
     );

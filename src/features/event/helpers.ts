@@ -17,6 +17,7 @@ export const EVENT_WORTH = [
 ];
 
 export const PARTICIPANT_WORTH = [
+    { title: "Участник" },
     { title: "Волонтер" },
     { title: "Организатор" },
 ];

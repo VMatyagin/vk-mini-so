@@ -51,6 +51,9 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
     const handleEdit = () => {
         setPage(viewId, "edit");
     };
+    const handleAchievements = () => {
+        setPage(viewId, "achievements");
+    };
 
     const handleSelectUser = async () => {
         const user = await selectVKUsers();
@@ -161,37 +164,49 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                                     indicator={season.year}
                                     before={<Icon28PlaneOutline />}
                                 >
-                                    {season.brigade.title}{season.isCandidate && <i> | Кандидат</i>}
+                                    {season.brigade.title}
+                                    {season.isCandidate && <i> | Кандидат</i>}
                                 </SimpleCell>
                             ))}
                     </Group>
                     <Group header={<Header mode="secondary">Должности</Header>}>
                         <UserPositions />
                     </Group>
-                    {seasons && (
-                        <Group>
-                            <CellButton expandable={true} onClick={handleEdit}>
-                                Редактировать
-                            </CellButton>
-                            {userCanAttach && (
+                    <Group>
+                        <CellButton
+                            expandable={true}
+                            onClick={handleAchievements}
+                        >
+                            Достижения
+                        </CellButton>
+                        {seasons && (
+                            <>
                                 <CellButton
                                     expandable={true}
-                                    onClick={handleSelectUser}
+                                    onClick={handleEdit}
                                 >
-                                    Привязать к странице ВК
+                                    Редактировать
                                 </CellButton>
-                            )}
-                            {user!.is_staff && (
-                                <CellButton
-                                    expandable={true}
-                                    mode="danger"
-                                    onClick={handleDelete}
-                                >
-                                    Удалить
-                                </CellButton>
-                            )}
-                        </Group>
-                    )}
+                                {userCanAttach && (
+                                    <CellButton
+                                        expandable={true}
+                                        onClick={handleSelectUser}
+                                    >
+                                        Привязать к странице ВК
+                                    </CellButton>
+                                )}
+                                {user!.is_staff && (
+                                    <CellButton
+                                        expandable={true}
+                                        mode="danger"
+                                        onClick={handleDelete}
+                                    >
+                                        Удалить
+                                    </CellButton>
+                                )}
+                            </>
+                        )}
+                    </Group>
                 </>
             )}
             {SnackBar}
