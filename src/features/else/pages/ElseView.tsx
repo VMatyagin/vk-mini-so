@@ -1,6 +1,7 @@
 import {
     Icon28CalendarOutline,
     Icon28EmployeeOutline,
+    Icon28UsersOutline,
     // Icon28StatisticsOutline,
     Icon28UserSquareOutline,
     // Icon28HelpOutline,
@@ -15,23 +16,38 @@ import { observer } from "mobx-react-lite";
 import { FC, useContext, useState } from "react";
 import { AbstractView } from "../../../ui/molecules/AbstractView";
 import { boecStore } from "../../boec/store/boecStore";
+import { brigadeStore } from "../../brigades/store/brigadeStore";
+import { shtabStore } from "../../shtab/store/shtabStore";
 import { appStore } from "../../stores/app-store";
 import { routerStore } from "../../stores/router-store";
-import { CollectiveCell } from "../ui/molecules/CollectiveCell";
+import { SubjectSelectingCell } from "../ui/molecules/SubjectSelectingCell";
 
 export const ElseView: FC<{ id: string }> = observer(({ id }) => {
     const { setPage } = useContext(routerStore);
     const { user } = useContext(appStore);
     const { setBoecId } = useContext(boecStore);
+    const { setBrigadeId } = useContext(brigadeStore);
+    const { setShtabId } = useContext(shtabStore);
 
     const [checked, setChecked] = useState(false);
     const handleClick = () => setChecked(!checked);
     const changeView = (view: string) => {
         setPage(view, "base");
     };
+    const openEvents = () => {
+        setPage("event", "list");
+    };
     const openProfile = () => {
         setBoecId(user!.boec.id);
         setPage("boec", "base");
+    };
+    const selectBrigade = (id: number) => {
+        setBrigadeId(id);
+        setPage("brigades", "details");
+    };
+    const selectShtab = (id: number) => {
+        setShtabId(id);
+        setPage("shtab", "base");
     };
     return (
         <AbstractView id={id}>
@@ -72,7 +88,21 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
                     )}
                     {user &&
                         (user.brigades.length !== 0 ||
-                            user.shtabs.length !== 0) && <CollectiveCell />}
+                            user.shtabs.length !== 0) && (
+                            <SubjectSelectingCell
+                                onBrigadeClick={selectBrigade}
+                                onShtabClick={selectShtab}
+                            >
+                                {({ handleClick }) => (
+                                    <SimpleCell
+                                        onClick={handleClick}
+                                        before={<Icon28UsersOutline />}
+                                    >
+                                        Мой коллектив
+                                    </SimpleCell>
+                                )}
+                            </SubjectSelectingCell>
+                        )}
                     {user && user.is_staff && (
                         <SimpleCell
                             before={<Icon28UserSquareOutline />}
@@ -86,6 +116,12 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
                         before={<Icon28EmployeeOutline />}
                     >
                         Профиль
+                    </SimpleCell>
+                    <SimpleCell
+                        before={<Icon28CalendarOutline />}
+                        onClick={openEvents}
+                    >
+                        Мероприятия
                     </SimpleCell>
                     {/* <SimpleCell
                         before={<Icon28ScanViewfinderOutline />}

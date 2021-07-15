@@ -3,6 +3,7 @@ export interface User {
     boec: Boec;
     brigades: Brigade[];
     shtabs: Shtab[];
+    seasonBrigades: Brigade[]
     is_staff: boolean;
 }
 
@@ -59,6 +60,7 @@ export interface EventType {
     volonteer: any[];
     visibility: boolean;
     worth: number;
+    isParticipant: boolean;
 }
 export interface Shtab extends WithId {
     title: string;
@@ -97,6 +99,7 @@ export interface Participant {
     event: Event;
     eventId: number;
     worth: number;
+    brigade: number;
 }
 
 export interface Competition {

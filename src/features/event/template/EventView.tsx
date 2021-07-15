@@ -13,6 +13,7 @@ import { CompetitionViewPanel } from "../pages/CompetitionViewPanel";
 import { CompetitionParticipantListPanel } from "../pages/CompetitionParticipantListPanel";
 import { CompetitionEditPanel } from "../pages/CompetitionEditPanel";
 import { NomiantionsListPanel } from "../pages/NomiantionsListPanel";
+import { BrigadeParticipantsPanel } from "../pages/BrigadeParticipantsPanel";
 
 export const EventView: FC<ViewProps> = observer(({ id }) => {
     return (
@@ -21,6 +22,8 @@ export const EventView: FC<ViewProps> = observer(({ id }) => {
             <EditPanel id="edit" viewId={id} />
             <ListPanel id="list" viewId={id} />
             <ViewPanel id="details" viewId={id} />
+
+            <BrigadeParticipantsPanel id="brigade-participant" viewId={id} />
             <ParticipantsPanel id="volonteers" worth={1} viewId={id} />
             <ParticipantsPanel id="organizers" worth={2} viewId={id} />
             <ParticipantsPanel id="participant" worth={0} viewId={id} />

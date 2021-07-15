@@ -5,6 +5,7 @@ export class EventStore {
     eventId: number | null = null;
     competitionId: number | null = null;
     nominationId: number | null = null;
+    brigadeId: number | null = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -17,6 +18,9 @@ export class EventStore {
     };
     setNominationId = (id: number | null) => {
         this.nominationId = id;
+    };
+    selectBrigade = (id: number | null) => {
+        this.brigadeId = id;
     };
 }
 

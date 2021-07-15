@@ -1,14 +1,16 @@
-import { FC, useContext } from "react";
+import { FC, useContext, useState } from "react";
 import {
     ActionSheet,
     ActionSheetItem,
-    CellButton,
     Group,
+    InfoRow,
     IOS,
     Panel,
     PanelHeaderBack,
     ScreenSpinner,
     SimpleCell,
+    Tabs,
+    TabsItem,
     usePlatform,
 } from "@vkontakte/vkui";
 
@@ -24,15 +26,10 @@ import {
     Icon28DeleteOutline,
     Icon28DeleteOutlineAndroid,
 } from "@vkontakte/icons";
-import { PARTICIPANT_TITLES } from "../helpers";
 import { MODAL_BOEC_LIST } from "../../boec/ui/modals/BoecListModal";
 
-interface ParticipantsPanelProps extends PanelProps {
-    worth: Participant["worth"];
-}
-
-export const ParticipantsPanel: FC<ParticipantsPanelProps> = observer(
-    ({ id, viewId, worth }) => {
+export const BrigadeParticipantsPanel: FC<PanelProps> = observer(
+    ({ id, viewId }) => {
         const {
             goBack,
             setModalCallback,
@@ -41,8 +38,10 @@ export const ParticipantsPanel: FC<ParticipantsPanelProps> = observer(
             closeModal,
             closePopout,
         } = useContext(routerStore);
-        const { eventId } = useContext(eventStore);
+        const { eventId, brigadeId } = useContext(eventStore);
         const queryClient = useQueryClient();
+
+        const [activeTab, setActiveTab] = useState<string>("notapproved");
 
         const { mutate } = useMutation<
             Participant,
@@ -51,25 +50,69 @@ export const ParticipantsPanel: FC<ParticipantsPanelProps> = observer(
                 boecId: number;
                 eventId: number;
                 worth: Participant["worth"];
+                brigadeId: number;
             }
         >(
             (data) => {
                 closeModal();
                 openPopout(<ScreenSpinner />);
-                return EventAPI.setParticipant({
-                    isApproved: true,
-                    ...data,
-                });
+                return EventAPI.setParticipant(data);
             },
             {
                 onSuccess: () => {
                     closePopout();
-                    queryClient.refetchQueries(`event-${id}`);
+                    queryClient.refetchQueries(`event-${id}-${brigadeId}`);
                 },
                 onError: closePopout,
             }
         );
 
+        const { mutate: approveParticipant } = useMutation<
+            Participant,
+            Error,
+            {
+                participantId: Participant["worth"];
+                eventId: number;
+            }
+        >(
+            ({ participantId, eventId }) => {
+                openPopout(<ScreenSpinner />);
+                return EventAPI.approveParticipant({
+                    participantId,
+                    eventId,
+                });
+            },
+            {
+                onSuccess: () => {
+                    closePopout();
+                    queryClient.refetchQueries(`event-${id}-${brigadeId}`);
+                },
+                onError: closePopout,
+            }
+        );
+        const { mutate: unapproveParticipant } = useMutation<
+            Participant,
+            Error,
+            {
+                participantId: Participant["worth"];
+                eventId: number;
+            }
+        >(
+            ({ participantId, eventId }) => {
+                openPopout(<ScreenSpinner />);
+                return EventAPI.unapproveParticipant({
+                    participantId,
+                    eventId,
+                });
+            },
+            {
+                onSuccess: () => {
+                    closePopout();
+                    queryClient.refetchQueries(`event-${id}-${brigadeId}`);
+                },
+                onError: closePopout,
+            }
+        );
         const { mutate: removeParticipant } = useMutation<
             Participant,
             Error,
@@ -79,7 +122,6 @@ export const ParticipantsPanel: FC<ParticipantsPanelProps> = observer(
             }
         >(
             ({ participantId, eventId }) => {
-                closeModal();
                 openPopout(<ScreenSpinner />);
                 return EventAPI.removeParticipant({
                     participantId,
@@ -89,7 +131,7 @@ export const ParticipantsPanel: FC<ParticipantsPanelProps> = observer(
             {
                 onSuccess: () => {
                     closePopout();
-                    queryClient.refetchQueries(`event-${id}`);
+                    queryClient.refetchQueries(`event-${id}-${brigadeId}`);
                 },
                 onError: closePopout,
             }
@@ -100,7 +142,8 @@ export const ParticipantsPanel: FC<ParticipantsPanelProps> = observer(
                 mutate({
                     boecId: boec.id,
                     eventId: eventId!,
-                    worth,
+                    worth: 0,
+                    brigadeId: brigadeId!,
                 });
             });
             openModal(MODAL_BOEC_LIST);
@@ -117,6 +160,32 @@ export const ParticipantsPanel: FC<ParticipantsPanelProps> = observer(
                         </ActionSheetItem>
                     }
                 >
+                    {activeTab === "notapproved" && (
+                        <ActionSheetItem
+                            autoclose
+                            onClick={() =>
+                                approveParticipant({
+                                    eventId: data.eventId,
+                                    participantId: data.id,
+                                })
+                            }
+                        >
+                            Подтвердить
+                        </ActionSheetItem>
+                    )}
+                    {activeTab === "approved" && (
+                        <ActionSheetItem
+                            autoclose
+                            onClick={() =>
+                                unapproveParticipant({
+                                    eventId: data.eventId,
+                                    participantId: data.id,
+                                })
+                            }
+                        >
+                            Снять подтверждение
+                        </ActionSheetItem>
+                    )}
                     <ActionSheetItem
                         autoclose
                         before={
@@ -143,19 +212,41 @@ export const ParticipantsPanel: FC<ParticipantsPanelProps> = observer(
             <Panel id={id}>
                 <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
                     <Title level="2" weight="bold">
-                        {PARTICIPANT_TITLES[worth].title}
+                        Заявки
                     </Title>
                 </PanelHeader>
                 <Group>
-                    <CellButton onClick={onAddClick}>Добавить</CellButton>
+                    <SimpleCell>
+                        <InfoRow header="Квота">1000</InfoRow>
+                    </SimpleCell>
+                    <SimpleCell onClick={onAddClick}>
+                        <InfoRow header="Доступно">1000</InfoRow>
+                    </SimpleCell>
+                </Group>
+                <Group>
+                    <Tabs mode="buttons">
+                        <TabsItem
+                            onClick={() => setActiveTab("notapproved")}
+                            selected={activeTab === "notapproved"}
+                        >
+                            Не подтвержденные (15)
+                        </TabsItem>
+                        <TabsItem
+                            onClick={() => setActiveTab("approved")}
+                            selected={activeTab === "approved"}
+                        >
+                            Подтвержденные (5)
+                        </TabsItem>
+                    </Tabs>
 
                     <LazyList
-                        title={PARTICIPANT_TITLES[worth].title}
                         fetchFn={EventAPI.getEventParticipants}
-                        queryKey={`event-${id}`}
+                        queryKey={`event-${id}-${brigadeId}`}
                         extraFnProp={{
                             eventId: eventId,
-                            worth,
+                            worth: 0,
+                            brigadeId,
+                            status: activeTab,
                         }}
                         renderItem={(item: Participant) => (
                             <SimpleCell

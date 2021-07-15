@@ -15,10 +15,35 @@ import { debounce } from "@vkontakte/vkjs";
 import { EventType, PanelProps } from "../../types";
 import { eventStore } from "../store/eventStore";
 import { EventAPI } from "../../utils/requests/event-request";
+import { appStore } from "../../stores/app-store";
+
+const getDescription = ({
+    date,
+    place,
+}: {
+    date?: string | null;
+    place?: string | null;
+}) => {
+    let description = "";
+    if (date) {
+        description += new Date(date).toLocaleString("ru", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+        });
+    }
+
+    if (place) {
+        description += `| ${place}`;
+    }
+
+    return description;
+};
 
 export const ListPanel: FC<PanelProps> = observer(({ id, viewId }) => {
     const { goBack, setPage } = useContext(routerStore);
     const { setEventId } = useContext(eventStore);
+    const { user } = useContext(appStore);
 
     const changeView = (id: number) => {
         setEventId(id);
@@ -56,14 +81,22 @@ export const ListPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                     queryKey={"event-list"}
                     extraFnProp={{
                         search: filter.search,
+                        visibility: !(user!.shtabs.length > 0)
+                            ? true
+                            : undefined,
                     }}
                     renderItem={(item: EventType) => (
                         <SimpleCell
                             key={item.id}
                             onClick={() => changeView(item.id)}
-                            description={item.description}
+                            description={getDescription({
+                                date: item.startDate,
+                                place: item.location,
+                            })}
                         >
-                            {`${item.title} | ${item.shtab?.title || 'Без организатора'}`}
+                            {`${item.title} | ${
+                                item.shtab?.title || "Без организатора"
+                            }`}
                         </SimpleCell>
                     )}
                 />

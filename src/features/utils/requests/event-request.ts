@@ -29,10 +29,12 @@ export const EventAPI = {
         limit,
         offset,
         search,
+        visibility,
     }: {
         offset: number;
         limit: number;
         search?: string;
+        visibility?: string;
     }): Promise<ListResponse<EventType>> {
         if (cancel) {
             cancel();
@@ -41,6 +43,7 @@ export const EventAPI = {
             offset,
             limit,
             search,
+            visibility,
         };
 
         const { data } = await get("/api/event/", {
@@ -56,11 +59,15 @@ export const EventAPI = {
         offset,
         eventId,
         worth,
+        brigadeId,
+        status,
     }: {
         offset: number;
         eventId: number;
         limit: number;
         worth: Participant["worth"];
+        brigadeId?: number;
+        status?: "notapproved" | "approved";
     }): Promise<ListResponse<Participant>> {
         if (cancel) {
             cancel();
@@ -69,6 +76,8 @@ export const EventAPI = {
             offset,
             limit,
             worth,
+            brigadeId,
+            status,
         };
 
         const { data } = await get(`/api/event/${eventId}/participants/`, {
@@ -83,14 +92,20 @@ export const EventAPI = {
         boecId,
         eventId,
         worth,
+        brigadeId,
+        isApproved,
     }: {
         boecId: number;
         eventId: number;
         worth: Participant["worth"];
+        brigadeId?: number;
+        isApproved?: boolean;
     }): Promise<Participant> {
         const { data } = await post(`/api/event/${eventId}/participants/`, {
             boecId,
             worth,
+            brigade: brigadeId,
+            isApproved,
         });
         return data;
     },
@@ -103,6 +118,30 @@ export const EventAPI = {
     }): Promise<Participant> {
         const { data } = await remove(
             `/api/event/${eventId}/participants/${participantId}/`
+        );
+        return data;
+    },
+    async approveParticipant({
+        participantId,
+        eventId,
+    }: {
+        participantId: number;
+        eventId: number;
+    }): Promise<Participant> {
+        const { data } = await post(
+            `/api/event/${eventId}/participants/${participantId}/approve/`
+        );
+        return data;
+    },
+    async unapproveParticipant({
+        participantId,
+        eventId,
+    }: {
+        participantId: number;
+        eventId: number;
+    }): Promise<Participant> {
+        const { data } = await post(
+            `/api/event/${eventId}/participants/${participantId}/unapprove/`
         );
         return data;
     },
