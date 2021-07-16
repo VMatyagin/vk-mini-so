@@ -9,15 +9,20 @@ import {
     SplitCol,
     SplitLayout,
     PanelHeader,
+    Root,
 } from "@vkontakte/vkui";
 
 import { routerStore } from "./features/stores/router-store";
 import { DesktopMenu } from "./ui/molecules/DesktopMenu";
 import { MobileMenu } from "./ui/molecules/MobileMenu";
 import { Modals } from "./ui/organisms/Modals";
-import { elseRoutes } from "./features/else/elseRoutes";
 import { toJS } from "mobx";
-import { profileRoutes } from "./features/boec/profileRoutes";
+import { BoecView } from "./features/boec/template/BoecView";
+import { BrigadesView } from "./features/brigades/template/BrigadesView";
+import { ElseView } from "./features/else/pages/ElseView";
+import { EventView } from "./features/event/template/EventView";
+import { ShtabView } from "./features/shtab/template/ShtabView";
+import { ProfileView } from "./features/profile/template/ProfileView";
 
 export const AppLayout: FC = observer(() => {
     const {
@@ -74,8 +79,16 @@ export const AppLayout: FC = observer(() => {
                     activeStory={activeStory}
                     tabbar={!isDesktop && <MobileMenu />}
                 >
-                    {elseRoutes(activeView)}
-                    {profileRoutes(activeView)}
+                    <Root id="else" activeView={activeView}>
+                        <ElseView id="else" />
+                        <EventView id="event" />
+                        <BrigadesView id="brigades" />
+                        <BoecView id="boec" />
+                        <ShtabView id="shtab" />
+                    </Root>
+                    <Root id="profile" activeView={activeView}>
+                        <ProfileView id="profile" />
+                    </Root>
                 </Epic>
             </SplitCol>
             {isDesktop && <DesktopMenu />}

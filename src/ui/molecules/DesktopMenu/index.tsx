@@ -1,5 +1,6 @@
 import { Icon28Newsfeed, Icon28UserSquareOutline } from "@vkontakte/icons";
 import {
+    Badge,
     Cell,
     Group,
     Panel,
@@ -36,6 +37,7 @@ export const DesktopMenu = observer(() => {
                         }
                         onClick={() => setStory("else", "base")}
                         before={<Icon28Newsfeed />}
+                        id="base"
                     >
                         Ещё
                     </Cell>
@@ -52,6 +54,10 @@ export const DesktopMenu = observer(() => {
                         }
                         onClick={() => setStory("profile", "base")}
                         before={<Icon28UserSquareOutline />}
+                        id="profile"
+                        badge={
+                            <Badge mode="prominent" aria-label="Есть новые" />
+                        }
                     >
                         Профиль
                     </Cell>

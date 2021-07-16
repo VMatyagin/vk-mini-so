@@ -21,6 +21,11 @@ export const BoecView: FC<ViewProps> = observer(({ id }) => {
         }
     }, [boecId, setBoecId, user]);
 
+    useEffect(() => {
+        return () => {
+            setBoecId(null);
+        };
+    }, [setBoecId]);
     return (
         <AbstractView id={id}>
             <ViewPanel id="base" viewId={id} />

@@ -1,6 +1,6 @@
 import * as VK from "../../VKBridge";
 import { smoothScrollToTop } from "../../utils";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { createContext } from "react";
 
 const defaultPage = {
@@ -118,12 +118,18 @@ export class RouterStore {
             };
         }
     };
-    setStory = (story: string, initial_panel: string) => {
+    setStory = (
+        story: string,
+        initial_panel: string,
+        initial_view?: string
+    ) => {
         window.history.pushState(null, "");
         let viewsHistory = this.viewsHistory[story] || [story];
 
-        let activeView = viewsHistory[viewsHistory.length - 1];
-        let panelsHistory = this.panelsHistory[activeView] || [initial_panel];
+        let activeView = initial_view || viewsHistory[viewsHistory.length - 1];
+        let panelsHistory = initial_panel
+            ? [initial_panel]
+            : this.panelsHistory[activeView];
         let activePanel = panelsHistory[panelsHistory.length - 1];
 
         if (panelsHistory.length > 1) {
@@ -277,10 +283,12 @@ export class RouterStore {
     openPopout = (popout: JSX.Element) => {
         window.history.pushState(null, "");
 
-        this.popouts = {
-            ...this.popouts,
-            [this.activeView]: popout,
-        };
+        runInAction(() => {
+            this.popouts = {
+                ...this.popouts,
+                [this.activeView]: popout,
+            };
+        });
     };
     closePopout = () => {
         this.popouts = {

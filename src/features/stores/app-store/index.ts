@@ -1,5 +1,5 @@
 import { AppearanceSchemeType, UserInfo } from "@vkontakte/vk-bridge";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { createContext } from "react";
 import { ScrollPosition, User } from "../../types";
 import VKBridge from "@vkontakte/vk-bridge";
@@ -31,7 +31,9 @@ export class AppStore {
         this.userData = user;
         this.accessToken = token.access_token;
         await initApp();
-        this.isInitialization = false;
+        runInAction(() => {
+            this.isInitialization = false;
+        });
     }
 
     setColorScheme = (colorSchema: AppearanceSchemeType) => {

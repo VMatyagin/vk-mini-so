@@ -27,6 +27,7 @@ export const UserPositions = observer(() => {
                 ) : (
                     data.map((item) => (
                         <Cell
+                            key={item.id}
                             description={`${new Date(
                                 item.fromDate!
                             ).toLocaleString("ru", {

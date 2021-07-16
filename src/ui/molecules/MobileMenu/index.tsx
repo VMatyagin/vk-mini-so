@@ -1,5 +1,5 @@
 import { Icon28Newsfeed, Icon28UserSquareOutline } from "@vkontakte/icons";
-import { Tabbar, TabbarItem } from "@vkontakte/vkui";
+import { Badge, Tabbar, TabbarItem } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { useContext } from "react";
 import { routerStore } from "../../../features/stores/router-store";
@@ -20,6 +20,7 @@ export const MobileMenu = observer(() => {
                 onClick={() => setStory("profile", "base")}
                 selected={activeStory === "profile"}
                 text="Профиль"
+                indicator={<Badge mode="prominent" aria-label="Есть новые" />}
             >
                 <Icon28UserSquareOutline />
             </TabbarItem>

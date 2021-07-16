@@ -29,7 +29,7 @@ import { UserPositions } from "../ui/molecules/UserPositions";
 import { appStore } from "../../stores/app-store";
 
 export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
-    const { goBack, setPage, openPopout, closePopout, history } =
+    const { goBack, setPage, openPopout, closePopout } =
         useContext(routerStore);
 
     const { user } = useContext(appStore);
@@ -55,6 +55,7 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
         },
         retry: 1,
         refetchOnWindowFocus: false,
+        enabled: !!boecId,
     });
 
     const handleEdit = () => {
@@ -138,16 +139,12 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
     }, [seasons, user]);
     return (
         <Panel id={id}>
-            <PanelHeader
-                left={
-                    history.length > 1 && <PanelHeaderBack onClick={goBack} />
-                }
-            >
+            <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
                 <Title level="2" weight="bold">
                     Боец
                 </Title>
             </PanelHeader>
-            {isLoading || isError ? (
+            {isLoading || isError || !boec ? (
                 <Group>
                     <PanelSpinner size="small" style={{ margin: "20px 0" }} />
                 </Group>
