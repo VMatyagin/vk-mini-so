@@ -4,26 +4,24 @@ import { FC, ReactNode } from "react";
 interface MissionProps {
     Icon: ReactNode;
     value: number;
-    level: number;
+    description: string;
     maxValue: number;
     title: string;
-    goal: string;
-    done?: boolean;
+    created_at?: null | string;
 }
 export const Mission: FC<MissionProps> = ({
     Icon,
     value,
     maxValue,
-    level,
+    description,
     title,
-    goal,
-    done,
+    created_at,
 }) => {
     return (
         <SimpleCell
             disabled={true}
             description={
-                !done && (
+                !created_at && (
                     <div
                         style={{
                             width: "100%",
@@ -60,18 +58,20 @@ export const Mission: FC<MissionProps> = ({
                         }}
                     >
                         {Icon}
-                        <div>Уровень {level}</div>
+                        {/* <div>Уровень {level}</div> */}
                     </div>
                 </Avatar>
             }
             after={
-                done && (
+                created_at && (
                     <div
                         style={{
-                            color: done ? "var(--text_secondary)" : undefined,
+                            color: created_at
+                                ? "var(--text_secondary)"
+                                : undefined,
                         }}
                     >
-                        {new Date().toLocaleString("ru", {
+                        {new Date(created_at).toLocaleString("ru", {
                             day: "2-digit",
                             month: "short",
                             year: "numeric",
@@ -88,7 +88,7 @@ export const Mission: FC<MissionProps> = ({
                     }}
                     weight="regular"
                 >
-                    {goal}
+                    {description}
                 </Subhead>
             </div>
         </SimpleCell>

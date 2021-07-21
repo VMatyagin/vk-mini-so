@@ -1,5 +1,13 @@
 import axios, { Canceler } from "axios";
-import { Achievements, Boec, Position, Seasons, User } from "../../types";
+import {
+    Achievement,
+    Activity,
+    Boec,
+    Position,
+    Progress,
+    Seasons,
+    User,
+} from "../../types";
 import { get, patch, post, remove } from "../axiosConfig";
 import { ListResponse, SuccessResponse } from "../types";
 
@@ -63,8 +71,30 @@ export const UsersAPI = {
         const { data } = await post(`/api/so/boec/`, boec);
         return data;
     },
-    async getBoecAchievements(userId: number): Promise<Achievements> {
-        const { data } = await get(`/api/so/boec/${userId}/achievements/`);
+    async getBoecAchievements(boecId?: number): Promise<Achievement[]> {
+        const { data } = await get(`/api/me/achievements/`, {
+            params: {
+                boecId,
+            },
+        });
+        return data;
+    },
+    async getMeProgress(): Promise<Progress> {
+        const { data } = await get(`/api/me/progress/`);
+        return data;
+    },
+    async getActivities({
+        seen,
+    }: {
+        seen?: boolean;
+    }): Promise<ListResponse<Activity>> {
+        const { data } = await get(`/api/activity/`, {
+            params: { seen },
+        });
+        return data;
+    },
+    async ActivietisMarkAsRead(): Promise<void> {
+        const { data } = await post(`/api/activity/markAsRead`);
         return data;
     },
 };

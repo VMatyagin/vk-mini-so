@@ -1,46 +1,43 @@
 import {
-    Footer,
     Group,
     Header,
     Panel,
     PanelHeader,
     PanelHeaderBack,
     PanelSpinner,
-    SimpleCell,
 } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { FC, useContext } from "react";
 import { useQuery } from "react-query";
-import { PARTICIPANT_WORTH } from "../../event/helpers";
 import { routerStore } from "../../stores/router-store";
 
-import { Competition, Nomination, PanelProps } from "../../types";
+import { PanelProps } from "../../types";
 import { UsersAPI } from "../../utils/requests/user-request";
 import { boecStore } from "../store/boecStore";
 
-const getText = (
-    competition: Competition,
-    title: string | null,
-    nomination: Nomination[]
-) => {
-    let text = "";
+// const getText = (
+//     competition: Competition,
+//     title: string | null,
+//     nomination: Nomination[]
+// ) => {
+//     let text = "";
 
-    if (competition) {
-        text += competition.title;
-    }
+//     if (competition) {
+//         text += competition.title;
+//     }
 
-    if (title) {
-        text += ` ${title}`;
-    }
+//     if (title) {
+//         text += ` ${title}`;
+//     }
 
-    if (nomination) {
-        nomination.forEach((item) => {
-            text += ` | ${item.title}`;
-        });
-    }
+//     if (nomination) {
+//         nomination.forEach((item) => {
+//             text += ` | ${item.title}`;
+//         });
+//     }
 
-    return text;
-};
+//     return text;
+// };
 
 export const AchievementsPanel: FC<PanelProps> = observer(({ id }) => {
     const { goBack } = useContext(routerStore);
@@ -66,7 +63,7 @@ export const AchievementsPanel: FC<PanelProps> = observer(({ id }) => {
                         <Header mode="secondary">Участие в мероприятиях</Header>
                     }
                 >
-                    {data.event_participant.length === 0 && (
+                    {/* {data.event_participant.length === 0 && (
                         <Footer>Ничего не найдено</Footer>
                     )}
                     {data.event_participant.map((participant) => (
@@ -78,7 +75,7 @@ export const AchievementsPanel: FC<PanelProps> = observer(({ id }) => {
                         >
                             {participant.event.title}
                         </SimpleCell>
-                    ))}
+                    ))} */}
                 </Group>
             )}
             {data && (
@@ -89,7 +86,7 @@ export const AchievementsPanel: FC<PanelProps> = observer(({ id }) => {
                         </Header>
                     }
                 >
-                    {data.competition_participant.length === 0 && (
+                    {/* {data.competition_participant.length === 0 && (
                         <Footer>Ничего не найдено</Footer>
                     )}
                     {data.competition_participant.map((participant) => (
@@ -103,7 +100,7 @@ export const AchievementsPanel: FC<PanelProps> = observer(({ id }) => {
                                 participant.nomination
                             )}
                         </SimpleCell>
-                    ))}
+                    ))} */}
                 </Group>
             )}
         </Panel>

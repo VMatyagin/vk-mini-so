@@ -11,6 +11,7 @@ import {
 } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { useContext } from "react";
+import { appStore } from "../../../features/stores/app-store";
 import { routerStore } from "../../../features/stores/router-store";
 
 export const DesktopMenu = observer(() => {
@@ -18,6 +19,7 @@ export const DesktopMenu = observer(() => {
 
     const hasHeader = platform !== VKCOM;
     const { activeStory, setStory } = useContext(routerStore);
+    const { user } = useContext(appStore);
 
     return (
         <SplitCol fixed width="280px" maxWidth="280px">
@@ -56,7 +58,12 @@ export const DesktopMenu = observer(() => {
                         before={<Icon28UserSquareOutline />}
                         id="profile"
                         badge={
-                            <Badge mode="prominent" aria-label="Есть новые" />
+                            user?.unreadActivityCount! > 0 && (
+                                <Badge
+                                    mode="prominent"
+                                    aria-label="Есть новые"
+                                />
+                            )
                         }
                     >
                         Профиль

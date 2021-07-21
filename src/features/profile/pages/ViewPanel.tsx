@@ -4,9 +4,7 @@ import {
     CellButton,
     Counter,
     Group,
-    InfoRow,
     Panel,
-    SimpleCell,
     Tabs,
     TabsItem,
     Title,
@@ -14,122 +12,24 @@ import {
 import { PanelHeader } from "@vkontakte/vkui";
 
 import {
-    Icon28DrillOutline,
-    Icon28FireOutline,
     Icon28Notifications,
-    Icon28PaletteOutline,
-    Icon28SneakerOutline,
     Icon28UserStarBadgeOutline,
 } from "@vkontakte/icons";
 import { observer } from "mobx-react-lite";
 import { appStore } from "../../stores/app-store";
 import { routerStore } from "../../stores/router-store";
 import { PanelProps } from "../../types";
-import { Mission } from "../ui/molecules/Mission";
+import { Achievements } from "../ui/organisms/Achievements";
+import { Statistics } from "../ui/organisms/Statistics";
+import { Missions } from "../ui/organisms/Missions";
 
-const Missions = () => {
-    return (
-        <>
-            <Mission
-                Icon={<Icon28DrillOutline />}
-                title="Крутой орг!"
-                goal="Организовать 1 мероприятие"
-                level={1}
-                value={1}
-                maxValue={1}
-            />
-            <Mission
-                Icon={<Icon28SneakerOutline />}
-                title="Качок"
-                goal="Занять призовое место в спортивном мероприятии"
-                level={1}
-                value={0}
-                maxValue={1}
-            />
-            <Mission
-                Icon={<Icon28PaletteOutline />}
-                title="Еще ничего!"
-                goal="Занять призовое место в творческом мероприятии"
-                level={1}
-                value={0}
-                maxValue={1}
-            />
-
-            <Mission
-                Icon={<Icon28FireOutline />}
-                title="Молодой боец"
-                goal="Выехать на свой первый сезон"
-                level={1}
-                value={0}
-                maxValue={1}
-            />
-        </>
-    );
-};
-const Achievements = () => {
-    return (
-        <>
-            <Mission
-                Icon={<Icon28DrillOutline />}
-                title="Крутой орг!"
-                goal="Организовать 1 мероприятие"
-                level={1}
-                value={1}
-                maxValue={1}
-                done={true}
-            />
-            <Mission
-                Icon={<Icon28SneakerOutline />}
-                title="Качок"
-                goal="Занять призовое место в спортивном мероприятии"
-                level={1}
-                value={0}
-                maxValue={1}
-                done={true}
-            />
-            <Mission
-                Icon={<Icon28PaletteOutline />}
-                title="Еще ничего!"
-                goal="Занять призовое место в творческом мероприятии"
-                level={1}
-                value={0}
-                maxValue={1}
-                done={true}
-            />
-
-            <Mission
-                Icon={<Icon28FireOutline />}
-                title="Молодой боец"
-                goal="Выехать на свой первый сезон"
-                level={1}
-                value={0}
-                maxValue={1}
-                done={true}
-            />
-        </>
-    );
-};
-
-const Statistics = () => (
-    <>
-        <SimpleCell multiline>
-            <InfoRow header="Участвовал в конкурсном мероприятии">5</InfoRow>
-        </SimpleCell>
-        <SimpleCell>
-            <InfoRow header="Был волонтером на мероприятии">{4}</InfoRow>
-        </SimpleCell>
-        <SimpleCell>
-            <InfoRow header="Был организатором мероприятия">{0}</InfoRow>
-        </SimpleCell>
-    </>
-);
-export const ViewPanel: FC<PanelProps> = observer(({ id }) => {
-    const { setStory } = useContext(routerStore);
-
+export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
+    const { setStory, setPage } = useContext(routerStore);
     const { userData, user } = useContext(appStore);
-
     const [activeTab, setActiveTab] = useState<string>("missions");
-
+    const openNotifications = () => {
+        setPage(viewId, "notifications");
+    };
     return (
         <Panel id={id}>
             <PanelHeader>
@@ -181,10 +81,13 @@ export const ViewPanel: FC<PanelProps> = observer(({ id }) => {
                         before={<Icon28Notifications />}
                         centered={true}
                         indicator={
-                            <Counter size="s" mode="prominent">
-                                12
-                            </Counter>
+                            user!.unreadActivityCount > 0 && (
+                                <Counter size="s" mode="prominent">
+                                    {user?.unreadActivityCount}
+                                </Counter>
+                            )
                         }
+                        onClick={openNotifications}
                     >
                         Уведомления
                     </CellButton>

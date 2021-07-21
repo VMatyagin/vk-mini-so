@@ -5,6 +5,7 @@ export interface User {
     shtabs: Shtab[];
     seasonBrigades: Brigade[];
     is_staff: boolean;
+    unreadActivityCount: number;
 }
 
 export interface WithId {
@@ -44,16 +45,6 @@ export interface Boec extends WithId {
 
     // for post
     brigadeId: number;
-}
-
-interface CompetitionParticipantWithEvent extends CompetitionParticipant<true> {
-    event: {
-        title: string;
-    };
-}
-export interface Achievements {
-    event_participant: Participant[];
-    competition_participant: CompetitionParticipantWithEvent[];
 }
 
 export interface EventType {
@@ -142,4 +133,38 @@ export interface Nomination {
     competition: number;
     isRated: boolean;
     sportPlace: number | null;
+}
+
+export interface Progress {
+    participation_count: number;
+    volonteer_count: number;
+    organizer_count: number;
+    competition_default: number;
+    competition_playoff: number;
+    nominations: number;
+    seasons: number;
+    sport_wins: number;
+    art_wins: number;
+}
+export interface Achievement {
+    id: number;
+    type: "seasons";
+    created_at: string;
+    title: string;
+    description: string;
+    goal: number;
+    achieved_at: null | string;
+}
+
+export interface Warning {
+    id: number;
+    text: string;
+}
+
+export interface Activity {
+    id: number;
+    type: 0 | 1 | 2;
+    created_at: string;
+    warning: Warning | null;
+    achievement: Achievement | null;
 }
