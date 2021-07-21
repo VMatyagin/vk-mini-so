@@ -57,7 +57,6 @@ export const UserEditSeasons: FC<{ viewId: string }> = observer(
                                 season.isCandidate ? "Кандидат" : "Боец"
                             }`}
                             before={<Icon28PlaneOutline />}
-                            onClick={onCellClick}
                         >
                             {season.brigade.title}
                             {!season.isAccepted && <i> - не подтвержденный</i>}

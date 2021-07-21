@@ -1,51 +1,53 @@
 import {
+    Footer,
     Group,
     Header,
     Panel,
     PanelHeader,
     PanelHeaderBack,
     PanelSpinner,
+    SimpleCell,
 } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { FC, useContext } from "react";
 import { useQuery } from "react-query";
+import { PARTICIPANT_WORTH } from "../../event/helpers";
 import { routerStore } from "../../stores/router-store";
 
-import { PanelProps } from "../../types";
+import { Competition, Nomination, PanelProps } from "../../types";
 import { UsersAPI } from "../../utils/requests/user-request";
 import { boecStore } from "../store/boecStore";
 
-// const getText = (
-//     competition: Competition,
-//     title: string | null,
-//     nomination: Nomination[]
-// ) => {
-//     let text = "";
+const getText = (
+    competition: Competition,
+    title: string | null,
+    nomination: Nomination[]
+) => {
+    let text = "";
 
-//     if (competition) {
-//         text += competition.title;
-//     }
+    if (competition) {
+        text += competition.title;
+    }
 
-//     if (title) {
-//         text += ` ${title}`;
-//     }
+    if (title) {
+        text += ` ${title}`;
+    }
 
-//     if (nomination) {
-//         nomination.forEach((item) => {
-//             text += ` | ${item.title}`;
-//         });
-//     }
+    if (nomination) {
+        nomination.forEach((item) => {
+            text += ` | ${item.title}`;
+        });
+    }
 
-//     return text;
-// };
+    return text;
+};
 
-export const AchievementsPanel: FC<PanelProps> = observer(({ id }) => {
+export const HistoryPanel: FC<PanelProps> = observer(({ id }) => {
     const { goBack } = useContext(routerStore);
     const { boecId } = useContext(boecStore);
-
     const { data } = useQuery({
-        queryKey: ["user-achievements", boecId],
-        queryFn: () => UsersAPI.getBoecAchievements(boecId!),
+        queryKey: ["user-history", boecId],
+        queryFn: () => UsersAPI.getBoecHistory(boecId!),
         retry: 1,
         refetchOnWindowFocus: false,
         enabled: !!boecId,
@@ -54,16 +56,14 @@ export const AchievementsPanel: FC<PanelProps> = observer(({ id }) => {
     return (
         <Panel id={id}>
             <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
-                Достижения
+                Участие
             </PanelHeader>
             {!data && <PanelSpinner />}
             {data && (
                 <Group
-                    header={
-                        <Header mode="secondary">Участие в мероприятиях</Header>
-                    }
+                    header={<Header mode="secondary">В мероприятиях</Header>}
                 >
-                    {/* {data.event_participant.length === 0 && (
+                    {data.event_participant.length === 0 && (
                         <Footer>Ничего не найдено</Footer>
                     )}
                     {data.event_participant.map((participant) => (
@@ -75,18 +75,18 @@ export const AchievementsPanel: FC<PanelProps> = observer(({ id }) => {
                         >
                             {participant.event.title}
                         </SimpleCell>
-                    ))} */}
+                    ))}
                 </Group>
             )}
             {data && (
                 <Group
                     header={
                         <Header mode="secondary">
-                            Участие в конкурсах и соревнованиях
+                            В конкурсах и соревнованиях
                         </Header>
                     }
                 >
-                    {/* {data.competition_participant.length === 0 && (
+                    {data.competition_participant.length === 0 && (
                         <Footer>Ничего не найдено</Footer>
                     )}
                     {data.competition_participant.map((participant) => (
@@ -100,7 +100,7 @@ export const AchievementsPanel: FC<PanelProps> = observer(({ id }) => {
                                 participant.nomination
                             )}
                         </SimpleCell>
-                    ))} */}
+                    ))}
                 </Group>
             )}
         </Panel>

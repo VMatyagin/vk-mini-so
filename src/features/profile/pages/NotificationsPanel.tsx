@@ -17,7 +17,7 @@ import {
 import { observer } from "mobx-react-lite";
 import { routerStore } from "../../stores/router-store";
 import { Activity, PanelProps } from "../../types";
-import { useQuery } from "react-query";
+import { useQuery, useQueryClient } from "react-query";
 import { UsersAPI } from "../../utils/requests/user-request";
 import { LazyList } from "../../../ui/organisms/LazyList";
 
@@ -44,8 +44,27 @@ const getBefore = (item: Activity): ReactNode => {
     }
 };
 
+const getTime = (item: string) => {
+    const dateObj = new Date(item);
+    const isCurrentYear = dateObj.getFullYear() === new Date().getFullYear();
+    const date = dateObj.toLocaleString("ru", {
+        timeZone: "UTC",
+        day: "2-digit",
+        month: "short",
+        year: isCurrentYear ? undefined : "numeric",
+    });
+    const time = dateObj.toLocaleString("ru", {
+        timeZone: "UTC",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+    return `${date} в ${time}`;
+};
+
 export const NotificationsPanel: FC<PanelProps> = observer(({ id }) => {
     const { goBack } = useContext(routerStore);
+    const qClient = useQueryClient();
+
     const { data } = useQuery({
         queryKey: ["user-activity"],
         queryFn: () => UsersAPI.getActivities({}),
@@ -56,8 +75,9 @@ export const NotificationsPanel: FC<PanelProps> = observer(({ id }) => {
     useEffect(() => {
         if (data && data.items.length > 0) {
             UsersAPI.ActivietisMarkAsRead();
+            qClient.refetchQueries(["user-me"]);
         }
-    }, [data]);
+    }, [data, qClient]);
 
     return (
         <Panel id={id}>
@@ -71,13 +91,7 @@ export const NotificationsPanel: FC<PanelProps> = observer(({ id }) => {
                     {data.items.map((item) => (
                         <SimpleCell
                             before={getBefore(item)}
-                            description={new Date(
-                                item.created_at
-                            ).toLocaleString("ru", {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                            })}
+                            description={getTime(item.created_at)}
                         >
                             {getTitle(item)}
                         </SimpleCell>
@@ -94,14 +108,7 @@ export const NotificationsPanel: FC<PanelProps> = observer(({ id }) => {
                 renderItem={(item: Activity) => (
                     <SimpleCell
                         before={getBefore(item)}
-                        description={new Date(item.created_at).toLocaleString(
-                            "ru",
-                            {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                            }
-                        )}
+                        description={getTime(item.created_at)}
                     >
                         {getTitle(item)}
                     </SimpleCell>

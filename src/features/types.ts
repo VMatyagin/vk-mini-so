@@ -125,6 +125,9 @@ export interface CompetitionParticipant<IsFull extends boolean = false> {
     nomination: Nomination[];
     // only for updating
     nominationId: number;
+
+    // for history
+    event: EventType;
 }
 
 export interface Nomination {
@@ -167,4 +170,9 @@ export interface Activity {
     created_at: string;
     warning: Warning | null;
     achievement: Achievement | null;
+}
+
+export interface ParticipantHistory {
+    event_participant: Participant[];
+    competition_participant: CompetitionParticipant<true>[];
 }

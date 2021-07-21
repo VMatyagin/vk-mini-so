@@ -4,7 +4,7 @@ import {
     // Icon28PaletteOutline,
     // Icon28FireOutline,
 } from "@vkontakte/icons";
-import { PanelSpinner } from "@vkontakte/vkui";
+import { Footer, PanelSpinner } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { useContext } from "react";
 import { useQuery } from "react-query";
@@ -31,6 +31,9 @@ export const Missions = observer(() => {
     }
     return (
         <>
+            {data.filter((item) => item.achieved_at === null).length === 0 && (
+                <Footer>Поздравляем, ты все выполнил!</Footer>
+            )}
             {data
                 .filter((item) => item.achieved_at === null)
                 .map((item) => (

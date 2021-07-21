@@ -26,7 +26,7 @@ export class AppStore {
             app_id: APP_ID,
             scope: "groups",
         });
-        const meData = await UsersAPI.getMeData(user.id);
+        const meData = await UsersAPI.getMeData();
         this.user = meData;
         this.userData = user;
         this.accessToken = token.access_token;
@@ -41,6 +41,9 @@ export class AppStore {
     };
     setUserData = (data: UserInfo) => {
         this.userData = data;
+    };
+    setUser = (user: User) => {
+        this.user = user;
     };
     setAccessToken = (accessToken: string | null) => {
         this.accessToken = accessToken;

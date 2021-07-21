@@ -3,6 +3,7 @@ import {
     Achievement,
     Activity,
     Boec,
+    ParticipantHistory,
     Position,
     Progress,
     Seasons,
@@ -15,7 +16,7 @@ const CancelToken = axios.CancelToken;
 let cancel: Canceler | undefined;
 
 export const UsersAPI = {
-    async getMeData(id: number): Promise<User> {
+    async getMeData(): Promise<User> {
         const { data } = await get("/api/me/");
         return data;
     },
@@ -95,6 +96,10 @@ export const UsersAPI = {
     },
     async ActivietisMarkAsRead(): Promise<void> {
         const { data } = await post(`/api/activity/markAsRead`);
+        return data;
+    },
+    async getBoecHistory(boecId?: number): Promise<ParticipantHistory> {
+        const { data } = await get(`/api/so/boec/${boecId}/history/`);
         return data;
     },
 };

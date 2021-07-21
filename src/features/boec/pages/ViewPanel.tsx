@@ -61,8 +61,8 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
     const handleEdit = () => {
         setPage(viewId, "edit");
     };
-    const handleAchievements = () => {
-        setPage(viewId, "achievements");
+    const handleHistory = () => {
+        setPage(viewId, "history");
     };
 
     const handleSelectUser = async () => {
@@ -185,11 +185,8 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                         <UserPositions />
                     </Group>
                     <Group>
-                        <CellButton
-                            expandable={true}
-                            onClick={handleAchievements}
-                        >
-                            Достижения
+                        <CellButton expandable={true} onClick={handleHistory}>
+                            Участие
                         </CellButton>
                         {seasons && (
                             <>
