@@ -229,12 +229,12 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                                     getRootRef={ref}
                                     onClick={handleClick}
                                 >
-                                    Подать заявку
+                                    Подать заявку на участие в мероприятии
                                 </CellButton>
                             )}
                         </SubjectSelectingCell>
                     ) : (
-                        <CellButton disabled={true}>Заявка подана</CellButton>
+                        <CellButton disabled={true}>Заявка на участие подана</CellButton>
                     ))}
             </Group>
         </Panel>
