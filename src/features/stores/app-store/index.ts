@@ -14,6 +14,7 @@ export class AppStore {
     activeTab: Record<string, string> = {};
     componentScroll: Record<string, ScrollPosition> = {};
     user: User | null = null;
+    appParams: Record<string, any> | null = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -31,6 +32,10 @@ export class AppStore {
         this.userData = user;
         this.accessToken = token.access_token;
         await initApp();
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        const params = Object.fromEntries(urlSearchParams.entries());
+        this.appParams = params;
+
         runInAction(() => {
             this.isInitialization = false;
         });

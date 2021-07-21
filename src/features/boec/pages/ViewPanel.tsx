@@ -48,6 +48,7 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
         data: boec,
         isLoading,
         isError,
+        refetch,
     } = useQuery<Boec>({
         queryKey: ["boec", boecId!],
         queryFn: ({ queryKey }) => {
@@ -88,6 +89,12 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                 >
                     Мобильная версия (m.vk.com) не поддерживается
                 </Snackbar>
+            );
+        } else {
+            UsersAPI.updateBoecData({ id: boec?.id, vkId: user[0].id }).then(
+                () => {
+                    refetch();
+                }
             );
         }
     };
@@ -134,7 +141,7 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                 .map((item) => item.brigadeId)
                 .filter((id) =>
                     user!.brigades.map((brigade) => brigade.id).includes(id)
-                ).length > 0
+                ).length > 0 || user?.is_staff
         );
     }, [seasons, user]);
     return (
@@ -196,7 +203,7 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                                 >
                                     Редактировать
                                 </CellButton>
-                                {userCanAttach && (
+                                {userCanAttach && !boec.vkId && (
                                     <CellButton
                                         expandable={true}
                                         onClick={handleSelectUser}

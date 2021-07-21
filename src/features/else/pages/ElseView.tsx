@@ -10,14 +10,15 @@ import {
     // Icon28StatisticsOutline,
     // Icon28UsersOutline,
 } from "@vkontakte/icons";
-import { Group, Panel, PanelHeader, SimpleCell, Switch } from "@vkontakte/vkui";
+import { Group, Panel, PanelHeader, SimpleCell } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
-import { FC, useContext, useState } from "react";
+import { FC, useContext } from "react";
 import { AbstractView } from "../../../ui/molecules/AbstractView";
 import { brigadeStore } from "../../brigades/store/brigadeStore";
 import { shtabStore } from "../../shtab/store/shtabStore";
 import { appStore } from "../../stores/app-store";
 import { routerStore } from "../../stores/router-store";
+import { NotificationSwitcher } from "../ui/molecules/NotificationSwitcher";
 import { SubjectSelectingCell } from "../ui/molecules/SubjectSelectingCell";
 
 export const ElseView: FC<{ id: string }> = observer(({ id }) => {
@@ -26,8 +27,6 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
     const { setBrigadeId } = useContext(brigadeStore);
     const { setShtabId } = useContext(shtabStore);
 
-    const [checked, setChecked] = useState(false);
-    const handleClick = () => setChecked(!checked);
     const changeView = (view: string) => {
         setPage(view, "base");
     };
@@ -47,18 +46,11 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
         <AbstractView id={id}>
             <Panel id="base">
                 <PanelHeader>Ещё</PanelHeader>
-                <Group description="Уведомления о предстоящих мероприятиях и всем, что связано с ними">
-                    <SimpleCell
-                        after={
-                            <Switch onChange={handleClick} checked={checked} />
-                        }
-                    >
-                        Уведомления
-                    </SimpleCell>
-                </Group>
+                <NotificationSwitcher />
                 <Group>
                     {/* TODO add spinner if !user */}
-                    {user !== null && user.shtabs.length > 0 && (
+                    {((user !== null && user.shtabs.length > 0) ||
+                        user?.is_staff) && (
                         <>
                             <SimpleCell
                                 before={<Icon28CalendarOutline />}

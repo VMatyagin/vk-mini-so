@@ -7,9 +7,11 @@ import { appStore } from "./features/stores/app-store";
 import { Intro } from "./ui/molecules/Intro";
 import { useQuery } from "react-query";
 import { UsersAPI } from "./features/utils/requests/user-request";
+import { NoBoecAttached } from "./ui/molecules/NoBoecAttached";
 
 export const App: FC = observer(({ children }) => {
-    const { colorSchema, isInitialization, setUser } = useContext(appStore);
+    const { colorSchema, isInitialization, setUser, user } =
+        useContext(appStore);
     useQuery({
         queryKey: ["user-me"],
         queryFn: () => UsersAPI.getMeData(),
@@ -25,8 +27,10 @@ export const App: FC = observer(({ children }) => {
                 <AppRoot>
                     {isInitialization ? (
                         <Intro />
-                    ) : (
+                    ) : user?.boec !== null ? (
                         <AppLayout>{children}</AppLayout>
+                    ) : (
+                        <NoBoecAttached />
                     )}
                 </AppRoot>
             </AdaptivityProvider>

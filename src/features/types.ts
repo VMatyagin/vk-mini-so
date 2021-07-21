@@ -42,7 +42,7 @@ export interface Boec extends WithId {
     middleName: string | undefined;
     DOB: string | null;
     fullName: string;
-
+    vkId: number;
     // for post
     brigadeId: number;
 }
@@ -62,6 +62,7 @@ export interface EventType {
     visibility: boolean;
     worth: number;
     isParticipant: boolean;
+    isTicketed: boolean;
 }
 export interface Shtab extends WithId {
     title: string;

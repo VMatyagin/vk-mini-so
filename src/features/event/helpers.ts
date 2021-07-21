@@ -1,3 +1,5 @@
+import { User } from "../types";
+
 export const EVENT_WORTH = [
     {
         title: "Не учитывается",
@@ -41,3 +43,17 @@ export const COMPETITIVE_PARTICIPANT_TITLES = [
     { plural: "Призовое место/номинация", title: "Призовое место/номинация" },
     { plural: "Безрейтинговых призовых", title: "Безрейтинговое призовое" },
 ];
+
+export const canEditCompetitions = ({
+    user,
+    acceptedIds,
+}: {
+    user: User;
+    acceptedIds: number[];
+}) => {
+    return (
+        acceptedIds.filter((id) =>
+            user!.shtabs.map((shtab) => shtab.id).includes(id)
+        ).length > 0
+    );
+};

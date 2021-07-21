@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import {
     Avatar,
     CellButton,
@@ -22,10 +22,15 @@ import { PanelProps } from "../../types";
 import { Achievements } from "../ui/organisms/Achievements";
 import { Statistics } from "../ui/organisms/Statistics";
 import { Missions } from "../ui/organisms/Missions";
+import { profileStore } from "../store";
 
 export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
     const { setStory, setPage } = useContext(routerStore);
     const { userData, user } = useContext(appStore);
+    const { load } = useContext(profileStore);
+    useEffect(() => {
+        load();
+    }, [load]);
     const [activeTab, setActiveTab] = useState<string>("missions");
     const openNotifications = () => {
         setPage(viewId, "notifications");

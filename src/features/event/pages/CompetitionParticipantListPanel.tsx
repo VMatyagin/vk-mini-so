@@ -1,4 +1,4 @@
-import { FC, useContext } from "react";
+import { FC, useContext, useMemo } from "react";
 import {
     ActionSheet,
     ActionSheetItem,
@@ -24,9 +24,13 @@ import {
     Icon28DoneOutline,
     Icon28HistoryBackwardOutline,
 } from "@vkontakte/icons";
-import { useMutation, useQueryClient } from "react-query";
-import { COMPETITIVE_PARTICIPANT_TITLES } from "../helpers";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import {
+    canEditCompetitions,
+    COMPETITIVE_PARTICIPANT_TITLES,
+} from "../helpers";
 import { MODAL_EVENT_NOMINATION_SELECT } from "../ui/modals/NominationSelectModal";
+import { appStore } from "../../stores/app-store";
 
 interface CompetitionParticipantListPanelProps extends PanelProps {
     worth: CompetitionParticipant["worth"];
@@ -36,9 +40,27 @@ export const CompetitionParticipantListPanel: FC<CompetitionParticipantListPanel
         const { goBack, openPopout, closePopout, openModal, setModalCallback } =
             useContext(routerStore);
         const queryClient = useQueryClient();
-        const { competitionId } = useContext(eventStore);
+        const { competitionId, eventId } = useContext(eventStore);
+        const { user } = useContext(appStore);
         const platform = usePlatform();
-
+        const { data } = useQuery({
+            queryKey: ["event", eventId],
+            queryFn: ({ queryKey }) => {
+                openPopout(<ScreenSpinner />);
+                return EventAPI.getEvent(queryKey[1] as number);
+            },
+            retry: 1,
+            refetchOnWindowFocus: false,
+            onSuccess: closePopout,
+        });
+        const haveAccess = useMemo(
+            () =>
+                canEditCompetitions({
+                    user: user!,
+                    acceptedIds: [data?.shtabId!],
+                }) || user?.is_staff,
+            [data, user]
+        );
         const { mutate: removeParticipant } = useMutation<
             CompetitionParticipant,
             Error,
@@ -206,6 +228,7 @@ export const CompetitionParticipantListPanel: FC<CompetitionParticipantListPanel
                         renderItem={(item: CompetitionParticipant) => (
                             <SimpleCell
                                 key={item.id}
+                                disabled={!haveAccess}
                                 onClick={() => handleOpenActionSheet(item)}
                                 description={item.nomination.reduce(
                                     (prev, current, index) => {

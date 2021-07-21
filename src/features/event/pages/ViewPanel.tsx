@@ -185,21 +185,20 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                             Участники
                         </SimpleCell>
                     </Group>
-                    <Group
-                        header={
-                            <Header mode="secondary">Конкурсная часть</Header>
-                        }
-                    >
-                        <SimpleCell
-                            onClick={() => openPanel("competition-list")}
-                            before={<Icon28Flash />}
-                        >
-                            Конкурсы
-                        </SimpleCell>
-                    </Group>
                 </>
             )}
-
+            {data && [1, 2].includes(data.worth) && (
+                <Group
+                    header={<Header mode="secondary">Конкурсная часть</Header>}
+                >
+                    <SimpleCell
+                        onClick={() => openPanel("competition-list")}
+                        before={<Icon28Flash />}
+                    >
+                        Конкурсы
+                    </SimpleCell>
+                </Group>
+            )}
             <Group>
                 {user!.brigades.length > 0 && (
                     <SubjectSelectingCell
@@ -217,21 +216,26 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                         )}
                     </SubjectSelectingCell>
                 )}
-                {!data?.isParticipant ? (
-                    <SubjectSelectingCell
-                        onBrigadeClick={onWannaBeParticipang}
-                        onlyBrigades={true}
-                        isForBoec={true}
-                    >
-                        {({ handleClick, ref }) => (
-                            <CellButton getRootRef={ref} onClick={handleClick}>
-                                Подать заявку
-                            </CellButton>
-                        )}
-                    </SubjectSelectingCell>
-                ) : (
-                    <CellButton disabled={true}>Заявка подана</CellButton>
-                )}
+                {data &&
+                    data.isTicketed &&
+                    (!data?.isParticipant ? (
+                        <SubjectSelectingCell
+                            onBrigadeClick={onWannaBeParticipang}
+                            onlyBrigades={true}
+                            isForBoec={true}
+                        >
+                            {({ handleClick, ref }) => (
+                                <CellButton
+                                    getRootRef={ref}
+                                    onClick={handleClick}
+                                >
+                                    Подать заявку
+                                </CellButton>
+                            )}
+                        </SubjectSelectingCell>
+                    ) : (
+                        <CellButton disabled={true}>Заявка подана</CellButton>
+                    ))}
             </Group>
         </Panel>
     );

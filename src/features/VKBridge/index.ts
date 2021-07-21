@@ -96,3 +96,23 @@ export const selectVKUsers = async (): Promise<UserGetFriendsFriend[]> => {
         return error;
     }
 };
+export const allowNotifications = async (): Promise<{
+    result: true;
+}> => {
+    try {
+        const data = await VKBridge.send("VKWebAppAllowNotifications");
+        return data;
+    } catch (error) {
+        return error;
+    }
+};
+export const denyNotifications = async (): Promise<{
+    result: true;
+}> => {
+    try {
+        const data = await VKBridge.send("VKWebAppDenyNotifications");
+        return data;
+    } catch (error) {
+        return error;
+    }
+};

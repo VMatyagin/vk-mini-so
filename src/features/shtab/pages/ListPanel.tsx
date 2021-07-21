@@ -41,28 +41,26 @@ export const ListPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                     Штабы
                 </Title>
             </PanelHeader>
-            <Group>
+            <Group header={<Header mode="secondary">Штабы</Header>}>
                 {isLoading && <PanelSpinner />}
                 {!isLoading && data && data.count === 0 && (
                     <Footer>Ничего не найдено</Footer>
                 )}
                 {isError && <Footer>Произошла ошибка</Footer>}
 
-                <Group header={<Header mode="secondary">Штабы</Header>}>
-                    {data ? (
-                        data.items.map((shtab) => (
-                            <SimpleCell
-                                key={shtab.id}
-                                expandable={true}
-                                onClick={() => handleSelect(shtab.id)}
-                            >
-                                {shtab.title}
-                            </SimpleCell>
-                        ))
-                    ) : (
-                        <Spinner size="small" style={{ margin: "20px 0" }} />
-                    )}
-                </Group>
+                {data ? (
+                    data.items.map((shtab) => (
+                        <SimpleCell
+                            key={shtab.id}
+                            expandable={true}
+                            onClick={() => handleSelect(shtab.id)}
+                        >
+                            {shtab.title}
+                        </SimpleCell>
+                    ))
+                ) : (
+                    <Spinner size="small" style={{ margin: "20px 0" }} />
+                )}
             </Group>
         </Panel>
     );

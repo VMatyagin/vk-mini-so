@@ -1,4 +1,4 @@
-import { FC, useContext } from "react";
+import { FC, useContext, useMemo } from "react";
 import {
     CellButton,
     Group,
@@ -19,10 +19,14 @@ import { useMutation, useQuery } from "react-query";
 import { Boec, Brigade, CompetitionParticipant, PanelProps } from "../../types";
 import { eventStore } from "../store/eventStore";
 import { EventAPI } from "../../utils/requests/event-request";
-import { COMPETITIVE_PARTICIPANT_TITLES } from "../helpers";
+import {
+    canEditCompetitions,
+    COMPETITIVE_PARTICIPANT_TITLES,
+} from "../helpers";
 import { MODAL_BOEC_SELECTING } from "../../boec/ui/modals/BoecSelectModal";
 import { MODAL_BRIGADE_SELECTING } from "../../brigades/ui/modals/BrigadeSelectModal";
 import { MODAL_EVENT_PARTICIPANT_TITLE } from "../ui/modals/ParticipantTitleModal";
+import { appStore } from "../../stores/app-store";
 
 export const CompetitionViewPanel: FC<PanelProps> = observer(
     ({ id, viewId }) => {
@@ -34,7 +38,8 @@ export const CompetitionViewPanel: FC<PanelProps> = observer(
             openModal,
             setModalCallback,
         } = useContext(routerStore);
-        const { competitionId } = useContext(eventStore);
+        const { competitionId, eventId } = useContext(eventStore);
+        const { user } = useContext(appStore);
 
         const openPanel = (panel: string) => {
             setPage(viewId, panel);
@@ -107,6 +112,26 @@ export const CompetitionViewPanel: FC<PanelProps> = observer(
             });
             openModal(MODAL_EVENT_PARTICIPANT_TITLE);
         };
+
+        const { data: eventData } = useQuery({
+            queryKey: ["event", eventId],
+            queryFn: ({ queryKey }) => {
+                openPopout(<ScreenSpinner />);
+                return EventAPI.getEvent(queryKey[1] as number);
+            },
+            retry: 1,
+            refetchOnWindowFocus: false,
+            onSuccess: closePopout,
+        });
+
+        const haveAccess = useMemo(
+            () =>
+                canEditCompetitions({
+                    user: user!,
+                    acceptedIds: [eventData?.shtabId!],
+                }) || user?.is_staff,
+            [eventData, user]
+        );
         return (
             <Panel id={id}>
                 <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>
@@ -155,9 +180,15 @@ export const CompetitionViewPanel: FC<PanelProps> = observer(
                             {data?.notwinner_count}
                         </InfoRow>
                     </SimpleCell>
-                    <CellButton onClick={() => openPanel("competition-edit")}>
-                        Редактировать
-                    </CellButton>
+                    {haveAccess && (
+                        <>
+                            <CellButton
+                                onClick={() => openPanel("competition-edit")}
+                            >
+                                Редактировать
+                            </CellButton>
+                        </>
+                    )}
                 </Group>
                 <Group header={<Header mode="secondary">Заявки</Header>}>
                     <SimpleCell
@@ -167,14 +198,16 @@ export const CompetitionViewPanel: FC<PanelProps> = observer(
                         Создать заявку
                     </SimpleCell>
                 </Group>
-                <Group header={<Header mode="secondary">Номинации</Header>}>
-                    <SimpleCell
-                        before={<Icon28Like />}
-                        onClick={() => openPanel("nominations-list")}
-                    >
-                        Редактировать номинации
-                    </SimpleCell>
-                </Group>
+                {haveAccess && (
+                    <Group header={<Header mode="secondary">Номинации</Header>}>
+                        <SimpleCell
+                            before={<Icon28Like />}
+                            onClick={() => openPanel("nominations-list")}
+                        >
+                            Редактировать номинации
+                        </SimpleCell>
+                    </Group>
+                )}
             </Panel>
         );
     }

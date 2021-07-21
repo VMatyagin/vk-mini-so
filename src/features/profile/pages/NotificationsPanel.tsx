@@ -98,22 +98,24 @@ export const NotificationsPanel: FC<PanelProps> = observer(({ id }) => {
                     ))}
                 </Group>
             )}
-            <LazyList
-                title={"Просмотрено"}
-                fetchFn={UsersAPI.getActivities}
-                queryKey={`user-activity-past`}
-                extraFnProp={{
-                    seen: true,
-                }}
-                renderItem={(item: Activity) => (
-                    <SimpleCell
-                        before={getBefore(item)}
-                        description={getTime(item.created_at)}
-                    >
-                        {getTitle(item)}
-                    </SimpleCell>
-                )}
-            />
+            <Group>
+                <LazyList
+                    title={"Просмотрено"}
+                    fetchFn={UsersAPI.getActivities}
+                    queryKey={`user-activity-past`}
+                    extraFnProp={{
+                        seen: true,
+                    }}
+                    renderItem={(item: Activity) => (
+                        <SimpleCell
+                            before={getBefore(item)}
+                            description={getTime(item.created_at)}
+                        >
+                            {getTitle(item)}
+                        </SimpleCell>
+                    )}
+                />
+            </Group>
         </Panel>
     );
 });

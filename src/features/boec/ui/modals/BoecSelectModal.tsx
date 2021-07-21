@@ -81,7 +81,7 @@ export const BoecSelectModal = () => {
             <Group>
                 <CellButton onClick={openBoecListModal}>Выбрать</CellButton>
                 <Footer>
-                    Можно не выбирать, но нужно будет выбрать отряд
+                    Можно не указывать, но далее придется указать отряд
                 </Footer>
             </Group>
             <Group header={<Header mode="secondary">Выбрано</Header>}>

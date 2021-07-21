@@ -8,16 +8,15 @@ export class ProfileStore {
 
     constructor() {
         makeAutoObservable(this);
-        this.load();
     }
 
-    async load() {
+    load = async () => {
         const progress = await UsersAPI.getMeProgress();
 
         runInAction(() => {
             this.progress = progress;
         });
-    }
+    };
 }
 
 export const profileStore = createContext(new ProfileStore());
