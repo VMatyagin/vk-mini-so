@@ -52,6 +52,9 @@ const canEdit = ({
                 user!.shtabs.map((shtab) => shtab.id).includes(id)
             ).length > 0;
     }
+    if (user.is_staff) {
+        can = true;
+    }
     return can;
 };
 export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
@@ -234,7 +237,9 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                             )}
                         </SubjectSelectingCell>
                     ) : (
-                        <CellButton disabled={true}>Заявка на участие подана</CellButton>
+                        <CellButton disabled={true}>
+                            Заявка на участие подана
+                        </CellButton>
                     ))}
             </Group>
         </Panel>
