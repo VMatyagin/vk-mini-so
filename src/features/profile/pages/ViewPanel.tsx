@@ -1,20 +1,19 @@
 import { FC, useContext, useEffect, useState } from "react";
 import {
     Avatar,
-    CellButton,
     Counter,
     Group,
+    HorizontalScroll,
     Panel,
+    PanelHeaderButton,
+    SimpleCell,
     Tabs,
     TabsItem,
     Title,
 } from "@vkontakte/vkui";
 import { PanelHeader } from "@vkontakte/vkui";
 
-import {
-    Icon28Notifications,
-    Icon28UserStarBadgeOutline,
-} from "@vkontakte/icons";
+import { Icon28Notifications } from "@vkontakte/icons";
 import { observer } from "mobx-react-lite";
 import { appStore } from "../../stores/app-store";
 import { routerStore } from "../../stores/router-store";
@@ -37,7 +36,18 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
     };
     return (
         <Panel id={id}>
-            <PanelHeader>
+            <PanelHeader
+                left={
+                    <PanelHeaderButton onClick={openNotifications}>
+                        <Icon28Notifications />
+                        {user!.unreadActivityCount > 0 && (
+                            <Counter size="s" mode="prominent">
+                                {user?.unreadActivityCount}
+                            </Counter>
+                        )}
+                    </PanelHeaderButton>
+                }
+            >
                 <Title level="2" weight="bold">
                     Профиль
                 </Title>
@@ -64,60 +74,35 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                     </Title>
                 </div>
 
-                <div
-                    style={{
-                        display: "flex",
-                    }}
+                <SimpleCell
+                    onClick={() => setStory("else", "base", "boec")}
+                    expandable={true}
                 >
-                    <CellButton
-                        onClick={() => setStory("else", "base", "boec")}
-                        before={<Icon28UserStarBadgeOutline />}
-                        style={{
-                            flex: 1,
-                        }}
-                        centered={true}
-                    >
-                        К бойцовской странице
-                    </CellButton>
-                    <CellButton
-                        style={{
-                            flex: 1,
-                        }}
-                        before={<Icon28Notifications />}
-                        centered={true}
-                        indicator={
-                            user!.unreadActivityCount > 0 && (
-                                <Counter size="s" mode="prominent">
-                                    {user?.unreadActivityCount}
-                                </Counter>
-                            )
-                        }
-                        onClick={openNotifications}
-                    >
-                        Уведомления
-                    </CellButton>
-                </div>
+                    К бойцовской странице
+                </SimpleCell>
             </Group>
             <Group>
                 <Tabs>
-                    <TabsItem
-                        onClick={() => setActiveTab("missions")}
-                        selected={activeTab === "missions"}
-                    >
-                        Задачи
-                    </TabsItem>
-                    <TabsItem
-                        onClick={() => setActiveTab("achievements")}
-                        selected={activeTab === "achievements"}
-                    >
-                        Достижения
-                    </TabsItem>
-                    <TabsItem
-                        onClick={() => setActiveTab("stat")}
-                        selected={activeTab === "stat"}
-                    >
-                        Статистика
-                    </TabsItem>
+                    <HorizontalScroll>
+                        <TabsItem
+                            onClick={() => setActiveTab("missions")}
+                            selected={activeTab === "missions"}
+                        >
+                            Задачи
+                        </TabsItem>
+                        <TabsItem
+                            onClick={() => setActiveTab("achievements")}
+                            selected={activeTab === "achievements"}
+                        >
+                            Достижения
+                        </TabsItem>
+                        <TabsItem
+                            onClick={() => setActiveTab("stat")}
+                            selected={activeTab === "stat"}
+                        >
+                            Статистика
+                        </TabsItem>
+                    </HorizontalScroll>
                 </Tabs>
                 {activeTab === "missions" && <Missions />}
                 {activeTab === "achievements" && <Achievements />}
