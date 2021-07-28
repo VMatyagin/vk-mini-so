@@ -29,7 +29,13 @@ export const NotificationSwitcher = observer(() => {
     return (
         <Group description="Уведомления о предстоящих мероприятиях и всем, что связано с ними">
             <SimpleCell
-                after={<Switch onClick={handleClick} checked={checked} />}
+                after={
+                    <Switch
+                        onClick={handleClick}
+                        readOnly={true}
+                        checked={checked}
+                    />
+                }
             >
                 Уведомления
             </SimpleCell>
