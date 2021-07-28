@@ -12,14 +12,14 @@ export const MobileMenu = observer(() => {
     return (
         <Tabbar itemsLayout="vertical">
             <TabbarItem
-                onClick={() => setStory("else", "base")}
+                onClick={() => setStory("else", "base", "else")}
                 selected={activeStory === "else"}
                 text="Ещё"
             >
                 <Icon28Newsfeed />
             </TabbarItem>
             <TabbarItem
-                onClick={() => setStory("profile", "base")}
+                onClick={() => setStory("profile", "base", "profile")}
                 selected={activeStory === "profile"}
                 text="Профиль"
                 indicator={

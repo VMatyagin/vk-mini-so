@@ -37,7 +37,7 @@ export const DesktopMenu = observer(() => {
                                   }
                                 : {}
                         }
-                        onClick={() => setStory("else", "base")}
+                        onClick={() => setStory("else", "base", "else")}
                         before={<Icon28Newsfeed />}
                         id="base"
                     >
@@ -54,7 +54,7 @@ export const DesktopMenu = observer(() => {
                                   }
                                 : {}
                         }
-                        onClick={() => setStory("profile", "base")}
+                        onClick={() => setStory("profile", "base", "profile")}
                         before={<Icon28UserSquareOutline />}
                         id="profile"
                         badge={
