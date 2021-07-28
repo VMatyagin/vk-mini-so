@@ -1,14 +1,8 @@
 import {
-    Icon28DeleteOutline,
-    Icon28DeleteOutlineAndroid,
-} from "@vkontakte/icons";
-import {
     ActionSheet,
     ActionSheetItem,
-    IOS,
     ScreenSpinner,
     SimpleCell,
-    usePlatform,
 } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { FC, useContext } from "react";
@@ -25,7 +19,6 @@ interface SeasonCellProps {
 export const SeasonCell: FC<SeasonCellProps> = observer(({ season }) => {
     const { refetch } = useContext(LazyListContext);
     const { closePopout, openPopout, setPage } = useContext(routerStore);
-    const platform = usePlatform();
     const { setBoecId } = useContext(boecStore);
 
     const { mutate } = useMutation(
@@ -94,13 +87,6 @@ export const SeasonCell: FC<SeasonCellProps> = observer(({ season }) => {
                     Перейти на страницу
                 </ActionSheetItem>
                 <ActionSheetItem
-                    before={
-                        platform === IOS ? (
-                            <Icon28DeleteOutline />
-                        ) : (
-                            <Icon28DeleteOutlineAndroid />
-                        )
-                    }
                     mode="destructive"
                     autoclose
                     onClick={() => deleteMutate()}
