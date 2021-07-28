@@ -1,9 +1,14 @@
-import { Icon28Newsfeed, Icon28UserSquareOutline } from "@vkontakte/icons";
+import {
+    Icon28Newsfeed,
+    Icon28ScanViewfinderOutline,
+    Icon28UserSquareOutline,
+} from "@vkontakte/icons";
 import { Badge, Tabbar, TabbarItem } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { useContext } from "react";
 import { appStore } from "../../../features/stores/app-store";
 import { routerStore } from "../../../features/stores/router-store";
+
 
 export const MobileMenu = observer(() => {
     const { activeStory, setStory } = useContext(routerStore);
@@ -17,6 +22,13 @@ export const MobileMenu = observer(() => {
                 text="Ещё"
             >
                 <Icon28Newsfeed />
+            </TabbarItem>
+            <TabbarItem
+                onClick={() => setStory("scanner", "base", "scanner")}
+                selected={activeStory === "scanner"}
+                text="Сканнер"
+            >
+                <Icon28ScanViewfinderOutline />
             </TabbarItem>
             <TabbarItem
                 onClick={() => setStory("profile", "base", "profile")}

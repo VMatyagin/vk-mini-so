@@ -23,6 +23,7 @@ import { ElseView } from "./features/else/pages/ElseView";
 import { EventView } from "./features/event/template/EventView";
 import { ShtabView } from "./features/shtab/template/ShtabView";
 import { ProfileView } from "./features/profile/template/ProfileView";
+import { ScannerView } from "./features/scanner/template/ScannerView";
 
 export const AppLayout: FC = observer(() => {
     const {
@@ -88,6 +89,9 @@ export const AppLayout: FC = observer(() => {
                     </Root>
                     <Root id="profile" activeView={activeView}>
                         <ProfileView id="profile" />
+                    </Root>
+                    <Root id="scanner" activeView={activeView}>
+                        <ScannerView id="scanner" />
                     </Root>
                 </Epic>
             </SplitCol>
