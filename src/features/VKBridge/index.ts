@@ -5,7 +5,7 @@ import VKBridge, {
 } from "@vkontakte/vk-bridge";
 import { AppStoreInstance } from "../stores/app-store";
 
-export const APP_ID = 7555628;
+export const APP_ID = Number(process.env.REACT_APP_APP_ID);
 export const API_VERSION = "5.122";
 
 export const initApp = async () => {
