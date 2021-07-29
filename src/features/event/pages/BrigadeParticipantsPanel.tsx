@@ -41,7 +41,9 @@ export const BrigadeParticipantsPanel: FC<PanelProps> = observer(
         const { eventId, brigadeId } = useContext(eventStore);
         const queryClient = useQueryClient();
 
-        const [activeTab, setActiveTab] = useState<string>("notapproved");
+        const [activeTab, setActiveTab] = useState<"notapproved" | "approved">(
+            "notapproved"
+        );
 
         const { mutate } = useMutation<
             Participant,
@@ -243,11 +245,12 @@ export const BrigadeParticipantsPanel: FC<PanelProps> = observer(
                         fetchFn={EventAPI.getEventParticipants}
                         queryKey={`event-${id}-${brigadeId}`}
                         extraFnProp={{
-                            eventId: eventId,
+                            eventId: eventId!,
                             worth: 0,
-                            brigadeId,
+                            brigadeId: brigadeId!,
                             status: activeTab,
                         }}
+                        enabled={!!eventId && !!brigadeId}
                         renderItem={(item: Participant) => (
                             <SimpleCell
                                 key={item.id}

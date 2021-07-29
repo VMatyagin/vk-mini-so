@@ -154,9 +154,10 @@ export const ParticipantsPanel: FC<ParticipantsPanelProps> = observer(
                         fetchFn={EventAPI.getEventParticipants}
                         queryKey={`event-${id}`}
                         extraFnProp={{
-                            eventId: eventId,
+                            eventId: eventId!,
                             worth,
                         }}
+                        enabled={!!eventId}
                         renderItem={(item: Participant) => (
                             <SimpleCell
                                 key={item.id}

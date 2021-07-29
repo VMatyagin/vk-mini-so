@@ -222,9 +222,10 @@ export const CompetitionParticipantListPanel: FC<CompetitionParticipantListPanel
                         fetchFn={EventAPI.getCompetitionParicipants}
                         queryKey={`competitions-participant-list-${competitionId}-${worth}`}
                         extraFnProp={{
-                            competitionId,
+                            competitionId: competitionId!,
                             worth,
                         }}
+                        enabled={!!competitionId}
                         renderItem={(item: CompetitionParticipant) => (
                             <SimpleCell
                                 key={item.id}

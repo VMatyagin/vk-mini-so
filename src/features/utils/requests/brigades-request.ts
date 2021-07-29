@@ -46,7 +46,7 @@ export const BrigadesAPI = {
         offset: number;
         limit: number;
         search?: string;
-        brigadeId?: string;
+        brigadeId?: number;
     }): Promise<ListResponse<Seasons>> {
         if (cancel) {
             cancel();

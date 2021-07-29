@@ -67,7 +67,7 @@ export const NotificationsPanel: FC<PanelProps> = observer(({ id }) => {
 
     const { data } = useQuery({
         queryKey: ["user-activity"],
-        queryFn: () => UsersAPI.getActivities({}),
+        queryFn: () => UsersAPI.getActivities({ limit: 20, offset: 0 }),
         retry: 1,
         refetchOnWindowFocus: false,
     });
@@ -106,7 +106,7 @@ export const NotificationsPanel: FC<PanelProps> = observer(({ id }) => {
                     extraFnProp={{
                         seen: true,
                     }}
-                    renderItem={(item: Activity) => (
+                    renderItem={(item) => (
                         <SimpleCell
                             before={getBefore(item)}
                             description={getTime(item.createdAt)}

@@ -86,11 +86,23 @@ export const UsersAPI = {
     },
     async getActivities({
         seen,
+        offset,
+        limit,
     }: {
+        offset: number;
+        limit: number;
         seen?: boolean;
     }): Promise<ListResponse<Activity>> {
+        if (cancel) {
+            cancel();
+        }
+        const params = {
+            offset,
+            limit,
+            seen,
+        };
         const { data } = await get(`/api/activity/`, {
-            params: { seen },
+            params,
         });
         return data;
     },

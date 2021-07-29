@@ -110,9 +110,10 @@ export const BoecListPanel: FC<{ id: string }> = observer(({ id }) => {
                     fetchFn={BrigadesAPI.getBrigadeSeasons}
                     queryKey={`brigade-seasons-${brigadeId}`}
                     extraFnProp={{
-                        brigadeId,
+                        brigadeId: brigadeId!,
                         search: filter.search,
                     }}
+                    enabled={!!brigadeId}
                     renderItem={(item: Seasons) => <SeasonCell season={item} />}
                 />
             </Group>

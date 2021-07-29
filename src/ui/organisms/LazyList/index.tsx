@@ -1,7 +1,7 @@
 import { debounce } from "@vkontakte/vkjs";
 import { Footer, Header, Spinner } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
-import { createContext, FC, useCallback, useMemo } from "react";
+import { createContext, useCallback, useMemo } from "react";
 import {
     InfiniteData,
     QueryObserverResult,
@@ -10,12 +10,21 @@ import {
 import { useIntersect } from "../../../features/utils/hooks/useIntersect";
 import { ListResponse } from "../../../features/utils/types";
 
-interface LazyUsersListProps {
-    renderItem: (item: any) => JSX.Element | null;
-    fetchFn: (options: any) => Promise<ListResponse<Record<string, any>>>;
-    extraFnProp?: Record<string, unknown>;
+interface ListOptions {
+    limit?: number;
+    size?: number;
+}
+
+interface LazyUsersListProps<
+    ItemType extends object,
+    OptionsType extends ListOptions | undefined
+> {
+    renderItem: (item: ItemType) => JSX.Element | null;
+    fetchFn: (options: OptionsType) => Promise<ListResponse<ItemType>>;
+    extraFnProp?: Omit<OptionsType, "limit" | "offset">;
     queryKey: string;
     title?: string;
+    enabled?: boolean;
 }
 const limit = 20;
 
@@ -25,8 +34,15 @@ export const LazyListContext = createContext({
             QueryObserverResult<InfiniteData<ListResponse<any>>, Error>
         >,
 });
-export const LazyList: FC<LazyUsersListProps> = observer(
-    ({ renderItem, fetchFn, queryKey, extraFnProp, title }) => {
+export const LazyList = observer(
+    <Dtype extends object, Otype extends ListOptions | undefined>({
+        renderItem,
+        fetchFn,
+        queryKey,
+        extraFnProp,
+        title,
+        enabled,
+    }: LazyUsersListProps<Dtype, Otype>) => {
         const queryFn = useCallback(
             ({ pageParam = 0, queryKey }) => {
                 const data = fetchFn({
@@ -61,6 +77,7 @@ export const LazyList: FC<LazyUsersListProps> = observer(
                 return hasMore && data.length * limit;
             },
             cacheTime: 0,
+            enabled,
         });
 
         const flatData = useMemo(() => {

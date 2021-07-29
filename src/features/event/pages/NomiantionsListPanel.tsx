@@ -119,9 +119,10 @@ export const NomiantionsListPanel: FC<PanelProps> = observer(({ id }) => {
                     fetchFn={EventAPI.getCompetitionNominations}
                     queryKey={`nominations-${competitionId}`}
                     extraFnProp={{
-                        competitionId,
+                        competitionId: competitionId!,
                     }}
-                    renderItem={(item: Nomination) => (
+                    enabled={!!competitionId}
+                    renderItem={(item) => (
                         <SimpleCell
                             onClick={() => handleOpenActionSheet(item)}
                             key={item.id}
