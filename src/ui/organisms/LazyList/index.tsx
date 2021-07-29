@@ -25,6 +25,7 @@ interface LazyUsersListProps<
     queryKey: string;
     title?: string;
     enabled?: boolean;
+    emptyMessage?: string;
 }
 const limit = 20;
 
@@ -42,6 +43,7 @@ export const LazyList = observer(
         extraFnProp,
         title,
         enabled,
+        emptyMessage = "Ничего не найдено",
     }: LazyUsersListProps<Dtype, Otype>) => {
         const queryFn = useCallback(
             ({ pageParam = 0, queryKey }) => {
@@ -124,7 +126,7 @@ export const LazyList = observer(
                     flatData.length === 0 &&
                     !isLoading &&
                     !isFetching &&
-                    !isError && <Footer>Ничего не найдено</Footer>}
+                    !isError && <Footer>{emptyMessage}</Footer>}
                 {isError && <Footer>Ошибка соединения</Footer>}
             </LazyListContext.Provider>
         );

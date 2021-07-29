@@ -5,6 +5,7 @@ import {
     EventType,
     Nomination,
     Participant,
+    TicketScan,
 } from "../../types";
 import { get, patch, post, remove } from "../axiosConfig";
 import { ListResponse } from "../types";
@@ -34,7 +35,7 @@ export const EventAPI = {
         offset: number;
         limit: number;
         search?: string;
-        visibility?: string;
+        visibility?: boolean;
     }): Promise<ListResponse<EventType>> {
         if (cancel) {
             cancel();
@@ -262,7 +263,7 @@ export const EventAPI = {
         offset: number;
         competitionId: number;
         limit: number;
-    }): Promise<ListResponse<CompetitionParticipant>> {
+    }): Promise<ListResponse<Nomination>> {
         if (cancel) {
             cancel();
         }
@@ -352,6 +353,32 @@ export const EventAPI = {
             `/api/competition/${competitionId}/nominations/`,
             nomination
         );
+        return data;
+    },
+};
+
+export const TicketsAPI = {
+    async getLastScans({
+        limit,
+        offset,
+    }: {
+        offset: number;
+        limit: number;
+    }): Promise<ListResponse<TicketScan>> {
+        if (cancel) {
+            cancel();
+        }
+        const params = {
+            offset,
+            limit,
+        };
+
+        const { data } = await get("/api/scans/", {
+            cancelToken: new CancelToken(function executor(c) {
+                cancel = c;
+            }),
+            params,
+        });
         return data;
     },
 };

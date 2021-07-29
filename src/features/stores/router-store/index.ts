@@ -24,7 +24,7 @@ export class RouterStore {
     modalHistory: Record<string, string[]> = {};
     popouts: Record<string, JSX.Element | null> = {};
     modalCallback: Record<string, (...args: any[]) => void> = {};
-
+    modalData: Record<string, unknown> = {};
     scrollPosition: Record<string, number> = {};
     lastAndroidBackAction: number = 0;
 
@@ -61,6 +61,13 @@ export class RouterStore {
     setModalCallback = (modal: string, cb: (...args: any[]) => void) => {
         this.modalCallback[modal] = cb;
     };
+    get modalProps() {
+        const activeModal = this.activeModals[this.activeView];
+        if (activeModal) {            
+            return this.modalData[activeModal];
+        }
+        return null;
+    }
     setLastAndroidBackAction = (action: number) => {
         this.lastAndroidBackAction = action;
     };
@@ -296,7 +303,7 @@ export class RouterStore {
             [this.activeView]: null,
         };
     };
-    openModal = (id: string) => {
+    openModal = (id: string, data?: Record<string, unknown>) => {
         window.history.pushState(null, "");
         let activeModal = id || null;
         let modalsHistory = this.modalHistory[this.activeView]
@@ -313,6 +320,10 @@ export class RouterStore {
         } else {
             modalsHistory.push(activeModal);
         }
+        this.modalData = {
+            ...this.modalData,
+            [id]: data,
+        };
         this.activeModals = {
             ...this.activeModals,
             [this.activeView]: activeModal,
@@ -341,6 +352,13 @@ export class RouterStore {
         } else {
             modalsHistory.push(activeModal);
         }
+        if (activeModal && this.modalData[activeModal]) {
+            this.modalData = {
+                ...this.modalData,
+                [this.activeView]: null,
+            };
+        }
+
         this.activeModals = {
             ...this.activeModals,
             [this.activeView]: activeModal,

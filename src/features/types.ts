@@ -177,3 +177,20 @@ export interface ParticipantHistory {
     eventParticipant: Participant[];
     competitionParticipant: CompetitionParticipant<true>[];
 }
+
+export interface Ticket {
+    id: number;
+    uuid: string;
+    boec: Boec;
+    event: Event;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface TicketScan {
+    id: number;
+    isFinal: boolean;
+    ticket: Ticket;
+    createdAt: string;
+    updatedAt: string;
+}
