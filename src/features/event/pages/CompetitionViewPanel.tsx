@@ -129,7 +129,7 @@ export const CompetitionViewPanel: FC<PanelProps> = observer(
                 canEditCompetitions({
                     user: user!,
                     acceptedIds: [eventData?.shtabId!],
-                }) || user?.is_staff,
+                }) || user?.isStaff,
             [eventData, user]
         );
         return (
@@ -150,7 +150,7 @@ export const CompetitionViewPanel: FC<PanelProps> = observer(
                         <InfoRow
                             header={COMPETITIVE_PARTICIPANT_TITLES[0].plural}
                         >
-                            {data?.participant_count}
+                            {data?.participantCount}
                         </InfoRow>
                     </SimpleCell>
                     <SimpleCell
@@ -159,7 +159,7 @@ export const CompetitionViewPanel: FC<PanelProps> = observer(
                         <InfoRow
                             header={COMPETITIVE_PARTICIPANT_TITLES[1].plural}
                         >
-                            {data?.ivolvement_count}
+                            {data?.involvementCount}
                         </InfoRow>
                     </SimpleCell>
                     <SimpleCell
@@ -168,7 +168,7 @@ export const CompetitionViewPanel: FC<PanelProps> = observer(
                         <InfoRow
                             header={COMPETITIVE_PARTICIPANT_TITLES[2].plural}
                         >
-                            {data?.winner_count}
+                            {data?.winnerCount}
                         </InfoRow>
                     </SimpleCell>
                     <SimpleCell
@@ -177,7 +177,7 @@ export const CompetitionViewPanel: FC<PanelProps> = observer(
                         <InfoRow
                             header={COMPETITIVE_PARTICIPANT_TITLES[3].plural}
                         >
-                            {data?.notwinner_count}
+                            {data?.notwinnerCount}
                         </InfoRow>
                     </SimpleCell>
                     {haveAccess && (

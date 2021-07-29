@@ -36,7 +36,7 @@ export const Achievements = observer(() => {
                         description={item.description}
                         value={progress[item.type]}
                         maxValue={item.goal}
-                        created_at={item.achieved_at}
+                        createdAt={item.achieved_at}
                     />
                 ))}
         </>

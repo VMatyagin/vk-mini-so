@@ -72,8 +72,8 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                     >
                         <SimpleCell multiline>
                             <InfoRow header="День рождения">
-                                {brigade?.DOB
-                                    ? new Date(brigade.DOB).toLocaleDateString()
+                                {brigade?.dateOfBirth
+                                    ? new Date(brigade.dateOfBirth).toLocaleDateString()
                                     : "Не указан"}
                             </InfoRow>
                         </SimpleCell>
@@ -84,7 +84,7 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                         </SimpleCell>
                         <SimpleCell>
                             <InfoRow header="Численность">
-                                {brigade?.boec_count}
+                                {brigade?.boecCount}
                             </InfoRow>
                         </SimpleCell>
                     </Group>

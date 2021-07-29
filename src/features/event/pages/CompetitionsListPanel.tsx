@@ -45,7 +45,7 @@ export const CompetitionsListPanel: FC<PanelProps> = observer(
                 canEditCompetitions({
                     user: user!,
                     acceptedIds: [data?.shtabId!],
-                }) || user?.is_staff,
+                }) || user?.isStaff,
             [data, user]
         );
         return (

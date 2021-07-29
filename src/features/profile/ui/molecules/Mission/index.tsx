@@ -7,7 +7,7 @@ interface MissionProps {
     description: string;
     maxValue: number;
     title: string;
-    created_at?: null | string;
+    createdAt?: null | string;
 }
 export const Mission: FC<MissionProps> = ({
     Icon,
@@ -15,13 +15,13 @@ export const Mission: FC<MissionProps> = ({
     maxValue,
     description,
     title,
-    created_at,
+    createdAt,
 }) => {
     return (
         <SimpleCell
             disabled={true}
             description={
-                !created_at && (
+                !createdAt && (
                     <div
                         style={{
                             width: "100%",
@@ -63,15 +63,15 @@ export const Mission: FC<MissionProps> = ({
                 </Avatar>
             }
             after={
-                created_at && (
+                createdAt && (
                     <div
                         style={{
-                            color: created_at
+                            color: createdAt
                                 ? "var(--text_secondary)"
                                 : undefined,
                         }}
                     >
-                        {new Date(created_at).toLocaleString("ru", {
+                        {new Date(createdAt).toLocaleString("ru", {
                             day: "2-digit",
                             month: "short",
                             year: "numeric",

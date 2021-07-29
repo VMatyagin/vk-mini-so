@@ -36,7 +36,7 @@ export const UserEditSeasons: FC<{ viewId: string }> = observer(
 
         const canAdd = useMemo(() => {
             // может редачить либо сам, либо стафф
-            return boecId === user!.boec.id || user!.is_staff;
+            return boecId === user!.boec.id || user!.isStaff;
         }, [boecId, user]);
 
         if (!boecId) {

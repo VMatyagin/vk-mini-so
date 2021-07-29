@@ -91,7 +91,7 @@ export const NotificationsPanel: FC<PanelProps> = observer(({ id }) => {
                     {data.items.map((item) => (
                         <SimpleCell
                             before={getBefore(item)}
-                            description={getTime(item.created_at)}
+                            description={getTime(item.createdAt)}
                         >
                             {getTitle(item)}
                         </SimpleCell>
@@ -109,7 +109,7 @@ export const NotificationsPanel: FC<PanelProps> = observer(({ id }) => {
                     renderItem={(item: Activity) => (
                         <SimpleCell
                             before={getBefore(item)}
-                            description={getTime(item.created_at)}
+                            description={getTime(item.createdAt)}
                         >
                             {getTitle(item)}
                         </SimpleCell>

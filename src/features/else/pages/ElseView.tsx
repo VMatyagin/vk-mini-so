@@ -50,7 +50,7 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
                 <Group>
                     {/* TODO add spinner if !user */}
                     {((user !== null && user.shtabs.length > 0) ||
-                        user?.is_staff) && (
+                        user?.isStaff) && (
                         <>
                             <SimpleCell
                                 before={<Icon28CalendarOutline />}
@@ -90,7 +90,7 @@ export const ElseView: FC<{ id: string }> = observer(({ id }) => {
                                 )}
                             </SubjectSelectingCell>
                         )}
-                    {user && user.is_staff && (
+                    {user && user.isStaff && (
                         <SimpleCell
                             before={<Icon28UserSquareOutline />}
                             onClick={() => setPage("shtab", "list")}

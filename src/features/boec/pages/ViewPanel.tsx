@@ -141,7 +141,7 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                 .map((item) => item.brigadeId)
                 .filter((id) =>
                     user!.brigades.map((brigade) => brigade.id).includes(id)
-                ).length > 0 || user?.is_staff
+                ).length > 0 || user?.isStaff
         );
     }, [seasons, user]);
     return (
@@ -211,7 +211,7 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                                         Привязать к странице ВК
                                     </CellButton>
                                 )}
-                                {user!.is_staff && (
+                                {user!.isStaff && (
                                     <CellButton
                                         expandable={true}
                                         mode="danger"

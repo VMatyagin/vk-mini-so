@@ -81,7 +81,7 @@ export const ListPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                     queryKey={"event-list"}
                     extraFnProp={{
                         search: filter.search,
-                        visibility: !(user!.shtabs.length > 0 || user?.is_staff)
+                        visibility: !(user!.shtabs.length > 0 || user?.isStaff)
                             ? true
                             : undefined,
                     }}

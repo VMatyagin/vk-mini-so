@@ -67,15 +67,15 @@ export const BrigadesAPI = {
     },
     async updateBrigade({
         id,
-        DOB,
+        dateOfBirth,
         title,
     }: {
         id: number;
         title: string;
-        DOB: string | null;
+        dateOfBirth: string | null;
     }): Promise<Brigade> {
         const { data } = await patch(`/api/so/brigade/${id}/`, {
-            DOB,
+            dateOfBirth,
             title,
         });
         return data;

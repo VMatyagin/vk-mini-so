@@ -63,10 +63,10 @@ export const HistoryPanel: FC<PanelProps> = observer(({ id }) => {
                 <Group
                     header={<Header mode="secondary">В мероприятиях</Header>}
                 >
-                    {data.event_participant.length === 0 && (
+                    {data.eventParticipant.length === 0 && (
                         <Footer>Ничего не найдено</Footer>
                     )}
-                    {data.event_participant.map((participant) => (
+                    {data.eventParticipant.map((participant) => (
                         <SimpleCell
                             key={`${participant.event.title}-${participant.worth}`}
                             description={
@@ -86,10 +86,10 @@ export const HistoryPanel: FC<PanelProps> = observer(({ id }) => {
                         </Header>
                     }
                 >
-                    {data.competition_participant.length === 0 && (
+                    {data.competitionParticipant.length === 0 && (
                         <Footer>Ничего не найдено</Footer>
                     )}
-                    {data.competition_participant.map((participant) => (
+                    {data.competitionParticipant.map((participant) => (
                         <SimpleCell
                             key={`${participant.event.title}-${participant.worth}`}
                             description={participant.event.title}

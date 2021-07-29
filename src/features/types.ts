@@ -4,7 +4,7 @@ export interface User {
     brigades: Brigade[];
     shtabs: Shtab[];
     seasonBrigades: Brigade[];
-    is_staff: boolean;
+    isStaff: boolean;
     unreadActivityCount: number;
 }
 
@@ -22,8 +22,8 @@ export interface Brigade {
     id: number;
     title: string;
     area: Area;
-    boec_count: number;
-    DOB: string | null;
+    boecCount: number;
+    dateOfBirth: string | null;
     shtab: Shtab;
 }
 
@@ -40,7 +40,7 @@ export interface Boec extends WithId {
     firstName: string;
     lastName: string;
     middleName: string | undefined;
-    DOB: string | null;
+    dateOfBirth: string | null;
     fullName: string;
     vkId: number;
     // for post
@@ -108,10 +108,10 @@ export interface Competition {
     id: number;
     event: number;
     title: string;
-    participant_count: number;
-    ivolvement_count: number;
-    winner_count: number;
-    notwinner_count: number;
+    participantCount: number;
+    involvementCount: number;
+    winnerCount: number;
+    notwinnerCount: number;
     ratingless: boolean;
 }
 
@@ -140,20 +140,20 @@ export interface Nomination {
 }
 
 export interface Progress {
-    participation_count: number;
-    volonteer_count: number;
-    organizer_count: number;
-    competition_default: number;
-    competition_playoff: number;
+    participationCount: number;
+    volonteerCount: number;
+    organizerCount: number;
+    competitionDefault: number;
+    competitionPlayoff: number;
     nominations: number;
     seasons: number;
-    sport_wins: number;
-    art_wins: number;
+    sportWins: number;
+    artWins: number;
 }
 export interface Achievement {
     id: number;
     type: "seasons";
-    created_at: string;
+    createdAt: string;
     title: string;
     description: string;
     goal: number;
@@ -168,12 +168,12 @@ export interface Warning {
 export interface Activity {
     id: number;
     type: 0 | 1 | 2;
-    created_at: string;
+    createdAt: string;
     warning: Warning | null;
     achievement: Achievement | null;
 }
 
 export interface ParticipantHistory {
-    event_participant: Participant[];
-    competition_participant: CompetitionParticipant<true>[];
+    eventParticipant: Participant[];
+    competitionParticipant: CompetitionParticipant<true>[];
 }

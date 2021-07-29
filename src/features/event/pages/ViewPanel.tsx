@@ -52,7 +52,7 @@ const canEdit = ({
                 user!.shtabs.map((shtab) => shtab.id).includes(id)
             ).length > 0;
     }
-    if (user.is_staff) {
+    if (user.isStaff) {
         can = true;
     }
     return can;

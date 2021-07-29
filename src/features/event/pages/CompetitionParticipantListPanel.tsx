@@ -58,7 +58,7 @@ export const CompetitionParticipantListPanel: FC<CompetitionParticipantListPanel
                 canEditCompetitions({
                     user: user!,
                     acceptedIds: [data?.shtabId!],
-                }) || user?.is_staff,
+                }) || user?.isStaff,
             [data, user]
         );
         const { mutate: removeParticipant } = useMutation<

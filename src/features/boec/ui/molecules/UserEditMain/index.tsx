@@ -138,7 +138,7 @@ export const UserEditMain: FC = observer(() => {
                 />
                 <Controller
                     control={control}
-                    name="DOB"
+                    name="dateOfBirth"
                     // rules={{ required: "Это поле необходимо заполнить" }}
                     render={({ field }) => (
                         <FormItem top="Дата рождения">

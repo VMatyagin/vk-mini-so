@@ -18,15 +18,15 @@ import { profileStore } from "../../../store";
 // );
 
 const TRANSLATES = {
-    participation_count: "Посещение мероприятия",
-    volonteer_count: "Волонтерство",
-    organizer_count: "Организаторство",
-    competition_default: "Подача заявки",
-    competition_playoff: "Прохождение в плейофф",
+    participationCount: "Посещение мероприятия",
+    volonteerCount: "Волонтерство",
+    organizerCount: "Организаторство",
+    competitionDefault: "Подача заявки",
+    competitionPlayoff: "Прохождение в плейофф",
     nominations: "Номинации",
     seasons: "Сезоны",
-    sport_wins: "Номинация в спорте",
-    art_wins: "Номинация в творчестве",
+    sportWins: "Номинация в спорте",
+    artWins: "Номинация в творчестве",
 };
 
 export const Statistics = observer(() => {

@@ -49,7 +49,7 @@ export const MainInfoForm: FC<MainInfoFormProps> = observer(({ onSuccess }) => {
         BrigadesAPI.updateBrigade({
             id: brigadeId!,
             title: values.title,
-            DOB: values.DOB,
+            dateOfBirth: values.dateOfBirth,
         }).then((data) => {
             queryClient.setQueryData(["brigade", brigadeId], data);
             closePopout();
@@ -85,7 +85,7 @@ export const MainInfoForm: FC<MainInfoFormProps> = observer(({ onSuccess }) => {
                 />
                 <Controller
                     control={control}
-                    name="DOB"
+                    name="dateOfBirth"
                     // rules={{ required: "Это поле необходимо заполнить" }}
                     render={({ field }) => (
                         <FormItem top="Дата рождения">
