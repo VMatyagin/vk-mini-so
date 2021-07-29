@@ -74,12 +74,13 @@ export const NominationSelectModal = () => {
                         }
                         value={selectedNomination}
                         fetchFn={EventAPI.getCompetitionNominations}
-                        extraFnProp={{ competitionId }}
+                        extraFnProp={{ competitionId: competitionId! }}
                         queryKey={`nominations-${competitionId}`}
                         parseItem={(nomination: Nomination) => ({
                             label: nomination.title,
                             value: nomination.id,
                         })}
+                        enabled={!!competitionId}
                     />
                 </FormItem>
             </Group>

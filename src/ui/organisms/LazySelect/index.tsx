@@ -1,25 +1,37 @@
 import { debounce } from "@vkontakte/vkjs";
 import { CustomSelectOption, Footer, Select, Spinner } from "@vkontakte/vkui";
-import React, { FC, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useInfiniteQuery } from "react-query";
 import { useIntersect } from "../../../features/utils/hooks/useIntersect";
 import { ListResponse } from "../../../features/utils/types";
 
-interface LazySelectProps {
-    parseItem: (item: any) => {
-        value: any;
+interface ListOptions {
+    limit?: number;
+    size?: number;
+}
+
+interface LazySelectProps<
+    ItemType extends object,
+    OptionsType extends ListOptions | undefined
+> {
+    parseItem: (item: ItemType) => {
+        value: string | number;
         label: string;
     };
-    fetchFn: (options: any) => Promise<ListResponse<Record<string, any>>>;
-    extraFnProp?: Record<string, unknown>;
+    fetchFn: (options: OptionsType) => Promise<ListResponse<ItemType>>;
+    extraFnProp?: Omit<OptionsType, "limit" | "offset">;
     queryKey: string;
     name: string;
     value: number | null | undefined;
     onChange: React.ChangeEventHandler<HTMLSelectElement>;
+    enabled?: boolean;
 }
 const limit = 20;
 
-export const LazySelect: FC<LazySelectProps> = ({
+export const LazySelect = <
+    Dtype extends object,
+    Otype extends ListOptions | undefined
+>({
     fetchFn,
     queryKey,
     extraFnProp,
@@ -27,7 +39,8 @@ export const LazySelect: FC<LazySelectProps> = ({
     value,
     onChange,
     parseItem,
-}) => {
+    enabled,
+}: LazySelectProps<Dtype, Otype>) => {
     const queryFn = useCallback(
         ({ pageParam = 0, queryKey }) => {
             const data = fetchFn({
@@ -59,6 +72,7 @@ export const LazySelect: FC<LazySelectProps> = ({
             return hasMore && data.length * limit;
         },
         cacheTime: 0,
+        enabled,
     });
 
     const flatData = useMemo(() => {
