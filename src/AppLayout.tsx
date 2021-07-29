@@ -10,6 +10,7 @@ import {
     SplitLayout,
     PanelHeader,
     Root,
+    SizeType,
 } from "@vkontakte/vkui";
 
 import { routerStore } from "./features/stores/router-store";
@@ -79,6 +80,7 @@ export const AppLayout: FC = observer(() => {
                 <Epic
                     activeStory={activeStory}
                     tabbar={!isDesktop && <MobileMenu />}
+                    sizeY={SizeType.REGULAR}
                 >
                     <Root id="else" activeView={activeView}>
                         <ElseView id="else" />

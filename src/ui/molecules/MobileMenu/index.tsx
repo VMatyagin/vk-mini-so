@@ -15,25 +15,25 @@ export const MobileMenu = observer(() => {
     const { user } = useContext(appStore);
 
     return (
-        <Tabbar itemsLayout="vertical">
-            <TabbarItem
+        <Tabbar itemsLayout="vertical" shadow={false}>
+            <TabbarItem 
                 onClick={() => setStory("else", "base", "else")}
                 selected={activeStory === "else"}
-                text="Ещё"
+                // text="Ещё"
             >
                 <Icon28Newsfeed />
             </TabbarItem>
             <TabbarItem
                 onClick={() => setStory("scanner", "base", "scanner")}
                 selected={activeStory === "scanner"}
-                text="Сканнер"
+                // text="Сканнер"
             >
                 <Icon28ScanViewfinderOutline />
             </TabbarItem>
             <TabbarItem
                 onClick={() => setStory("profile", "base", "profile")}
                 selected={activeStory === "profile"}
-                text="Профиль"
+                // text="Профиль"
                 indicator={
                     user?.unreadActivityCount! > 0 && (
                         <Badge mode="prominent" aria-label="Есть новые" />
