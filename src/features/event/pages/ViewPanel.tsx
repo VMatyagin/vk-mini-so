@@ -15,6 +15,7 @@ import { PanelHeader } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { routerStore } from "../../stores/router-store";
 import {
+    Icon28BillheadOutline,
     Icon28FireOutline,
     Icon28Flash,
     Icon28UsersOutline,
@@ -186,6 +187,12 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                             before={<Icon28UsersOutline />}
                         >
                             Участники
+                        </SimpleCell>
+                        <SimpleCell
+                            onClick={() => openPanel("quotas")}
+                            before={<Icon28BillheadOutline />}
+                        >
+                            Квоты
                         </SimpleCell>
                     </Group>
                 </>

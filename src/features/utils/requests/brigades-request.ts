@@ -20,16 +20,19 @@ export const BrigadesAPI = {
         offset = 0,
         shtabId,
         search,
+        sort,
     }: {
         limit?: number;
         offset?: number;
         shtabId?: number;
         search?: string;
+        sort?: string;
     }): Promise<ListResponse<Brigade>> {
         const params = {
             limit,
             offset,
             shtabId,
+            sort,
             search,
         };
         const { data } = await get(`/api/so/brigade/`, {

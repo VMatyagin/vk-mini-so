@@ -1,7 +1,7 @@
 import { debounce } from "@vkontakte/vkjs";
 import { Footer, Header, Spinner } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
-import { createContext, useCallback, useMemo } from "react";
+import { createContext, ReactElement, useCallback, useMemo } from "react";
 import {
     InfiniteData,
     QueryObserverResult,
@@ -19,13 +19,15 @@ interface LazyUsersListProps<
     ItemType extends object,
     OptionsType extends ListOptions | undefined
 > {
-    renderItem: (item: ItemType) => JSX.Element | null;
+    renderItem?: (item: ItemType) => JSX.Element | null;
     fetchFn: (options: OptionsType) => Promise<ListResponse<ItemType>>;
     extraFnProp?: Omit<OptionsType, "limit" | "offset">;
     queryKey: string;
     title?: string;
     enabled?: boolean;
     emptyMessage?: string;
+    customSpinner?: ReactElement;
+    customRender?: (array: ItemType[]) => JSX.Element[];
 }
 const limit = 20;
 
@@ -41,7 +43,9 @@ export const LazyList = observer(
         fetchFn,
         queryKey,
         extraFnProp,
+        customSpinner,
         title,
+        customRender,
         enabled,
         emptyMessage = "Ничего не найдено",
     }: LazyUsersListProps<Dtype, Otype>) => {
@@ -114,13 +118,19 @@ export const LazyList = observer(
                         {title}
                     </Header>
                 )}
-                {flatData &&
+                {!customRender && renderItem &&
+                    flatData &&
                     flatData.length > 0 &&
                     flatData.map((item) => renderItem(item))}
+                {customRender &&
+                    flatData &&
+                    flatData.length > 0 &&
+                    customRender(flatData)}
 
-                {isLoading && !isError && (
+                {!customSpinner && isLoading && !isError && (
                     <Spinner size="small" style={{ margin: "20px 0" }} />
                 )}
+                {isLoading && !isError && customSpinner}
                 {LoadDetector}
                 {flatData &&
                     flatData.length === 0 &&
