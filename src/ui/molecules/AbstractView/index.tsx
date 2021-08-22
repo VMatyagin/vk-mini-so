@@ -14,6 +14,8 @@ export const AbstractView: FC<AbstractViewProps> = observer(
         const history =
             panelsHistory[id] === undefined ? [id] : panelsHistory[id];
 
+        console.log(getActivePanel(id));
+        
         return (
             <View
                 id={id}

@@ -63,7 +63,7 @@ export class RouterStore {
     };
     get modalProps() {
         const activeModal = this.activeModals[this.activeView];
-        if (activeModal) {            
+        if (activeModal) {
             return this.modalData[activeModal];
         }
         return null;
@@ -125,22 +125,16 @@ export class RouterStore {
             };
         }
     };
-    setStory = (
-        story: string,
-        initial_panel: string,
-        initial_view?: string
-    ) => {
+    setStory = (story: string, initial_panel: string, initial_view: string) => {
         window.history.pushState(null, "");
         let viewsHistory = this.viewsHistory[story] || [story];
 
-        let activeView = initial_view || viewsHistory[viewsHistory.length - 1];
-        let panelsHistory = initial_panel
-            ? [initial_panel]
-            : this.panelsHistory[activeView];
+        let activeView = initial_view;
+        let panelsHistory = [initial_panel];
         let activePanel = panelsHistory[panelsHistory.length - 1];
 
         if (panelsHistory.length > 1) {
-            const firstPanel = Array.from(panelsHistory).shift()!;
+            const firstPanel = panelsHistory[0];
             panelsHistory = [firstPanel];
 
             activePanel = panelsHistory[panelsHistory.length - 1];
@@ -190,59 +184,60 @@ export class RouterStore {
                 window.pageYOffset,
         };
     };
-    goBack = (_event?: any, howManyPanelsBack = 1) => {
-        if (this.activeView) {
-            let setView = this.activeView;
-            let setPanel = this.activePanel;
-            let setStory = this.activeStory;
+    goBack = (_event?: any) => {
+        let setView = this.activeView;
+        let setPanel = this.activePanel;
+        let setStory = this.activeStory;
 
-            let popoutsData = this.popouts;
+        let popoutsData = this.popouts;
 
-            if (popoutsData[setView]) {
-                popoutsData[setView] = null;
-                this.popouts = { ...this.popouts, ...popoutsData };
+        if (popoutsData[setView]) {
+            popoutsData[setView] = null;
+            this.popouts = { ...this.popouts, ...popoutsData };
+        }
+
+        let viewModalsHistory = this.modalHistory[setView];
+
+        if (viewModalsHistory !== undefined && viewModalsHistory.length !== 0) {
+            let activeModal =
+                viewModalsHistory[viewModalsHistory.length - 2] || null;
+
+            if (activeModal === null) {
+                viewModalsHistory = [];
+            } else if (viewModalsHistory.indexOf(activeModal) !== -1) {
+                viewModalsHistory = viewModalsHistory.splice(
+                    0,
+                    viewModalsHistory.indexOf(activeModal) + 1
+                );
+            } else {
+                viewModalsHistory.push(activeModal);
             }
+            this.activeModals = {
+                ...this.activeModals,
+                [setView]: activeModal,
+            };
+            this.modalHistory = {
+                ...this.modalHistory,
+                [setView]: viewModalsHistory,
+            };
+            return;
+        }
 
-            let viewModalsHistory = this.modalHistory[setView];
+        // история панелей
+        let panelsHistory = this.panelsHistory[setView] || [];
+        // история вью
+        let viewsHistory = this.viewsHistory[this.activeStory] || [];
+        // история сторис
+        let storiesHistory = this.storiesHistory;
 
-            if (
-                viewModalsHistory !== undefined &&
-                viewModalsHistory.length !== 0
-            ) {
-                let activeModal =
-                    viewModalsHistory[viewModalsHistory.length - 2] || null;
+        if (panelsHistory.length > 1) {
+            panelsHistory.pop();
+            setPanel = panelsHistory[panelsHistory.length - 1];
+        } else {
+            // затирание истории панелей, если там осталась 1 панель
+            delete this.panelsHistory[setView];
 
-                if (activeModal === null) {
-                    viewModalsHistory = [];
-                } else if (viewModalsHistory.indexOf(activeModal) !== -1) {
-                    viewModalsHistory = viewModalsHistory.splice(
-                        0,
-                        viewModalsHistory.indexOf(activeModal) + 1
-                    );
-                } else {
-                    viewModalsHistory.push(activeModal);
-                }
-                this.activeModals = {
-                    ...this.activeModals,
-                    [setView]: activeModal,
-                };
-                this.modalHistory = {
-                    ...this.modalHistory,
-                    [setView]: viewModalsHistory,
-                };
-                return;
-            }
-
-            let panelsHistory = this.panelsHistory[setView] || [];
-            let viewsHistory = this.viewsHistory[this.activeStory] || [];
-            let storiesHistory = this.storiesHistory;
-
-            if (panelsHistory.length > 1) {
-                // panelsHistory.pop();
-                panelsHistory.splice(-howManyPanelsBack, howManyPanelsBack);
-
-                setPanel = panelsHistory[panelsHistory.length - 1];
-            } else if (viewsHistory.length > 1) {
+            if (viewsHistory.length > 1) {
                 viewsHistory.pop();
                 setView = viewsHistory[viewsHistory.length - 1];
 
@@ -268,24 +263,24 @@ export class RouterStore {
             } else {
                 VK.closeApp();
             }
-
-            if (panelsHistory.length === 1) {
-                VK.swipeBackOff();
-            }
-
-            this.activeView = setView;
-            this.activePanel = setPanel;
-            this.activeStory = setStory;
-
-            this.viewsHistory = {
-                ...this.viewsHistory,
-                [this.activeView]: viewsHistory,
-            };
-            this.panelsHistory = {
-                ...this.panelsHistory,
-                [this.activeView]: panelsHistory,
-            };
         }
+
+        if (panelsHistory.length === 1) {
+            VK.swipeBackOff();
+        }
+
+        this.activeView = setView;
+        this.activePanel = setPanel;
+        this.activeStory = setStory;
+
+        this.viewsHistory = {
+            ...this.viewsHistory,
+            [this.activeView]: viewsHistory,
+        };
+        this.panelsHistory = {
+            ...this.panelsHistory,
+            [this.activeView]: panelsHistory,
+        };
     };
     openPopout = (popout: JSX.Element) => {
         window.history.pushState(null, "");
