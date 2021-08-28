@@ -10,6 +10,7 @@ import { BrigadeSelectModal } from "../../../features/brigades/ui/modals/Brigade
 import { NominationEditModal } from "../../../features/event/ui/modals/NominationEditModal";
 import { NominationSelectModal } from "../../../features/event/ui/modals/NominationSelectModal";
 import { ParticipantTitleModal } from "../../../features/event/ui/modals/ParticipantTitleModal";
+import { ParticipationsListModal } from "../../../features/event/ui/modals/ParticipationsListModal";
 import { TicketScanModal } from "../../../features/scanner/ui/organisms/modals/TicketScanModal";
 
 import { routerStore } from "../../../features/stores/router-store";
@@ -29,6 +30,7 @@ export const Modals = observer(() => {
             {BrigadeListModal()}
             {ParticipantTitleModal()}
             {TicketScanModal()}
+            {ParticipationsListModal()}
         </MRoot>
     );
 });

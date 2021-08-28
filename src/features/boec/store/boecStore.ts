@@ -20,6 +20,10 @@ export class BoecStore {
     clearPosition = () => {
         this.selectedPosition = null;
     };
+    clear = () => {
+        this.boecId = null;
+        this.selectedPosition = null;
+    };
 }
 
 export const BoecStoreInstance = new BoecStore();

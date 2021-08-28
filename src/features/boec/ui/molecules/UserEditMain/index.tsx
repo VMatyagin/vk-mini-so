@@ -38,9 +38,10 @@ export const UserEditMain: FC = observer(() => {
     });
 
     const { handleSubmit, control, formState, reset } = useForm<Boec>({
-        defaultValues: boec!,
+        defaultValues: boec,
         mode: "onChange",
     });
+
     const { isDirty, isValid } = formState;
 
     const onSubmit = (values: Boec) => {
@@ -181,6 +182,7 @@ export const UserEditMain: FC = observer(() => {
                         size="l"
                         stretched={true}
                         disabled={!isDirty || !isValid}
+                        type="submit"
                     >
                         Сохранить
                     </Button>

@@ -158,14 +158,19 @@ export const ParticipantsPanel: FC<ParticipantsPanelProps> = observer(
                             worth,
                         }}
                         enabled={!!eventId}
-                        renderItem={(item: Participant) => (
-                            <SimpleCell
-                                key={item.id}
-                                onClick={() => handleOpenActionSheet(item)}
-                            >
-                                {item.boec.fullName}
-                            </SimpleCell>
-                        )}
+                        renderItem={(item: Participant) => {
+                            const brigadeTitle = item.brigade?.title
+                                ? `(${item.brigade?.title})`
+                                : "";
+                            return (
+                                <SimpleCell
+                                    key={item.id}
+                                    onClick={() => handleOpenActionSheet(item)}
+                                >
+                                    {`${item.boec.fullName} ${brigadeTitle}`}
+                                </SimpleCell>
+                            );
+                        }}
                     />
                 </Group>
             </Panel>

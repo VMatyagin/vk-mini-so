@@ -23,6 +23,7 @@ import {
     Icon28DeleteOutlineAndroid,
     Icon28DoneOutline,
     Icon28HistoryBackwardOutline,
+    Icon28UsersOutline,
 } from "@vkontakte/icons";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import {
@@ -31,6 +32,7 @@ import {
 } from "../helpers";
 import { MODAL_EVENT_NOMINATION_SELECT } from "../ui/modals/NominationSelectModal";
 import { appStore } from "../../stores/app-store";
+import { MODAL_PARTICIPATION_LIST } from "../ui/modals/ParticipationsListModal";
 
 interface CompetitionParticipantListPanelProps extends PanelProps {
     worth: CompetitionParticipant["worth"];
@@ -187,6 +189,18 @@ export const CompetitionParticipantListPanel: FC<CompetitionParticipantListPanel
                             Откатить назад
                         </ActionSheetItem>
                     )}
+                    <ActionSheetItem
+                        autoclose
+                        before={<Icon28UsersOutline />}
+                        onClick={() =>
+                            openModal(MODAL_PARTICIPATION_LIST, {
+                                participantId: participant.id,
+                                competitionId: competitionId!,
+                            })
+                        }
+                    >
+                        Узнать участников
+                    </ActionSheetItem>
                     <ActionSheetItem
                         autoclose
                         before={

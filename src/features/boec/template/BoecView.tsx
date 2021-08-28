@@ -9,23 +9,15 @@ import { EditPanel } from "../pages/EditPanel";
 import { SeasonEditPanel } from "../pages/SeasonEditPanel";
 import { ListPanel } from "../pages/ListPanel";
 import { HistoryPanel } from "../pages/HistoryPanel";
-import { appStore } from "../../stores/app-store";
 
 export const BoecView: FC<ViewProps> = observer(({ id }) => {
-    const { boecId, setBoecId } = useContext(boecStore);
-    const { user } = useContext(appStore);
-
-    useEffect(() => {
-        if (user && !boecId) {
-            setBoecId(user.boec.id);
-        }
-    }, [boecId, setBoecId, user]);
+    const { clear } = useContext(boecStore);
 
     useEffect(() => {
         return () => {
-            setBoecId(null);
+            clear();
         };
-    }, [setBoecId]);
+    }, [clear]);
     return (
         <AbstractView id={id}>
             <ViewPanel id="base" viewId={id} />

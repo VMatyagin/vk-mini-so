@@ -219,22 +219,34 @@ export const EventAPI = {
         );
         return data;
     },
+    async getCompetitionParticipant({
+        competitionId,
+        participantId,
+    }: {
+        participantId: number;
+        competitionId: number;
+    }): Promise<CompetitionParticipant> {
+        const { data } = await get(
+            `/api/competition/${competitionId}/participants/${participantId}/`
+        );
+        return data;
+    },
     async createCompetitionParticipant({
         competitionId,
-        boec,
-        brigadesIds,
+        boecIds,
+        brigadeIds,
         title,
     }: {
-        boec: number[];
-        brigadesIds?: number[];
+        boecIds: number[];
+        brigadeIds?: number[];
         competitionId: number;
         title: string;
     }): Promise<CompetitionParticipant> {
         const { data } = await post(
             `/api/competition/${competitionId}/participants/`,
             {
-                boec,
-                brigadesIds,
+                boecIds,
+                brigadeIds,
                 title,
             }
         );

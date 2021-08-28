@@ -142,15 +142,21 @@ export const BrigadesAPI = {
         brigadeId,
         boecId,
         year,
+        isAccepted,
+        isCandidate,
     }: {
         brigadeId: number;
         boecId: number;
         year: number;
+        isAccepted?: boolean;
+        isCandidate?: boolean;
     }): Promise<SuccessResponse<Seasons>> {
         return post(`/api/so/season/`, {
             brigadeId,
             boecId,
             year,
+            isAccepted,
+            isCandidate,
         });
     },
     deleteSeason(id: number): Promise<SuccessResponse<Seasons>> {

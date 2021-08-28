@@ -101,7 +101,7 @@ export interface Participant {
     event: EventType;
     eventId: number;
     worth: number;
-    brigade: number;
+    brigade: Brigade;
 }
 
 export interface Competition {
@@ -118,7 +118,7 @@ export interface Competition {
 export interface CompetitionParticipant<IsFull extends boolean = false> {
     id: number;
     competition: IsFull extends false ? number : Competition;
-    boec: number[] | Boec[];
+    boec: Boec[];
     worth: 0 | 1 | 2 | 3;
     brigades: Brigade[];
     brigadesIds: number[];

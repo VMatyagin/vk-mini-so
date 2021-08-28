@@ -124,6 +124,7 @@ export const CompetitionMainInfoForm: FC = observer(() => {
                     size="l"
                     stretched={true}
                     disabled={!isDirty || !isValid}
+                    type="submit"
                 >
                     {competitionId ? "Сохранить" : "Создать"}
                 </Button>

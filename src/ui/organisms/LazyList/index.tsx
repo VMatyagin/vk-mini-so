@@ -60,7 +60,6 @@ export const LazyList = observer(
             },
             [fetchFn]
         );
-
         const {
             data,
             fetchNextPage,
@@ -79,8 +78,7 @@ export const LazyList = observer(
                         (result, page) => result + page.items.length,
                         0
                     ) < _lastPage.count;
-
-                return hasMore && data.length * limit;
+                return hasMore ? data.length * limit : undefined;
             },
             cacheTime: 0,
             enabled,
@@ -90,7 +88,7 @@ export const LazyList = observer(
             return (data && data?.pages?.flatMap((page) => page.items)) || [];
         }, [data]);
         const fetch = useMemo(
-            () => debounce(fetchNextPage, 500),
+            () => debounce(fetchNextPage, 750),
             [fetchNextPage]
         );
 
@@ -118,7 +116,8 @@ export const LazyList = observer(
                         {title}
                     </Header>
                 )}
-                {!customRender && renderItem &&
+                {!customRender &&
+                    renderItem &&
                     flatData &&
                     flatData.length > 0 &&
                     flatData.map((item) => renderItem(item))}

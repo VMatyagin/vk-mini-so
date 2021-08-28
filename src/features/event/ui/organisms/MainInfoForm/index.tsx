@@ -231,6 +231,7 @@ export const MainInfoForm: FC = observer(() => {
                     size="l"
                     stretched={true}
                     disabled={!isDirty || !isValid}
+                    type="submit"
                 >
                     {eventId ? "Сохранить" : "Создать"}
                 </Button>

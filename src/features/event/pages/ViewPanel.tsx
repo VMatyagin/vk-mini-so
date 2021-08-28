@@ -6,7 +6,7 @@ import {
     InfoRow,
     Panel,
     PanelHeaderBack,
-    ScreenSpinner,
+    PanelSpinner,
     SimpleCell,
     Title,
 } from "@vkontakte/vkui";
@@ -59,8 +59,7 @@ const canEdit = ({
     return can;
 };
 export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
-    const { goBack, openPopout, closePopout, setPage } =
-        useContext(routerStore);
+    const { goBack, setPage } = useContext(routerStore);
     const { eventId, selectBrigade } = useContext(eventStore);
     const { user } = useContext(appStore);
 
@@ -68,15 +67,13 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
         setPage(viewId, panel);
     };
 
-    const { data, refetch } = useQuery({
+    const { data, refetch, isLoading } = useQuery({
         queryKey: ["event", eventId],
         queryFn: ({ queryKey }) => {
-            openPopout(<ScreenSpinner />);
             return EventAPI.getEvent(queryKey[1] as number);
         },
         retry: 1,
         refetchOnWindowFocus: false,
-        onSuccess: closePopout,
     });
     const haveAccess = useMemo(
         () =>
@@ -100,15 +97,12 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
         }
     >(
         (data) => {
-            openPopout(<ScreenSpinner />);
             return EventAPI.setParticipant(data);
         },
         {
             onSuccess: () => {
-                closePopout();
                 refetch();
             },
-            onError: closePopout,
         }
     );
     const onWannaBeParticipang = (brigadeId: number) => {
@@ -131,124 +125,143 @@ export const ViewPanel: FC<PanelProps> = observer(({ id, viewId }) => {
                     {data?.title}
                 </Title>
             </PanelHeader>
-            <Group
-                header={
-                    <Header mode="secondary">Информация о мероприятии</Header>
-                }
-            >
-                <SimpleCell>
-                    <InfoRow header="Штаб-организатор">
-                        {data?.shtab?.title || "Без организатора"}
-                    </InfoRow>
-                </SimpleCell>
-                <SimpleCell>
-                    <InfoRow header="Блок рейтинга">
-                        {EVENT_WORTH[data?.worth || 0].title}
-                    </InfoRow>
-                </SimpleCell>
-                <SimpleCell>
-                    <InfoRow header="Дата проведения">
-                        {new Date(data?.startDate!).toLocaleString("ru", {
-                            day: "numeric",
-                            month: "numeric",
-                            year: "numeric",
-                        })}
-                    </InfoRow>
-                </SimpleCell>
-                <SimpleCell>
-                    <InfoRow header="Время проведения">
-                        {data?.startTime?.slice(0, -3) || "Не указано"}
-                    </InfoRow>
-                </SimpleCell>
-                {haveAccess && (
-                    <CellButton onClick={() => openPanel("edit")}>
-                        Редактировать
-                    </CellButton>
-                )}
-            </Group>
-
-            {haveAccess && (
+            {isLoading && <PanelSpinner />}
+            {!isLoading && (
                 <>
-                    <Group header={<Header mode="secondary">Списки</Header>}>
-                        <SimpleCell
-                            before={<Icon28FireOutline />}
-                            onClick={() => openPanel("organizers")}
-                        >
-                            Организаторы
+                    <Group
+                        header={
+                            <Header mode="secondary">
+                                Информация о мероприятии
+                            </Header>
+                        }
+                    >
+                        <SimpleCell>
+                            <InfoRow header="Штаб-организатор">
+                                {data?.shtab?.title || "Без организатора"}
+                            </InfoRow>
                         </SimpleCell>
-                        <SimpleCell
-                            before={<Icon28UsersOutline />}
-                            onClick={() => openPanel("volonteers")}
-                        >
-                            Волонтеры
+                        <SimpleCell>
+                            <InfoRow header="Блок рейтинга">
+                                {EVENT_WORTH[data?.worth || 0].title}
+                            </InfoRow>
                         </SimpleCell>
-                        <SimpleCell
-                            onClick={() => openPanel("participant")}
-                            before={<Icon28UsersOutline />}
-                        >
-                            Участники
+                        <SimpleCell>
+                            <InfoRow header="Дата проведения">
+                                {new Date(data?.startDate!).toLocaleString(
+                                    "ru",
+                                    {
+                                        day: "numeric",
+                                        month: "numeric",
+                                        year: "numeric",
+                                    }
+                                )}
+                            </InfoRow>
                         </SimpleCell>
-                        <SimpleCell
-                            onClick={() => openPanel("quotas")}
-                            before={<Icon28BillheadOutline />}
-                        >
-                            Квоты
+                        <SimpleCell>
+                            <InfoRow header="Время проведения">
+                                {data?.startTime?.slice(0, -3) || "Не указано"}
+                            </InfoRow>
                         </SimpleCell>
+                        {haveAccess && (
+                            <CellButton onClick={() => openPanel("edit")}>
+                                Редактировать
+                            </CellButton>
+                        )}
+                    </Group>
+
+                    {haveAccess && (
+                        <>
+                            <Group
+                                header={
+                                    <Header mode="secondary">Списки</Header>
+                                }
+                            >
+                                <SimpleCell
+                                    before={<Icon28FireOutline />}
+                                    onClick={() => openPanel("organizers")}
+                                >
+                                    Организаторы
+                                </SimpleCell>
+                                <SimpleCell
+                                    before={<Icon28UsersOutline />}
+                                    onClick={() => openPanel("volonteers")}
+                                >
+                                    Волонтеры
+                                </SimpleCell>
+                                <SimpleCell
+                                    onClick={() => openPanel("participant")}
+                                    before={<Icon28UsersOutline />}
+                                >
+                                    Участники
+                                </SimpleCell>
+                                <SimpleCell
+                                    onClick={() => openPanel("quotas")}
+                                    before={<Icon28BillheadOutline />}
+                                >
+                                    Квоты
+                                </SimpleCell>
+                            </Group>
+                        </>
+                    )}
+                    {data && [1, 2].includes(data.worth) && (
+                        <Group
+                            header={
+                                <Header mode="secondary">
+                                    Конкурсная часть
+                                </Header>
+                            }
+                        >
+                            <SimpleCell
+                                onClick={() => openPanel("competition-list")}
+                                before={<Icon28Flash />}
+                            >
+                                Конкурсы
+                            </SimpleCell>
+                        </Group>
+                    )}
+                    <Group>
+                        {user!.brigades.length > 0 && (
+                            <SubjectSelectingCell
+                                onBrigadeClick={openBrigadeParticipant}
+                                onlyBrigades={true}
+                            >
+                                {({ handleClick, ref }) => (
+                                    <SimpleCell
+                                        getRootRef={ref}
+                                        onClick={handleClick}
+                                        before={<Icon28UsersOutline />}
+                                    >
+                                        Заявки отряда
+                                    </SimpleCell>
+                                )}
+                            </SubjectSelectingCell>
+                        )}
+                        {data &&
+                            data.isTicketed &&
+                            (!data?.isParticipant ? (
+                                <SubjectSelectingCell
+                                    onBrigadeClick={onWannaBeParticipang}
+                                    onlyBrigades={true}
+                                    isForBoec={true}
+                                >
+                                    {({ handleClick, ref }) => (
+                                        <CellButton
+                                            getRootRef={ref}
+                                            onClick={handleClick}
+                                        >
+                                            Подать заявку на участие в
+                                            мероприятии
+                                        </CellButton>
+                                    )}
+                                </SubjectSelectingCell>
+                            ) : (
+                                <CellButton disabled={true}>
+                                    Заявка на участие подана
+                                </CellButton>
+                            ))}
                     </Group>
                 </>
             )}
-            {data && [1, 2].includes(data.worth) && (
-                <Group
-                    header={<Header mode="secondary">Конкурсная часть</Header>}
-                >
-                    <SimpleCell
-                        onClick={() => openPanel("competition-list")}
-                        before={<Icon28Flash />}
-                    >
-                        Конкурсы
-                    </SimpleCell>
-                </Group>
-            )}
-            <Group>
-                {user!.brigades.length > 0 && (
-                    <SubjectSelectingCell
-                        onBrigadeClick={openBrigadeParticipant}
-                        onlyBrigades={true}
-                    >
-                        {({ handleClick, ref }) => (
-                            <SimpleCell
-                                getRootRef={ref}
-                                onClick={handleClick}
-                                before={<Icon28UsersOutline />}
-                            >
-                                Заявки отряда
-                            </SimpleCell>
-                        )}
-                    </SubjectSelectingCell>
-                )}
-                {data &&
-                    data.isTicketed &&
-                    (!data?.isParticipant ? (
-                        <SubjectSelectingCell
-                            onBrigadeClick={onWannaBeParticipang}
-                            onlyBrigades={true}
-                            isForBoec={true}
-                        >
-                            {({ handleClick, ref }) => (
-                                <CellButton
-                                    getRootRef={ref}
-                                    onClick={handleClick}
-                                >
-                                    Подать заявку на участие в мероприятии
-                                </CellButton>
-                            )}
-                        </SubjectSelectingCell>
-                    ) : (
-                        <CellButton disabled={true}>
-                            Заявка на участие подана
-                        </CellButton>
-                    ))}
-            </Group>
         </Panel>
     );
 });

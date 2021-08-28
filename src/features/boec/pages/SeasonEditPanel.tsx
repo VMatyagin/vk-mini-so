@@ -16,6 +16,7 @@ import React, { FC, useContext, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useQuery, useQueryClient } from "react-query";
 import { SuccessSnackbar } from "../../../ui/molecules/SuccessSnackbar";
+import { appStore } from "../../stores/app-store";
 import { routerStore } from "../../stores/router-store";
 
 import { PanelProps, Seasons } from "../../types";
@@ -25,6 +26,7 @@ import { boecStore } from "../store/boecStore";
 export const SeasonEditPanel: FC<PanelProps> = observer(({ id }) => {
     const { openPopout, closePopout, goBack } = useContext(routerStore);
     const { boecId } = useContext(boecStore);
+    const { user } = useContext(appStore);
     const queryClient = useQueryClient();
 
     const [SnackBar, setSnackBar] = useState<React.ReactNode>(null);
@@ -51,10 +53,14 @@ export const SeasonEditPanel: FC<PanelProps> = observer(({ id }) => {
 
     const onSubmit = async (values: Record<keyof Seasons, string>) => {
         openPopout(<ScreenSpinner />);
+        const additional = user?.isStaff
+            ? { isAccepted: true, isCandidate: true }
+            : {};
         await BrigadesAPI.setSeason({
             brigadeId: Number(values.brigade),
             boecId: boecId!,
             year: Number(values.year),
+            ...additional,
         });
         closePopout();
         queryClient.refetchQueries(["seasons", boecId]);
@@ -144,6 +150,7 @@ export const SeasonEditPanel: FC<PanelProps> = observer(({ id }) => {
                         size="l"
                         stretched={true}
                         disabled={!isDirty || !isValid}
+                        type="submit"
                     >
                         Сохранить
                     </Button>

@@ -4,7 +4,6 @@ import {
     Group,
     Panel,
     PanelHeaderBack,
-    ScreenSpinner,
     SimpleCell,
 } from "@vkontakte/vkui";
 
@@ -22,8 +21,7 @@ import { canEditCompetitions } from "../helpers";
 export const CompetitionsListPanel: FC<PanelProps> = observer(
     ({ id, viewId }) => {
         const { eventId, setCompetitionId } = useContext(eventStore);
-        const { goBack, setPage, openPopout, closePopout } =
-            useContext(routerStore);
+        const { goBack, setPage } = useContext(routerStore);
         const { user } = useContext(appStore);
 
         const changeView = (id: number) => {
@@ -33,12 +31,10 @@ export const CompetitionsListPanel: FC<PanelProps> = observer(
         const { data } = useQuery({
             queryKey: ["event", eventId],
             queryFn: ({ queryKey }) => {
-                openPopout(<ScreenSpinner />);
                 return EventAPI.getEvent(queryKey[1] as number);
             },
             retry: 1,
             refetchOnWindowFocus: false,
-            onSuccess: closePopout,
         });
         const haveAccess = useMemo(
             () =>
