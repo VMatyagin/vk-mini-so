@@ -78,7 +78,9 @@ export const ProfilePanel: FC<PanelProps> = observer((props) => {
         </div>
 
         <SimpleCell
-          // onClick={() => navigate("boec", { id: user?.boec.id })}
+          onClick={() =>
+            navigate("else.boec.details", { boecId: user?.boec.id })
+          }
           expandable={true}
         >
           К бойцовской странице

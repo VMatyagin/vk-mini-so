@@ -23,7 +23,7 @@ import { ShtabsAPI } from "../../../../utils/requests/shtab-request";
 import { EVENT_WORTH } from "../../../helpers";
 
 export const MainInfoForm: FC = observer(() => {
-  const { openPopout, closePopout, goBack } = useContext(routerStore);
+  const { openPopout, closePopout } = useContext(routerStore);
   const queryClient = useQueryClient();
   const { route } = useRoute();
 
@@ -65,7 +65,7 @@ export const MainInfoForm: FC = observer(() => {
         queryClient.setQueryData(["event", data.id], data);
 
         closePopout();
-        goBack();
+        window.history.back();
       },
     }
   );

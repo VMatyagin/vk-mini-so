@@ -37,6 +37,18 @@ import { CompetitionEditPanel } from "./features/event/pages/CompetitionEditPane
 import { CompetitionViewPanel } from "./features/event/pages/CompetitionViewPanel";
 import { CompetitionParticipantListPanel } from "./features/event/pages/CompetitionParticipantListPanel";
 import { NomiantionsListPanel } from "./features/event/pages/NomiantionsListPanel";
+import { ShtabViewPanel } from "./features/shtab/pages/ShtabViewPanel";
+import { ShtabListPanel } from "./features/shtab/pages/ShtabListPanel";
+import { ShtabEditPanel } from "./features/shtab/pages/ShtabEditPanel";
+import { BrigadeListPanel } from "./features/brigades/pages/BrigadeListPanel";
+import { BrigadeViewPanel } from "./features/brigades/pages/BrigadeViewPanel";
+import { BrigadeEditPanel } from "./features/brigades/pages/BrigadeEditPanel";
+import { BrigadeBoecListPanel } from "./features/brigades/pages/BrigadeBoecListPanel";
+import { BoecViewPanel } from "./features/boec/pages/BoecViewPanel";
+import { BoecEditPanel } from "./features/boec/pages/BoecEditPanel";
+import { BoecListPanel } from "./features/boec/pages/BoecListPanel";
+import { BoecHistoryPanel } from "./features/boec/pages/BoecHistoryPanel";
+import { BoecSeasonPanel } from "./features/boec/pages/BoecSeasonPanel";
 
 export const AppLayout: FC = observer(() => {
   const { popout } = useContext(routerStore);
@@ -118,6 +130,48 @@ export const AppLayout: FC = observer(() => {
               <CompetitionParticipantListPanel id="not-winners" worth={3} />
 
               <NomiantionsListPanel id="nominations" />
+            </View>
+            <View
+              activePanel={getElseViewPanel("shtabs", location[2], "base")}
+              nav="shtabs"
+            >
+              <ShtabListPanel nav="base" />
+            </View>
+            <View
+              activePanel={getElseViewPanel("shtab", location[2], "details")}
+              nav="shtab"
+            >
+              <ShtabViewPanel nav="details" />
+              <ShtabEditPanel nav="edit" />
+            </View>
+            <View
+              activePanel={getElseViewPanel("brigades", location[2], "base")}
+              nav="brigades"
+            >
+              <BrigadeListPanel nav="base" />
+            </View>
+            <View
+              activePanel={getElseViewPanel("brigade", location[2], "details")}
+              nav="brigade"
+            >
+              <BrigadeViewPanel nav="details" />
+              <BrigadeEditPanel nav="edit" />
+              <BrigadeBoecListPanel nav="boec-list" />
+            </View>
+            <View
+              activePanel={getElseViewPanel("boecs", location[2], "base")}
+              nav="boecs"
+            >
+              <BoecListPanel nav="base" />
+            </View>
+            <View
+              activePanel={getElseViewPanel("boec", location[2], "details")}
+              nav="boec"
+            >
+              <BoecViewPanel nav="details" />
+              <BoecEditPanel nav="edit" />
+              <BoecSeasonPanel nav="season" />
+              <BoecHistoryPanel nav="history" />
             </View>
           </Root>
           <Root nav="scanner" activeView="base">

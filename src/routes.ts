@@ -107,6 +107,90 @@ const elseViews: Route[] = [
       },
     ],
   },
+  {
+    name: "shtabs",
+    path: "/shtabs",
+    children: [
+      {
+        name: "base",
+        path: "/",
+      },
+    ],
+  },
+  {
+    name: "shtab",
+    path: "/shtab/:shtabId",
+    children: [
+      {
+        name: "details",
+        path: "/",
+      },
+      {
+        name: "edit",
+        path: "/edit",
+      },
+    ],
+  },
+  {
+    name: "brigades",
+    path: "/brigades",
+    children: [
+      {
+        name: "base",
+        path: "/",
+      },
+    ],
+  },
+  {
+    name: "brigade",
+    path: "/brigade/:brigadeId",
+    children: [
+      {
+        name: "details",
+        path: "/",
+      },
+      {
+        name: "edit",
+        path: "/edit",
+      },
+      {
+        name: "boec-list",
+        path: "/boec-list",
+      },
+    ],
+  },
+  {
+    name: "boecs",
+    path: "/boecs",
+    children: [
+      {
+        name: "base",
+        path: "/",
+      },
+    ],
+  },
+  {
+    name: "boec",
+    path: "/boec/:boecId",
+    children: [
+      {
+        name: "details",
+        path: "/",
+      },
+      {
+        name: "edit",
+        path: "/edit",
+      },
+      {
+        name: "seasons",
+        path: "/seasons",
+      },
+      {
+        name: "history",
+        path: "/history",
+      },
+    ],
+  },
 ];
 
 export const getElseViewPanel = (

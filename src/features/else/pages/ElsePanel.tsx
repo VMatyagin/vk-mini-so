@@ -27,11 +27,9 @@ import {
 import { observer } from "mobx-react-lite";
 import { FC, useContext } from "react";
 import { useRouter } from "react-router5";
-// import { useHistory } from "react-router-dom";
 import { appStore } from "../../stores/app-store";
 import { NotificationSwitcher } from "../ui/molecules/NotificationSwitcher";
 import { SubjectSelectingCell } from "../ui/molecules/SubjectSelectingCell";
-// import { SubjectSelectingCell } from "../ui/molecules/SubjectSelectingCell";
 
 export const ElsePanel: FC<PanelProps> = observer((props) => {
   const { user } = useContext(appStore);
@@ -52,13 +50,13 @@ export const ElsePanel: FC<PanelProps> = observer((props) => {
             </SimpleCell>
             <SimpleCell
               before={<Icon28UserSquareOutline />}
-              onClick={() => navigate("else.brigade.list")}
+              onClick={() => navigate("else.brigades.base")}
             >
               Отряды
             </SimpleCell>
             <SimpleCell
               before={<Icon28UserSquareOutline />}
-              onClick={() => navigate("else.boec.list")}
+              onClick={() => navigate("else.boecs.base")}
             >
               Поиск по бойцам
             </SimpleCell>
@@ -87,7 +85,7 @@ export const ElsePanel: FC<PanelProps> = observer((props) => {
         {user && user.isStaff && (
           <SimpleCell
             before={<Icon28UserSquareOutline />}
-            onClick={() => navigate("else.shtab.list")}
+            onClick={() => navigate("else.shtabs.base")}
           >
             Штабы
           </SimpleCell>

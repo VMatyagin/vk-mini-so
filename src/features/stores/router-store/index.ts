@@ -80,7 +80,7 @@ export class RouterStore {
     return panel;
   };
 
-  setPage = (view: string, panel: string) => {
+  _setPage = (view: string, panel: string) => {
     if (this.activeStory) {
       // window.history.pushState(null, "");
 
@@ -179,7 +179,7 @@ export class RouterStore {
         window.pageYOffset,
     };
   };
-  goBack = (_event?: any, howManyPanelsBack = 1) => {
+  _goBack = (_event?: any, howManyPanelsBack = 1) => {
     if (this.activeView) {
       let setView = this.activeView;
       let setPanel = this.activePanel;
