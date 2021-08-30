@@ -7,11 +7,13 @@ import {
   Button,
   ScreenSpinner,
   DatePicker,
+  PanelSpinner,
 } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { FC, useContext, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useRoute } from "react-router5";
 import { LazySelect } from "../../../../../ui/organisms/LazySelect";
 import { routerStore } from "../../../../stores/router-store";
 import { EventType, Shtab } from "../../../../types";
@@ -23,13 +25,17 @@ import { EVENT_WORTH } from "../../../helpers";
 export const MainInfoForm: FC = observer(() => {
   const { openPopout, closePopout, goBack } = useContext(routerStore);
   const queryClient = useQueryClient();
+  const { route } = useRoute();
 
-  const eventId = useMemo(() => 1, []);
-  const { handleSubmit, control, formState, reset } = useForm<EventType>({
-    reValidateMode: "onChange",
-    mode: "onChange",
-  });
-  useQuery<EventType>({
+  const eventId = useMemo(() => route.params.eventId, [route]);
+
+  const { handleSubmit, control, formState, reset, watch } = useForm<EventType>(
+    {
+      reValidateMode: "onChange",
+      mode: "onChange",
+    }
+  );
+  const { isLoading: isEventLoading } = useQuery<EventType>({
     queryKey: ["event", eventId!],
     queryFn: ({ queryKey }) => {
       return EventAPI.getEvent(queryKey[1] as number);
@@ -39,6 +45,7 @@ export const MainInfoForm: FC = observer(() => {
     enabled: !!eventId,
     onSuccess: (data) => reset(data),
   });
+  console.log(watch());
 
   const { isDirty, isValid, dirtyFields } = formState;
 
@@ -66,6 +73,9 @@ export const MainInfoForm: FC = observer(() => {
     mutate(values);
   };
 
+  if (isEventLoading) {
+    return <PanelSpinner />;
+  }
   return (
     <FormLayout onSubmit={handleSubmit(onSubmit)}>
       <Controller
@@ -121,12 +131,12 @@ export const MainInfoForm: FC = observer(() => {
           >
             <Select
               name={field.name}
-              defaultValue={field.value}
               placeholder="Не выбран"
               options={EVENT_WORTH.map((worth, index) => ({
                 label: worth.title,
                 value: index,
               }))}
+              value={field.value}
               onChange={field.onChange}
               renderOption={({ option, ...restProps }) => (
                 <CustomSelectOption {...restProps} />

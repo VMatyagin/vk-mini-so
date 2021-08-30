@@ -15,6 +15,7 @@ import { debounce } from "@vkontakte/vkjs";
 import { EventType } from "../../types";
 import { EventAPI } from "../../utils/requests/event-request";
 import { appStore } from "../../stores/app-store";
+import { useRouter } from "react-router5";
 
 const getDescription = ({
   date,
@@ -41,8 +42,9 @@ const getDescription = ({
 
 export const EventListPanel: FC<PanelProps> = observer((props) => {
   const { user } = useContext(appStore);
-  const changeView = (id: number) => {
-    // navigate("else.event.details", { id });
+  const { navigate } = useRouter();
+  const changeView = (eventId: number) => {
+    navigate("else.event.details", { eventId });
   };
 
   const [search, setSearch] = useState<string>();

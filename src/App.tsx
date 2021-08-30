@@ -24,7 +24,7 @@ export const App: FC = observer(({ children }) => {
   return (
     <ConfigProvider scheme={colorSchema}>
       <AdaptivityProvider>
-        <AppRoot>
+        <AppRoot noLegacyClasses={true}>
           {isInitialization ? (
             <Intro />
           ) : user?.boec !== null ? (

@@ -5,33 +5,36 @@ import {
 } from "@vkontakte/icons";
 import { Badge, Tabbar, TabbarItem } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
-import { useContext } from "react";
+import { useContext, useMemo } from "react";
+import { useRoute, useRouter } from "react-router5";
 
 import { appStore } from "../../../features/stores/app-store";
 
 export const MobileMenu = observer(() => {
   const { user } = useContext(appStore);
-
+  const { route } = useRoute();
+  const { navigate, navigateToDefault } = useRouter();
+  const location = useMemo(() => route.name.split("."), [route.name]);
   return (
     <Tabbar itemsLayout="vertical" shadow={false}>
       <TabbarItem
-        // onClick={() => history.push("/")}
-        // selected={activeStory === "else"}
-        text="Ещё"
+        onClick={() => navigateToDefault()}
+        selected={location[0] === "else"}
+        // text="Ещё"
       >
         <Icon28Newsfeed />
       </TabbarItem>
       <TabbarItem
-        // onClick={() => history.push("/scanner")}
-        // selected={activeStory === "scanner"}
-        text="Сканнер"
+        onClick={() => navigate("scanner")}
+        selected={location[0] === "scanner"}
+        // text="Сканнер"
       >
         <Icon28ScanViewfinderOutline />
       </TabbarItem>
       <TabbarItem
-        // onClick={() => history.push("/profile")}
-        // selected={activeStory === "profile"}
-        text="Профиль"
+        onClick={() => navigate("profile")}
+        selected={location[0] === "profile"}
+        // text="Профиль"
         indicator={
           user?.unreadActivityCount! > 0 && (
             <Badge mode="prominent" aria-label="Есть новые" />

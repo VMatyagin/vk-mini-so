@@ -1,5 +1,6 @@
 import {
   Icon28CalendarOutline,
+  Icon28UsersOutline,
   // Icon28ChevronRightOutline,
   // Icon28HelpOutline,
   // Icon28MailOutline,
@@ -25,14 +26,16 @@ import {
 } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { FC, useContext } from "react";
+import { useRouter } from "react-router5";
 // import { useHistory } from "react-router-dom";
 import { appStore } from "../../stores/app-store";
 import { NotificationSwitcher } from "../ui/molecules/NotificationSwitcher";
+import { SubjectSelectingCell } from "../ui/molecules/SubjectSelectingCell";
 // import { SubjectSelectingCell } from "../ui/molecules/SubjectSelectingCell";
 
 export const ElsePanel: FC<PanelProps> = observer((props) => {
   const { user } = useContext(appStore);
-  // const { push } = useHistory();
+  const { navigate } = useRouter();
   return (
     <Panel {...props}>
       <PanelHeader>Ещё</PanelHeader>
@@ -43,28 +46,32 @@ export const ElsePanel: FC<PanelProps> = observer((props) => {
           <>
             <SimpleCell
               before={<Icon28CalendarOutline />}
-              // onClick={() => push("/event/create")}
+              onClick={() => navigate("else.events.create")}
             >
               Создать мероприятие
             </SimpleCell>
             <SimpleCell
               before={<Icon28UserSquareOutline />}
-              // onClick={() => push("/brigade")}
+              onClick={() => navigate("else.brigade.list")}
             >
               Отряды
             </SimpleCell>
             <SimpleCell
               before={<Icon28UserSquareOutline />}
-              // onClick={() => push("/boec")}
+              onClick={() => navigate("else.boec.list")}
             >
               Поиск по бойцам
             </SimpleCell>
           </>
         )}
-        {/* {user && (user.brigades.length !== 0 || user.shtabs.length !== 0) && (
+        {user && (user.brigades.length !== 0 || user.shtabs.length !== 0) && (
           <SubjectSelectingCell
-            onBrigadeClick={(brigadeId) => push(`/brigade/${brigadeId}`)}
-            onShtabClick={(shtabId) => push(`/shtab/${shtabId}`)}
+            onBrigadeClick={(brigadeId) =>
+              navigate(`else.brigade.details`, { brigadeId })
+            }
+            onShtabClick={(shtabId) =>
+              navigate(`else.shtab.details`, { shtabId })
+            }
           >
             {({ handleClick, ref }) => (
               <SimpleCell
@@ -76,18 +83,18 @@ export const ElsePanel: FC<PanelProps> = observer((props) => {
               </SimpleCell>
             )}
           </SubjectSelectingCell>
-        )} */}
+        )}
         {user && user.isStaff && (
           <SimpleCell
             before={<Icon28UserSquareOutline />}
-            // onClick={() => push("/shtab")}
+            onClick={() => navigate("else.shtab.list")}
           >
             Штабы
           </SimpleCell>
         )}
         <SimpleCell
           before={<Icon28CalendarOutline />}
-          // onClick={() => push("/event")}
+          onClick={() => navigate("else.events.base")}
         >
           Мероприятия
         </SimpleCell>

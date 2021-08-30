@@ -26,6 +26,7 @@ import { EventAPI } from "../../utils/requests/event-request";
 import { EVENT_WORTH } from "../helpers";
 import { appStore } from "../../stores/app-store";
 import { SubjectSelectingCell } from "../../else/ui/molecules/SubjectSelectingCell";
+import { useRoute, useRouter } from "react-router5";
 
 const canEdit = ({
   user,
@@ -57,11 +58,15 @@ const canEdit = ({
   }
   return can;
 };
+
 export const EventViewPanel: FC<PanelProps> = observer((props) => {
   const { user } = useContext(appStore);
-  const id = 1;
+  const { route } = useRoute();
+  const eventId = useMemo(() => route.params.eventId, [route]);
+
+  const { navigate } = useRouter();
   const { data, refetch, isLoading } = useQuery({
-    queryKey: ["event", id],
+    queryKey: ["event", eventId],
     queryFn: ({ queryKey }) => {
       return EventAPI.getEvent(queryKey[1] as number);
     },
@@ -108,7 +113,7 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
   };
 
   const openPage = (url: string, additional?: Record<string, number>) => {
-    // navigate(`else.event.${url}`);
+    navigate(`else.event.${url}`, { ...additional });
   };
 
   return (
@@ -151,7 +156,13 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
               </InfoRow>
             </SimpleCell>
             {haveAccess && (
-              <CellButton onClick={() => openPage("edit")}>
+              <CellButton
+                onClick={() =>
+                  openPage("edit", {
+                    eventId,
+                  })
+                }
+              >
                 Редактировать
               </CellButton>
             )}
@@ -162,24 +173,24 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
               <Group header={<Header mode="secondary">Списки</Header>}>
                 <SimpleCell
                   before={<Icon28FireOutline />}
-                  onClick={() => openPage("organizers")}
+                  onClick={() => openPage("organizers", { eventId })}
                 >
                   Организаторы
                 </SimpleCell>
                 <SimpleCell
                   before={<Icon28UsersOutline />}
-                  onClick={() => openPage("volonteers")}
+                  onClick={() => openPage("volonteers", { eventId })}
                 >
                   Волонтеры
                 </SimpleCell>
                 <SimpleCell
-                  onClick={() => openPage("participants")}
+                  onClick={() => openPage("participants", { eventId })}
                   before={<Icon28UsersOutline />}
                 >
                   Участники
                 </SimpleCell>
                 <SimpleCell
-                  onClick={() => openPage("quotas")}
+                  onClick={() => openPage("quotas", { eventId })}
                   before={<Icon28BillheadOutline />}
                 >
                   Квоты
@@ -190,7 +201,11 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
           {data && [1, 2].includes(data.worth) && (
             <Group header={<Header mode="secondary">Конкурсная часть</Header>}>
               <SimpleCell
-                onClick={() => openPage("competitions")}
+                onClick={() =>
+                  navigate(`else.competitions.base`, {
+                    eventId,
+                  })
+                }
                 before={<Icon28Flash />}
               >
                 Конкурсы
@@ -199,24 +214,16 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
           )}
           <Group>
             {user!.brigades.length > 0 && (
-              <SubjectSelectingCell
-                onBrigadeClick={(id) =>
+              <SimpleCell
+                onClick={() =>
                   openPage("brigade-participants", {
-                    brigadeId: id,
+                    eventId,
                   })
                 }
-                onlyBrigades={true}
+                before={<Icon28UsersOutline />}
               >
-                {({ handleClick, ref }) => (
-                  <SimpleCell
-                    getRootRef={ref}
-                    onClick={handleClick}
-                    before={<Icon28UsersOutline />}
-                  >
-                    Заявки моего отряда
-                  </SimpleCell>
-                )}
-              </SubjectSelectingCell>
+                Заявки моего отряда
+              </SimpleCell>
             )}
             {data &&
               data.isTicketed &&

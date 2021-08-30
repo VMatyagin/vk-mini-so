@@ -21,6 +21,7 @@ import { Achievements } from "../ui/organisms/Achievements";
 import { Statistics } from "../ui/organisms/Statistics";
 import { Missions } from "../ui/organisms/Missions";
 import { profileStore } from "../store";
+import { useRouter } from "react-router5";
 
 export const ProfilePanel: FC<PanelProps> = observer((props) => {
   const { userData, user } = useContext(appStore);
@@ -28,11 +29,13 @@ export const ProfilePanel: FC<PanelProps> = observer((props) => {
   useEffect(() => {
     load();
   }, [load]);
-  // const history = useHistory();
-  const [activeTab, setActiveTab] = useState<string>("missions");
+  const { navigate } = useRouter();
+
   const openNotifications = () => {
-    // history.push("/profile/notifications");
+    navigate("profile.notifications");
   };
+
+  const [activeTab, setActiveTab] = useState<string>("missions");
 
   return (
     <Panel {...props}>

@@ -5,9 +5,14 @@ import { PanelHeader } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { LazyList } from "../../../ui/organisms/LazyList";
 import { TicketsAPI } from "../../utils/requests/event-request";
+import { useRouter } from "react-router5";
 
 export const ScannerPanel: FC<PanelProps> = observer((props) => {
-  const goScan = () => {};
+  const { navigate } = useRouter();
+
+  const goScan = () => {
+    navigate("scanner.scan");
+  };
 
   return (
     <Panel {...props}>
