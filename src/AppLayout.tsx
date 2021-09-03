@@ -49,6 +49,7 @@ import { BoecEditPanel } from "./features/boec/pages/BoecEditPanel";
 import { BoecListPanel } from "./features/boec/pages/BoecListPanel";
 import { BoecHistoryPanel } from "./features/boec/pages/BoecHistoryPanel";
 import { BoecSeasonPanel } from "./features/boec/pages/BoecSeasonPanel";
+import { PollViewPanel } from "./features/polls/pages/PollViewPanel";
 
 export const AppLayout: FC = observer(() => {
   const { popout } = useContext(routerStore);
@@ -172,6 +173,12 @@ export const AppLayout: FC = observer(() => {
               <BoecEditPanel nav="edit" />
               <BoecSeasonPanel nav="season" />
               <BoecHistoryPanel nav="history" />
+            </View>
+            <View
+              activePanel={getElseViewPanel("poll", location[2], "base")}
+              nav="poll"
+            >
+              <PollViewPanel nav="base" />
             </View>
           </Root>
           <Root nav="scanner" activeView="base">

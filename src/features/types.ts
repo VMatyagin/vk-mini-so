@@ -184,3 +184,22 @@ export interface TicketScan {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Voting {
+  id: number;
+  text: string;
+  questions: Question[];
+  status: 0 | 1 | 2 | 3;
+  question: null | number;
+}
+
+export interface Question {
+  id: number;
+  text: string;
+  answers: Answer[];
+}
+export interface Answer {
+  id: number;
+  text: string;
+  answered: boolean;
+}

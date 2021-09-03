@@ -191,6 +191,16 @@ const elseViews: Route[] = [
       },
     ],
   },
+  {
+    name: "poll",
+    path: "/poll/:pollId",
+    children: [
+      {
+        name: "base",
+        path: "/",
+      },
+    ],
+  },
 ];
 
 export const getElseViewPanel = (
