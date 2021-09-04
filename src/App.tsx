@@ -21,6 +21,7 @@ export const App: FC = observer(({ children }) => {
     enabled: !isInitialization,
     onSuccess: setUser,
   });
+
   return (
     <ConfigProvider scheme={colorSchema}>
       <AdaptivityProvider>

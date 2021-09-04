@@ -4,6 +4,8 @@ import { createContext } from "react";
 import { ScrollPosition, User } from "../../types";
 
 import { UsersAPI } from "../../utils/requests/user-request";
+import { initApp, APP_ID } from "../../VKBridge";
+import VKBridge from "@vkontakte/vk-bridge";
 
 export class AppStore {
   isInitialization: boolean = true;
@@ -14,6 +16,7 @@ export class AppStore {
   componentScroll: Record<string, ScrollPosition> = {};
   user: User | null = null;
   appParams: Record<string, any> | null = null;
+  queryString: string | undefined = undefined;
 
   constructor() {
     makeAutoObservable(this);
@@ -21,20 +24,17 @@ export class AppStore {
   }
 
   async load() {
-    // const user = await VKBridge.send("VKWebAppGetUserInfo");
-    // const token = await VKBridge.send("VKWebAppGetAuthToken", {
-    //   app_id: APP_ID,
-    //   scope: "groups",
-    // });
+    const user = await VKBridge.send("VKWebAppGetUserInfo");
+    const token = await VKBridge.send("VKWebAppGetAuthToken", {
+      app_id: APP_ID,
+      scope: "groups",
+    });
+
     const meData = await UsersAPI.getMeData();
     this.user = meData;
-    // this.userData = user;
-    // this.accessToken = token.access_token;
-    // await initApp();
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const params = Object.fromEntries(urlSearchParams.entries());
-    this.appParams = params;
-
+    this.userData = user;
+    this.accessToken = token.access_token;
+    await initApp();
     runInAction(() => {
       this.isInitialization = false;
     });
@@ -65,6 +65,13 @@ export class AppStore {
     const x = element.scrollLeft;
     const y = element.scrollTop;
     this.componentScroll[component] = { x, y };
+  };
+  setAppParams = (searchParams: string) => {
+    const urlSearchParams = new URLSearchParams(searchParams);
+
+    const params = Object.fromEntries(urlSearchParams.entries());
+    this.appParams = params;
+    this.queryString = searchParams.slice(1);
   };
 }
 

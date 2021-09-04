@@ -1,11 +1,12 @@
 import axios from "axios";
-import { getAuthorization } from "./getAuthorization";
+import { AppStoreInstance } from "../stores/app-store";
+// import { getAuthorization } from "./getAuthorization";
 
 const instance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
 instance.interceptors.request.use((config) => {
-  const params = getAuthorization();
+  const params = AppStoreInstance.queryString;
 
   // we send location string without any changes
 
