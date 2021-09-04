@@ -23,7 +23,7 @@ import {
 import { PanelHeader, Title } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { useRoute } from "react-router5";
-import { getAuthorization } from "../../utils/getAuthorization";
+// import { getAuthorization } from "../../utils/getAuthorization";
 import { Voting } from "../../types";
 import { NotYetPoll } from "../ui/molecules/NotYetPoll";
 import { PausePoll } from "../ui/molecules/PausePoll";
@@ -31,14 +31,21 @@ import { EndPoll } from "../ui/molecules/EndPoll";
 import { routerStore } from "../../stores/router-store";
 import { useMutation } from "react-query";
 import { PollAPI } from "../../utils/requests/poll-request";
+import { AppStoreInstance } from "../../stores/app-store";
+import { sendTapticImpact, sendTapticNotification } from "../../VKBridge";
 
+function isSecure() {
+  return window.location.protocol === "https:"
+    ? process.env.REACT_APP_API_WSS
+    : process.env.REACT_APP_API_WS;
+}
 const connect = (
   pollId: number,
   onMessage: (e: MessageEvent) => void,
   attempt = 1
 ) => {
   const ws = new WebSocket(
-    `ws://localhost:8000/ws/poll/${pollId}/?${getAuthorization()}`
+    `${isSecure()}/poll/${pollId}/?${AppStoreInstance.queryString}`
   );
   ws.onmessage = onMessage;
 
@@ -72,6 +79,7 @@ export const PollViewPanel: FC<PanelProps> = observer((props) => {
         message: Voting;
       };
       setData(message);
+      sendTapticImpact("heavy");
     },
     [setData]
   );
@@ -83,6 +91,10 @@ export const PollViewPanel: FC<PanelProps> = observer((props) => {
     };
   }, [pollId, onMessage]);
 
+  const onSelect = (id: number) => {
+    sendTapticImpact("light");
+    selectId(id);
+  };
   const currentQuestion = useMemo(
     () => data?.questions.find((question) => question.id === data.question),
     [data?.question, data?.questions]
@@ -102,12 +114,14 @@ export const PollViewPanel: FC<PanelProps> = observer((props) => {
     },
     {
       onSuccess: (data) => {
+        sendTapticNotification("success");
         setData(data);
         closePopout();
       },
     }
   );
   const confirm = async () => {
+    sendTapticNotification("warning");
     openPopout(
       <Alert
         actions={[
@@ -155,7 +169,7 @@ export const PollViewPanel: FC<PanelProps> = observer((props) => {
                       ? "commerce"
                       : "outline"
                   }
-                  onClick={() => selectId(answer.id)}
+                  onClick={() => onSelect(answer.id)}
                   size="l"
                   stretched={true}
                 >
