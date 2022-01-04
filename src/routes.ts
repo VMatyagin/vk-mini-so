@@ -167,6 +167,10 @@ const elseViews: Route[] = [
         name: "base",
         path: "/",
       },
+      {
+        name: "create",
+        path: "/create",
+      },
     ],
   },
   {

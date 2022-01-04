@@ -15,7 +15,7 @@ import {
   Checkbox,
   ScreenSpinner,
 } from "@vkontakte/vkui";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation, useQuery } from "react-query";
 import { useRoute } from "react-router5";
@@ -34,7 +34,6 @@ export const NominationEditModal = () => {
     () => route.params,
     [route]
   );
-  console.log(competitionId, nominationId, eventId);
 
   const platform = usePlatform();
   const { viewWidth = 100 } = useAdaptivity();
@@ -93,6 +92,12 @@ export const NominationEditModal = () => {
         isRated: true,
       },
     });
+
+  useEffect(() => {
+    return () => {
+      reset({});
+    };
+  }, [reset]);
   const { isDirty, isValid } = formState;
 
   const { data: event } = useQuery({

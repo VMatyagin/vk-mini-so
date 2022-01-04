@@ -17,7 +17,7 @@ import { EventAPI } from "../../../../utils/requests/event-request";
 
 export const CompetitionMainInfoForm: FC = observer(() => {
   const { route } = useRoute();
-  const { id: eventId, competitionId } = useMemo(() => route.params, [route]);
+  const { eventId, competitionId } = useMemo(() => route.params, [route]);
   const { openPopout, closePopout } = useContext(routerStore);
 
   const { data } = useQuery({
@@ -73,10 +73,11 @@ export const CompetitionMainInfoForm: FC = observer(() => {
   const { isDirty, isValid } = formState;
 
   const onSubmit = (values: Competition) => {
-    mutate({
-      eventId: eventId!,
-      competition: values,
-    });
+    eventId &&
+      mutate({
+        eventId: eventId,
+        competition: values,
+      });
   };
 
   return (

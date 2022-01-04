@@ -61,6 +61,7 @@ export const AppLayout: FC = observer(() => {
   const isDesktop = viewWidth >= ViewWidth.SMALL_TABLET;
   const hasHeader = platform !== VKCOM;
   const location = useMemo(() => route.name.split("."), [route.name]);
+  console.log(location[1], getElseViewPanel("boecs", location[2], "base"));
 
   return (
     <SplitLayout
@@ -96,9 +97,10 @@ export const AppLayout: FC = observer(() => {
             >
               <EventViewPanel nav="details" />
               <EventEditPanel nav="edit" />
-              {user?.brigades?.length && (
+              {/* else will throw error */}
+              {user?.brigades?.length ? (
                 <EventBrigadeParticipantsPanel nav="brigade-participants" />
-              )}
+              ) : undefined}
               <EventParticipantsPanel nav="volonteers" worth={1} />
               <EventParticipantsPanel nav="organizers" worth={2} />
               <EventParticipantsPanel nav="participants" worth={0} />
@@ -125,12 +127,12 @@ export const AppLayout: FC = observer(() => {
             >
               <CompetitionViewPanel nav="details" />
               <CompetitionEditPanel nav="edit" />
-              <CompetitionParticipantListPanel id="participants" worth={0} />
-              <CompetitionParticipantListPanel id="involvements" worth={1} />
-              <CompetitionParticipantListPanel id="winners" worth={2} />
-              <CompetitionParticipantListPanel id="not-winners" worth={3} />
+              <CompetitionParticipantListPanel nav="participants" worth={0} />
+              <CompetitionParticipantListPanel nav="involvements" worth={1} />
+              <CompetitionParticipantListPanel nav="winners" worth={2} />
+              <CompetitionParticipantListPanel nav="not-winners" worth={3} />
 
-              <NomiantionsListPanel id="nominations" />
+              <NomiantionsListPanel nav="nominations" />
             </View>
             <View
               activePanel={getElseViewPanel("shtabs", location[2], "base")}
@@ -164,6 +166,7 @@ export const AppLayout: FC = observer(() => {
               nav="boecs"
             >
               <BoecListPanel nav="base" />
+              <BoecEditPanel nav="create" />
             </View>
             <View
               activePanel={getElseViewPanel("boec", location[2], "details")}
@@ -171,7 +174,7 @@ export const AppLayout: FC = observer(() => {
             >
               <BoecViewPanel nav="details" />
               <BoecEditPanel nav="edit" />
-              <BoecSeasonPanel nav="season" />
+              <BoecSeasonPanel nav="seasons" />
               <BoecHistoryPanel nav="history" />
             </View>
             <View

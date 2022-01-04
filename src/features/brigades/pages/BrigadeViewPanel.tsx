@@ -51,7 +51,7 @@ export const BrigadeViewPanel: FC<PanelProps> = observer((props) => {
   });
 
   const handleAddBoec = () => {
-    navigate("else.boec.create");
+    navigate("else.boecs.create");
   };
 
   return (
