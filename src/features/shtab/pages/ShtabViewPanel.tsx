@@ -77,7 +77,7 @@ export const ShtabViewPanel: FC<PanelProps> = observer((props) => {
               </Title>
             </Div>
           </Group>
-          <Group header={<Header mode="secondary">Командый состав</Header>}>
+          <Group header={<Header mode="secondary">Командный состав</Header>}>
             <ShtabLeaders />
           </Group>
           {isLoading && <PanelSpinner />}

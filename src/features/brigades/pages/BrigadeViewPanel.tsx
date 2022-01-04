@@ -75,7 +75,7 @@ export const BrigadeViewPanel: FC<PanelProps> = observer((props) => {
               <InfoRow header="Численность">{brigade?.members}</InfoRow>
             </SimpleCell>
           </Group>
-          <Group header={<Header mode="secondary">Командый состав</Header>}>
+          <Group header={<Header mode="secondary">Командный состав</Header>}>
             <BrigadeLeaders />
           </Group>
           {(brigade?.canEdit || isStaff) && (
