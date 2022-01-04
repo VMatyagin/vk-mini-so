@@ -1,7 +1,13 @@
 import { debounce } from "@vkontakte/vkjs";
-import { Footer, Header, Spinner } from "@vkontakte/vkui";
+import { Footer, Header, Search, Spinner } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
-import { createContext, ReactElement, useCallback, useMemo } from "react";
+import React, {
+  createContext,
+  ReactElement,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import {
   InfiniteData,
   QueryObserverResult,
@@ -9,6 +15,7 @@ import {
 } from "react-query";
 import { useIntersect } from "../../../features/utils/hooks/useIntersect";
 import { ListResponse } from "../../../features/utils/types";
+import { useDebounce } from "use-debounce";
 
 interface ListOptions {
   limit?: number;
@@ -28,6 +35,7 @@ interface LazyUsersListProps<
   emptyMessage?: string;
   customSpinner?: ReactElement;
   customRender?: (array: ItemType[]) => JSX.Element[];
+  withSearch?: boolean;
 }
 const limit = 20;
 
@@ -48,11 +56,13 @@ export const LazyList = observer(
     customRender,
     enabled,
     emptyMessage = "Ничего не найдено",
+    withSearch = false,
   }: LazyUsersListProps<Dtype, Otype>) => {
     const queryFn = useCallback(
       ({ pageParam = 0, queryKey }) => {
         const data = fetchFn({
-          ...queryKey[1],
+          search: queryKey[1],
+          ...queryKey[2],
           offset: pageParam,
           limit,
         });
@@ -60,6 +70,8 @@ export const LazyList = observer(
       },
       [fetchFn]
     );
+    const [searchInput, setSearch] = useState<string>("");
+    const [search] = useDebounce(searchInput, 750);
     const {
       data,
       fetchNextPage,
@@ -69,7 +81,7 @@ export const LazyList = observer(
       isError,
       refetch,
     } = useInfiniteQuery<ListResponse<any>, Error>({
-      queryKey: [queryKey, extraFnProp],
+      queryKey: [queryKey, search, extraFnProp],
       queryFn,
       refetchOnWindowFocus: false,
       getNextPageParam: (_lastPage, data) => {
@@ -96,13 +108,16 @@ export const LazyList = observer(
         return null;
       }
     }, [hasNextPage, setNode]);
-
+    const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearch(event.target.value);
+    };
     return (
       <LazyListContext.Provider
         value={{
           refetch,
         }}
       >
+        {withSearch && <Search value={searchInput} onChange={onSearchChange} />}
         {title && (
           <Header mode="tertiary" indicator={data && data.pages[0].count}>
             {title}
@@ -110,22 +125,17 @@ export const LazyList = observer(
         )}
         {!customRender &&
           renderItem &&
-          flatData &&
-          flatData.length > 0 &&
-          flatData.map((item) => renderItem(item))}
-        {customRender &&
-          flatData &&
-          flatData.length > 0 &&
-          customRender(flatData)}
+          flatData?.map((item) => renderItem(item))}
+        {customRender && flatData?.length > 0 && customRender(flatData)}
 
-        {!customSpinner && isLoading && !isError && (
-          <Spinner size="small" style={{ margin: "20px 0" }} />
-        )}
+        {!customSpinner &&
+          (isLoading || search !== searchInput) &&
+          !isError && <Spinner size="small" style={{ margin: "20px 0" }} />}
         {isLoading && !isError && customSpinner}
         {LoadDetector}
         {flatData &&
           flatData.length === 0 &&
-          !isLoading &&
+          !(isLoading || search !== searchInput) &&
           !isFetching &&
           !isError && <Footer>{emptyMessage}</Footer>}
         {isError && <Footer>Ошибка соединения</Footer>}

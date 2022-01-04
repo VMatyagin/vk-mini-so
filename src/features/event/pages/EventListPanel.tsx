@@ -1,4 +1,4 @@
-import { FC, useCallback, useContext, useMemo, useState } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
 import {
   Group,
   Panel,
@@ -14,7 +14,6 @@ import { LazyList } from "../../../ui/organisms/LazyList";
 import { debounce } from "@vkontakte/vkjs";
 import { EventType } from "../../types";
 import { EventAPI } from "../../utils/requests/event-request";
-import { appStore } from "../../stores/app-store";
 import { useRouter } from "react-router5";
 
 const getDescription = ({
@@ -41,7 +40,7 @@ const getDescription = ({
 };
 
 export const EventListPanel: FC<PanelProps> = observer((props) => {
-  const { user } = useContext(appStore);
+  // const { user } = useContext(appStore);
   const { navigate } = useRouter();
   const changeView = (eventId: number) => {
     navigate("else.event.details", { eventId });
@@ -80,9 +79,9 @@ export const EventListPanel: FC<PanelProps> = observer((props) => {
           queryKey={"event-list"}
           extraFnProp={{
             search: filter.search,
-            visibility: !(user!.shtabs.length > 0 || user?.isStaff)
-              ? true
-              : undefined,
+            // visibility: !(user!.shtabs.length > 0 || user?.isStaff)
+            //   ? true
+            //   : undefined,
           }}
           renderItem={(item: EventType) => (
             <SimpleCell

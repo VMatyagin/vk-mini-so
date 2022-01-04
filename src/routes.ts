@@ -132,6 +132,24 @@ const elseViews: Route[] = [
     ],
   },
   {
+    name: "report",
+    path: "/report/:reportId",
+    children: [
+      {
+        name: "details",
+        path: "/",
+      },
+      {
+        name: "edit",
+        path: "/edit",
+      },
+      {
+        name: "boec-list",
+        path: "/boec-list",
+      },
+    ],
+  },
+  {
     name: "brigades",
     path: "/brigades",
     children: [
@@ -154,8 +172,8 @@ const elseViews: Route[] = [
         path: "/edit",
       },
       {
-        name: "boec-list",
-        path: "/boec-list",
+        name: "seasons-list",
+        path: "/seasons-list",
       },
     ],
   },

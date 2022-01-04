@@ -10,14 +10,9 @@ import {
 import { PanelHeader } from "@vkontakte/vkui";
 
 import { observer } from "mobx-react-lite";
-import { Seasons } from "../../types";
-import { BrigadesAPI } from "../../utils/requests/brigades-request";
-import { LazyList } from "../../../ui/organisms/LazyList";
 import { debounce } from "@vkontakte/vkjs";
-import { SeasonCell } from "../ui/molecules/SeasonCell";
-import { useRoute } from "react-router5";
 
-// const sortByFirstSeason = (seasons: Seasons[]) => {
+// const sortByFirstSeason = (seasons: Season[]) => {
 //     let usedUsers = new Set();
 //     return Object.entries(
 //         seasons
@@ -39,7 +34,7 @@ import { useRoute } from "react-router5";
 //     );
 // };
 
-// const sortByYear = (seasons: Seasons[]) => {
+// const sortByYear = (seasons: Season[]) => {
 //     return Object.entries(
 //         seasons
 //             .sort((a, b) => a.year - b.year)
@@ -57,8 +52,8 @@ import { useRoute } from "react-router5";
 // };
 
 export const BrigadeBoecListPanel: FC<PanelProps> = observer((props) => {
-  const { route } = useRoute();
-  const { brigadeId } = useMemo(() => route.params, [route]);
+  // const { route } = useRoute();
+  // const { brigadeId } = useMemo(() => route.params, [route]);
   // const { data: seasons } = useQuery({
   //     queryKey: ["seasons", brigadeId],
   //     queryFn: ({ queryKey }) => {
@@ -86,7 +81,7 @@ export const BrigadeBoecListPanel: FC<PanelProps> = observer((props) => {
   // });
 
   const [search, setSearch] = useState<string>();
-  const [filter, setFilter] = useState({
+  const [, setFilter] = useState({
     search: undefined as string | undefined,
   });
 
@@ -112,7 +107,7 @@ export const BrigadeBoecListPanel: FC<PanelProps> = observer((props) => {
 
       <Group>
         <Search value={search} onChange={handleChange} />
-        <LazyList
+        {/* <LazyList
           title="Бойцы"
           fetchFn={BrigadesAPI.getBrigadeSeasons}
           queryKey={`brigade-seasons-${brigadeId}`}
@@ -121,8 +116,8 @@ export const BrigadeBoecListPanel: FC<PanelProps> = observer((props) => {
             search: filter.search,
           }}
           enabled={!!brigadeId}
-          renderItem={(item: Seasons) => <SeasonCell season={item} />}
-        />
+          renderItem={(item: Season) => <SeasonCell season={item} />}
+        /> */}
       </Group>
     </Panel>
   );

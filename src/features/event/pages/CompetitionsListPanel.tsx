@@ -1,6 +1,5 @@
-import { FC, useContext, useMemo } from "react";
+import { FC, useMemo } from "react";
 import {
-  CellButton,
   Group,
   Panel,
   PanelHeaderBack,
@@ -13,35 +12,32 @@ import { observer } from "mobx-react-lite";
 import { LazyList } from "../../../ui/organisms/LazyList";
 import { Competition } from "../../types";
 import { EventAPI } from "../../utils/requests/event-request";
-import { appStore } from "../../stores/app-store";
-import { useQuery } from "react-query";
-import { canEditCompetitions } from "../helpers";
 import { useRoute } from "react-router5";
 
 export const CompetitionsListPanel: FC<PanelProps> = observer((props) => {
-  const { user } = useContext(appStore);
+  // const { user } = useContext(appStore);
   const { route, router } = useRoute();
   const eventId = useMemo(() => route.params.eventId, [route]);
 
   const changeView = (competitionId: number) => {
     router.navigate("else.competition.details", { eventId, competitionId });
   };
-  const { data } = useQuery({
-    queryKey: ["event", eventId],
-    queryFn: ({ queryKey }) => {
-      return EventAPI.getEvent(queryKey[1] as number);
-    },
-    retry: 1,
-    refetchOnWindowFocus: false,
-  });
-  const haveAccess = useMemo(
-    () =>
-      canEditCompetitions({
-        user: user!,
-        acceptedIds: [data?.shtabId!],
-      }) || user?.isStaff,
-    [data, user]
-  );
+  // const { data } = useQuery({
+  //     queryKey: ["event", eventId],
+  //     queryFn: ({ queryKey }) => {
+  //         return EventAPI.getEvent(queryKey[1] as number);
+  //     },
+  //     retry: 1,
+  //     refetchOnWindowFocus: false
+  // });
+  // const haveAccess = useMemo(
+  //   () =>
+  //     canEditCompetitions({
+  //       user: user!,
+  //       acceptedIds: [data?.shtabId!],
+  //     }) || user?.isStaff,
+  //   [data, user]
+  // );
   return (
     <Panel {...props}>
       <PanelHeader
@@ -67,7 +63,7 @@ export const CompetitionsListPanel: FC<PanelProps> = observer((props) => {
           )}
         />
       </Group>
-      {haveAccess && (
+      {/* {haveAccess && (
         <Group>
           <CellButton
             onClick={() => {
@@ -79,7 +75,7 @@ export const CompetitionsListPanel: FC<PanelProps> = observer((props) => {
             Добавить конкурс
           </CellButton>
         </Group>
-      )}
+      )} */}
     </Panel>
   );
 });

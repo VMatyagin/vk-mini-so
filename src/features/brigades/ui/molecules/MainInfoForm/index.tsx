@@ -18,13 +18,13 @@ import { routerStore } from "../../../../stores/router-store";
 import { Brigade } from "../../../../types";
 import { BrigadesAPI } from "../../../../utils/requests/brigades-request";
 
-interface MainInfoFormProps {
-  onSuccess: () => void;
-}
-
-export const MainInfoForm: FC<MainInfoFormProps> = observer(({ onSuccess }) => {
+export const MainInfoForm: FC = observer(() => {
   const { openPopout, closePopout } = useContext(routerStore);
-  const { route } = useRoute();
+  const {
+    route,
+    router: { navigate },
+  } = useRoute();
+
   const { brigadeId } = useMemo(() => route.params, [route]);
   const queryClient = useQueryClient();
 
@@ -56,7 +56,7 @@ export const MainInfoForm: FC<MainInfoFormProps> = observer(({ onSuccess }) => {
       queryClient.setQueryData(["brigade", brigadeId], data);
       closePopout();
       reset(data);
-      onSuccess();
+      navigate("else.brigade.details", { brigadeId }, { replace: true });
     });
   };
 
@@ -122,7 +122,12 @@ export const MainInfoForm: FC<MainInfoFormProps> = observer(({ onSuccess }) => {
             )}
           />
           <FormItem>
-            <Button size="l" stretched={true} disabled={!isDirty || !isValid}>
+            <Button
+              type="submit"
+              size="l"
+              stretched={true}
+              disabled={!isDirty || !isValid}
+            >
               Сохранить
             </Button>
           </FormItem>

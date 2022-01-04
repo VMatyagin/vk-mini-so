@@ -2059,32 +2059,33 @@
     "@typescript-eslint/types" "4.29.3"
     eslint-visitor-keys "^2.0.0"
 
-"@vkontakte/icons@^1.125.0":
-  version "1.125.0"
-  resolved "https://registry.npmjs.org/@vkontakte/icons/-/icons-1.125.0.tgz"
-  integrity sha512-PXjqnKkhv2/jw2mHMKIqBeVyZv/LR3GoEU4TQ8dSnIchJk07OKh69ju5Z3uSY6ZTGfB687KBLGGg2FLc91U7mw==
+"@vkontakte/icons@^1.139.0":
+  version "1.139.0"
+  resolved "https://registry.yarnpkg.com/@vkontakte/icons/-/icons-1.139.0.tgz#f785550a6a9b09a6238f3eec34b113ebe69aee19"
+  integrity sha512-Cdm7YXIxxp/fDBrVR0GKAXR7/3MxfaYCgwGp95zB7JLHOKyhIHWbxHEBdHyx7twX5wEv516HP61UvqwfkdIKZg==
   dependencies:
     es6-object-assign "1.1.0"
     svg-baker-runtime "1.4.7"
 
-"@vkontakte/vk-bridge@^2.4.8":
-  version "2.4.8"
-  resolved "https://registry.npmjs.org/@vkontakte/vk-bridge/-/vk-bridge-2.4.8.tgz"
-  integrity sha512-YGTZZsm9OO/JRRBM6HHGCPMN3yiQcBUxFLCK7bCUcFWvWghFZdWQvPtuCKXONwhBMwp1Wo90kSV5rXSvJA8lOQ==
+"@vkontakte/vk-bridge@^2.5.3":
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/@vkontakte/vk-bridge/-/vk-bridge-2.5.3.tgz#5c920746d97fa2bcdf0a91b9676953278f5b8568"
+  integrity sha512-VQaRXOixKh+hxnBPEgDqtVxiajxrZWWOlykpHsKD85qCNLW9Mrnd6GSbyK6xu7qYUSCT6n7yD6pJsm1mFRBdfQ==
 
 "@vkontakte/vkjs@^0.22.1":
   version "0.22.1"
   resolved "https://registry.npmjs.org/@vkontakte/vkjs/-/vkjs-0.22.1.tgz"
   integrity sha512-gDlJYAIIH4K0L8Qz2bE/cIdz5XWSwvEVytkK4mXC7lGTVTF/PuidUb8MZ792AaqTxdoASOoBD1Jy89q/GjaOSg==
 
-"@vkontakte/vkui@^4.14.0":
-  version "4.14.0"
-  resolved "https://registry.npmjs.org/@vkontakte/vkui/-/vkui-4.14.0.tgz"
-  integrity sha512-d/yab0bQCZ9iwHlj4J8yXTdhLqsUcnLvVqcHhmbYAZZf7b7JXRMUkrR4rI8IwtcTV3DeDvrzAN9RQ8zpqFA+gA==
+"@vkontakte/vkui@^4.24.0":
+  version "4.24.0"
+  resolved "https://registry.yarnpkg.com/@vkontakte/vkui/-/vkui-4.24.0.tgz#e61aa9e0035f70a9f5a3d56c1fa1e4c7305f23fc"
+  integrity sha512-E7HyFG2pwD72ix8NDbuOXVEnFXI4uJK8ZI32LrJ3gGM4KblQtlhIgHW1c256145rwiP4oYA8AmDE4sBgW2jUEA==
   dependencies:
     "@babel/runtime" "^7.14.6"
     "@popperjs/core" "^2.9.2"
     "@vkontakte/vkjs" "^0.22.1"
+    mitt "^3.0.0"
     react-popper "^2.2.5"
 
 "@webassemblyjs/ast@1.9.0":
@@ -5683,10 +5684,10 @@ hex-color-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/hex-color-regex/-/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   integrity sha512-l9sfDFsuqtOqKDsQdqrMRk0U85RZc0RtOR9yPI7mRVOa4FsR/BVnZ0shmQRM96Ji99kYZP/7hn1cedc1+ApsTQ==
 
-history@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/history/-/history-5.0.1.tgz#de35025ed08bce0db62364b47ebbf9d97b5eb06a"
-  integrity sha512-5qC/tFUKfVci5kzgRxZxN5Mf1CV8NmJx9ByaPX0YTLx5Vz3Svh7NYp6eA4CpDq4iA9D0C1t8BNIfvQIrUI3mVw==
+history@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/history/-/history-5.2.0.tgz#7cdd31cf9bac3c5d31f09c231c9928fad0007b7c"
+  integrity sha512-uPSF6lAJb3nSePJ43hN3eKj1dTWpN9gMod0ZssbFTIsen+WehTmEadgL+kg78xLJFdRfrrC//SavDzmRVdE+Ig==
   dependencies:
     "@babel/runtime" "^7.7.6"
 
@@ -7656,6 +7657,11 @@ mitt@1.1.2:
   resolved "https://registry.npmjs.org/mitt/-/mitt-1.1.2.tgz"
   integrity sha1-OA5hSA1qYVtmDwertg1R4KTkvtY=
 
+mitt@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/mitt/-/mitt-3.0.0.tgz#69ef9bd5c80ff6f57473e8d89326d01c414be0bd"
+  integrity sha512-7dX2/10ITVyqh4aOSVI9gdape+t9l2/8QxHrFmUXu4EEUpdlxl6RudZUPZoc+zuY2hk1j7XxVroIVIan/pD/SQ==
+
 mixin-deep@^1.2.0:
   version "1.3.2"
   resolved "https://registry.npmjs.org/mixin-deep/-/mixin-deep-1.3.2.tgz"
@@ -7676,15 +7682,15 @@ mkdirp@^1.0.3, mkdirp@^1.0.4:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-mobx-react-lite@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.npmjs.org/mobx-react-lite/-/mobx-react-lite-3.2.0.tgz"
-  integrity sha512-q5+UHIqYCOpBoFm/PElDuOhbcatvTllgRp3M1s+Hp5j0Z6XNgDbgqxawJ0ZAUEyKM8X1zs70PCuhAIzX1f4Q/g==
+mobx-react-lite@^3.2.3:
+  version "3.2.3"
+  resolved "https://registry.yarnpkg.com/mobx-react-lite/-/mobx-react-lite-3.2.3.tgz#83d2b32ebf4383cd0dc0d397acbf53a8e9c66765"
+  integrity sha512-7exWp1FV0M9dP08H9PIeHlJqDw4IdkQVRMfLYaZFMmlbzSS6ZU6p/kx392KN+rVf81hH3IQYewvRGQ70oiwmbw==
 
-mobx@^6.3.2:
-  version "6.3.2"
-  resolved "https://registry.npmjs.org/mobx/-/mobx-6.3.2.tgz"
-  integrity sha512-xGPM9dIE1qkK9Nrhevp0gzpsmELKU4MFUJRORW/jqxVFIHHWIoQrjDjL8vkwoJYY3C2CeVJqgvl38hgKTalTWg==
+mobx@^6.3.10:
+  version "6.3.10"
+  resolved "https://registry.yarnpkg.com/mobx/-/mobx-6.3.10.tgz#c3bc715c8f03717b9a2329f9697d42b7998d42e0"
+  integrity sha512-lfuIN5TGXBNy/5s3ggr1L+IbD+LvfZVlj5q1ZuqyV9AfMtunYQvE8G0WfewS9tgIR3I1q8HJEEbcAOsxEgLwRw==
 
 move-concurrently@^1.0.1:
   version "1.0.1"
@@ -9546,10 +9552,10 @@ react-is@^17.0.1, react-is@^17.0.2:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-react-lottie-player@^1.3.3:
-  version "1.4.0"
-  resolved "https://registry.npmjs.org/react-lottie-player/-/react-lottie-player-1.4.0.tgz"
-  integrity sha512-p2k6mp7gdMBuvnzO9vezQR/6F1e3oaiSxqC+9N+bKzpa3XQaaa401iOD0toM0xWA76AuaGpqr8Y7pqmdA4xMjA==
+react-lottie-player@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/react-lottie-player/-/react-lottie-player-1.4.1.tgz#ddd448486b8e8a42f4ae149751c38a8539f80b77"
+  integrity sha512-8dw3Dt8h6iTIrA+Iz7N/rOZjY1ShEwoxsgFywW2hZPFf58mZL75NFFNXY6v95NNj/25kZQpMV/bDkNoxj4Sang==
   dependencies:
     fast-deep-equal "^3.1.3"
     lodash.clonedeep "^4.5.0"
@@ -9572,10 +9578,10 @@ react-qr-reader@^2.2.1:
     prop-types "^15.7.2"
     webrtc-adapter "^7.2.1"
 
-react-query@^3.16.0:
-  version "3.21.1"
-  resolved "https://registry.npmjs.org/react-query/-/react-query-3.21.1.tgz"
-  integrity sha512-aKFLfNJc/m21JBXJk7sR9tDUYPjotWA4EHAKvbZ++GgxaY+eI0tqBxXmGBuJo0Pisis1W4pZWlZgoRv9yE8yjA==
+react-query@^3.34.7:
+  version "3.34.7"
+  resolved "https://registry.yarnpkg.com/react-query/-/react-query-3.34.7.tgz#e3d71318f510ea354794cd188b351bb57f577cb9"
+  integrity sha512-Q8+H2DgpoZdGUpwW2Z9WAbSrIE+yOdZiCUokHjlniOOmlcsfqNLgvHF5i7rtuCmlw3hv5OAhtpS7e97/DvgpWw==
   dependencies:
     "@babel/runtime" "^7.5.5"
     broadcast-channel "^3.4.1"
@@ -11488,6 +11494,11 @@ url@^0.11.0:
   dependencies:
     punycode "1.3.2"
     querystring "0.2.0"
+
+use-debounce@^7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/use-debounce/-/use-debounce-7.0.1.tgz#380e6191cc13ad29f8e2149a12b5c37cc2891190"
+  integrity sha512-fOrzIw2wstbAJuv8PC9Vg4XgwyTLEOdq4y/Z3IhVl8DAE4svRcgyEUvrEXu+BMNgMoc3YND6qLT61kkgEKXh7Q==
 
 use@^3.1.0:
   version "3.1.1"

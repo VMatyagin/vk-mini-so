@@ -7,6 +7,12 @@ export interface User {
   isStaff: boolean;
   unreadActivityCount: number;
 }
+export interface Viewer {
+  id: number;
+  boec: Boec;
+  isStaff: boolean;
+  unreadActivityCount: number;
+}
 
 export interface WithId {
   id: number;
@@ -21,19 +27,27 @@ export interface Area {
 export interface Brigade {
   id: number;
   title: string;
+  fullTitle: string;
   area: Area;
-  boecCount: number;
   dateOfBirth: string | null;
   shtab: Shtab;
+  canEdit: boolean;
+  members: number;
 }
 
-export interface Seasons extends WithId {
-  boec: Boec;
+export interface SeasonReport {
+  id: number;
   year: number;
+  boecCount: number;
+  state: "initial" | "accepted";
+  employer: null | string;
+  canEdit: boolean;
   brigade: Brigade;
-  brigadeId: number;
-  isCandidate: boolean;
-  isAccepted: boolean;
+}
+
+export interface Season extends WithId {
+  boec: Boec;
+  state: "initial" | "accepted" | "rejected";
 }
 
 export interface Boec extends WithId {

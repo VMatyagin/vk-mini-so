@@ -18,7 +18,6 @@ export const App: FC = observer(({ children }) => {
     retry: 1,
     refetchInterval: 60000,
     refetchOnWindowFocus: false,
-    enabled: !isInitialization,
     onSuccess: setUser,
   });
 

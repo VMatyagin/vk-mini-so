@@ -1,20 +1,18 @@
 import { AppearanceSchemeType, UserInfo } from "@vkontakte/vk-bridge";
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable } from "mobx";
 import { createContext } from "react";
-import { ScrollPosition, User } from "../../types";
+import { ScrollPosition, Viewer } from "../../types";
 
-import { UsersAPI } from "../../utils/requests/user-request";
 import { initApp, APP_ID } from "../../VKBridge";
 import VKBridge from "@vkontakte/vk-bridge";
 
 export class AppStore {
-  isInitialization: boolean = true;
   accessToken: string | null = null;
   userData: UserInfo | null = null;
   colorSchema: AppearanceSchemeType = "client_light";
   activeTab: Record<string, string> = {};
   componentScroll: Record<string, ScrollPosition> = {};
-  user: User | null = null;
+  user: Viewer | null = null;
   appParams: Record<string, any> | null = null;
   queryString: string | undefined = undefined;
 
@@ -30,14 +28,16 @@ export class AppStore {
       scope: "groups",
     });
 
-    const meData = await UsersAPI.getMeData();
-    this.user = meData;
     this.userData = user;
     this.accessToken = token.access_token;
     await initApp();
-    runInAction(() => {
-      this.isInitialization = false;
-    });
+  }
+
+  public get isInitialization() {
+    return !(this.user && this.userData && this.accessToken);
+  }
+  public get isStaff() {
+    return this.user?.isStaff ?? false;
   }
 
   setColorScheme = (colorSchema: AppearanceSchemeType) => {
@@ -46,7 +46,7 @@ export class AppStore {
   setUserData = (data: UserInfo) => {
     this.userData = data;
   };
-  setUser = (user: User) => {
+  setUser = (user: Viewer) => {
     this.user = user;
   };
   setAccessToken = (accessToken: string | null) => {

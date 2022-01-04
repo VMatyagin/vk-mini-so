@@ -28,8 +28,6 @@ import { MobileMenu } from "./ui/molecules/MobileMenu";
 import { getElseViewPanel } from "./routes";
 import { EventViewPanel } from "./features/event/pages/EventViewPanel";
 import { EventEditPanel } from "./features/event/pages/EventEditPanel";
-import { EventBrigadeParticipantsPanel } from "./features/event/pages/EventBrigadeParticipantsPanel";
-import { appStore } from "./features/stores/app-store";
 import { EventParticipantsPanel } from "./features/event/pages/EventParticipantsPanel";
 import { EventQuotasPanel } from "./features/event/pages/EventQuotasPanel";
 import { CompetitionsListPanel } from "./features/event/pages/CompetitionsListPanel";
@@ -50,10 +48,13 @@ import { BoecListPanel } from "./features/boec/pages/BoecListPanel";
 import { BoecHistoryPanel } from "./features/boec/pages/BoecHistoryPanel";
 import { BoecSeasonPanel } from "./features/boec/pages/BoecSeasonPanel";
 import { PollViewPanel } from "./features/polls/pages/PollViewPanel";
+import { BrigadeReportsListPanel } from "./features/brigades/pages/BrigadeReportsListPanel";
+import { ReportViewPanel } from "./features/report/pages/ReportViewPanel";
+import { ReportEditPanel } from "./features/report/pages/ReportEditPanel";
+import { ReportBoecListPanel } from "./features/report/pages/ReportBoecListPanel";
 
 export const AppLayout: FC = observer(() => {
   const { popout } = useContext(routerStore);
-  const { user } = useContext(appStore);
 
   const platform = usePlatform();
   const { viewWidth = 3 } = useAdaptivity();
@@ -61,7 +62,6 @@ export const AppLayout: FC = observer(() => {
   const isDesktop = viewWidth >= ViewWidth.SMALL_TABLET;
   const hasHeader = platform !== VKCOM;
   const location = useMemo(() => route.name.split("."), [route.name]);
-  console.log(location[1], getElseViewPanel("boecs", location[2], "base"));
 
   return (
     <SplitLayout
@@ -98,9 +98,9 @@ export const AppLayout: FC = observer(() => {
               <EventViewPanel nav="details" />
               <EventEditPanel nav="edit" />
               {/* else will throw error */}
-              {user?.brigades?.length ? (
+              {/* {user?.brigades?.length ? (
                 <EventBrigadeParticipantsPanel nav="brigade-participants" />
-              ) : undefined}
+              ) : undefined} */}
               <EventParticipantsPanel nav="volonteers" worth={1} />
               <EventParticipantsPanel nav="organizers" worth={2} />
               <EventParticipantsPanel nav="participants" worth={0} />
@@ -148,6 +148,14 @@ export const AppLayout: FC = observer(() => {
               <ShtabEditPanel nav="edit" />
             </View>
             <View
+              activePanel={getElseViewPanel("report", location[2], "details")}
+              nav="report"
+            >
+              <ReportViewPanel nav="details" />
+              <ReportEditPanel nav="edit" />
+              <ReportBoecListPanel nav="boec-list" />
+            </View>
+            <View
               activePanel={getElseViewPanel("brigades", location[2], "base")}
               nav="brigades"
             >
@@ -159,7 +167,8 @@ export const AppLayout: FC = observer(() => {
             >
               <BrigadeViewPanel nav="details" />
               <BrigadeEditPanel nav="edit" />
-              <BrigadeBoecListPanel nav="boec-list" />
+              <BrigadeReportsListPanel nav="seasons-list" />
+              <BrigadeBoecListPanel nav="season-boecs" />
             </View>
             <View
               activePanel={getElseViewPanel("boecs", location[2], "base")}

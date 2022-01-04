@@ -35,7 +35,6 @@ import { routerStore } from "../../stores/router-store";
 import { Participant, Boec } from "../../types";
 import { EventAPI } from "../../utils/requests/event-request";
 import { useRoute } from "react-router5";
-import { appStore } from "../../stores/app-store";
 import { LazyList } from "../../../ui/organisms/LazyList";
 
 export const EventBrigadeParticipantsPanel: FC<PanelProps> = observer(
@@ -54,8 +53,8 @@ export const EventBrigadeParticipantsPanel: FC<PanelProps> = observer(
     const [activeTab, setActiveTab] = useState<"notapproved" | "approved">(
       "notapproved"
     );
-    const [brigadeId, setBrigadeId] = useState<number>();
-    const { user } = useContext(appStore);
+    const [brigadeId] = useState<number>();
+    // const { user } = useContext(appStore);
 
     const { mutate } = useMutation<
       Participant,
@@ -224,34 +223,33 @@ export const EventBrigadeParticipantsPanel: FC<PanelProps> = observer(
     };
     const ref = useRef<HTMLDivElement>(null);
     const showBrigadeSelectModal = useCallback(() => {
-      let count = user!.brigades.length;
-
-      if (count > 1) {
-        openPopout(
-          <ActionSheet
-            onClose={closePopout}
-            iosCloseItem={
-              <ActionSheetItem autoclose mode="cancel">
-                Отменить
-              </ActionSheetItem>
-            }
-            toggleRef={ref.current!}
-          >
-            {user!.brigades.map(({ id, title }) => (
-              <ActionSheetItem
-                key={`${id}-${title}`}
-                onClick={() => setBrigadeId(id)}
-                autoclose
-              >
-                {title}
-              </ActionSheetItem>
-            ))}
-          </ActionSheet>
-        );
-      } else {
-        user!.brigades.length > 0 && setBrigadeId(user!.brigades[0].id);
-      }
-    }, [closePopout, openPopout, user]);
+      // let count = user!.brigades.length;
+      // if (count > 1) {
+      //   openPopout(
+      //     <ActionSheet
+      //       onClose={closePopout}
+      //       iosCloseItem={
+      //         <ActionSheetItem autoclose mode="cancel">
+      //           Отменить
+      //         </ActionSheetItem>
+      //       }
+      //       toggleRef={ref.current!}
+      //     >
+      //       {user!.brigades.map(({ id, title }) => (
+      //         <ActionSheetItem
+      //           key={`${id}-${title}`}
+      //           onClick={() => setBrigadeId(id)}
+      //           autoclose
+      //         >
+      //           {title}
+      //         </ActionSheetItem>
+      //       ))}
+      //     </ActionSheet>
+      //   );
+      // } else {
+      //   user!.brigades.length > 0 && setBrigadeId(user!.brigades[0].id);
+      // }
+    }, []);
     useEffect(() => {
       showBrigadeSelectModal();
     }, [showBrigadeSelectModal]);

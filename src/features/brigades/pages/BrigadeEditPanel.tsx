@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import {
   Panel,
   PanelHeaderBack,
@@ -8,16 +8,10 @@ import {
 } from "@vkontakte/vkui";
 
 import { observer } from "mobx-react-lite";
-import { SuccessSnackbar } from "../../../ui/molecules/SuccessSnackbar";
 import { MainInfoForm } from "../ui/molecules/MainInfoForm";
 import { PositionsForm } from "../ui/molecules/PositionsForm";
 
 export const BrigadeEditPanel: FC<PanelProps> = observer((props) => {
-  const [SnackBar, setSnackBar] = useState<React.ReactNode>(null);
-  const onSuccess = () => {
-    setSnackBar(<SuccessSnackbar onClose={() => setSnackBar(null)} />);
-  };
-
   return (
     <Panel {...props}>
       <PanelHeader
@@ -28,9 +22,8 @@ export const BrigadeEditPanel: FC<PanelProps> = observer((props) => {
         </Title>
       </PanelHeader>
 
-      <MainInfoForm onSuccess={onSuccess} />
+      <MainInfoForm />
       <PositionsForm />
-      {SnackBar}
     </Panel>
   );
 });

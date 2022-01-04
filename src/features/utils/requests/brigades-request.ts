@@ -1,5 +1,5 @@
 import axios, { Canceler } from "axios";
-import { Area, Brigade, Position, Seasons } from "../../types";
+import { Area, Brigade, Position, SeasonReport, Season } from "../../types";
 import { get, patch, post, remove } from "../axiosConfig";
 import { ListResponse, SuccessResponse } from "../types";
 
@@ -46,7 +46,31 @@ export const BrigadesAPI = {
     });
     return data;
   },
-  async getBrigadeSeasons({
+  async getBrigadeReports({
+    brigadeId,
+    limit,
+    offset,
+  }: {
+    brigadeId: number;
+    offset: number;
+    limit: number;
+  }): Promise<ListResponse<SeasonReport>> {
+    if (cancel) {
+      cancel();
+    }
+    const params = {
+      offset,
+      limit,
+    };
+    const { data } = await get(`/api/so/brigade/${brigadeId}/reports/`, {
+      cancelToken: new CancelToken(function executor(c) {
+        cancel = c;
+      }),
+      params,
+    });
+    return data;
+  },
+  async getBrigadeSeason({
     limit,
     offset,
     search,
@@ -56,7 +80,7 @@ export const BrigadesAPI = {
     limit: number;
     search?: string;
     brigadeId?: number;
-  }): Promise<ListResponse<Seasons>> {
+  }): Promise<ListResponse<Season>> {
     if (cancel) {
       cancel();
     }
@@ -137,35 +161,20 @@ export const BrigadesAPI = {
     );
     return data;
   },
-  async updateSeason(
-    id: number,
-    formData: Partial<Seasons>
-  ): Promise<SuccessResponse<Seasons>> {
-    const { data } = await patch(`/api/so/season/${id}/`, formData);
-    return data;
-  },
+
   setSeason({
     brigadeId,
     boecId,
     year,
-    isAccepted,
-    isCandidate,
   }: {
     brigadeId: number;
     boecId: number;
     year: number;
-    isAccepted?: boolean;
-    isCandidate?: boolean;
-  }): Promise<SuccessResponse<Seasons>> {
+  }): Promise<SuccessResponse<Season>> {
     return post(`/api/so/season/`, {
       brigadeId,
       boecId,
       year,
-      isAccepted,
-      isCandidate,
     });
-  },
-  deleteSeason(id: number): Promise<SuccessResponse<Seasons>> {
-    return remove(`/api/so/season/${id}/`);
   },
 };

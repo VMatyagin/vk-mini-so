@@ -80,7 +80,7 @@ export const BoecListPanel: FC<PanelProps> = observer((props) => {
         <LazyList
           title="Бойцы"
           fetchFn={UsersAPI.getList}
-          queryKey={"boec-list"}
+          queryKey={"seasons-list"}
           extraFnProp={{
             search: filter.search,
             brigadeId: filter.brigadeId,

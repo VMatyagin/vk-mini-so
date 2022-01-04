@@ -99,14 +99,17 @@ export const BrigadeLeaders: FC<BrigadeLeadersProps> = observer(
     );
 
     const openEditModal = (item: Position) => {
-      navigate(route.path, { ...route.params, position: item });
+      console.log(route);
+
+      navigate(route.name, { ...route.params, position: item });
+
       setModalCallback(MODAL_BOEC_POSITION_SELECT, (updatedPosition) => {
         updatePosition(updatedPosition);
       });
       openModal(MODAL_BOEC_POSITION_SELECT);
     };
     const platform = usePlatform();
-    const handleOpenActionSheet = (item: Position) => {
+    const handleOpenActionSheet = (toggleRef: Element, item: Position) => {
       openPopout(
         <ActionSheet
           onClose={closePopout}
@@ -115,6 +118,7 @@ export const BrigadeLeaders: FC<BrigadeLeadersProps> = observer(
               Отменить
             </ActionSheetItem>
           }
+          toggleRef={toggleRef}
         >
           <ActionSheetItem onClick={() => openEditModal(item)} autoclose>
             Редактировать
@@ -164,9 +168,9 @@ export const BrigadeLeaders: FC<BrigadeLeadersProps> = observer(
                       })
                     : "настоящее время"
                 }`}
-                onClick={() =>
+                onClick={(event) =>
                   isEditing
-                    ? handleOpenActionSheet(item)
+                    ? handleOpenActionSheet(event.currentTarget, item)
                     : changeView(item.boec.id)
                 }
               >

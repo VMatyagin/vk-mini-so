@@ -18,15 +18,14 @@ import { Controller, useForm } from "react-hook-form";
 import { useQuery, useQueryClient } from "react-query";
 import { useRoute } from "react-router5";
 import { SuccessSnackbar } from "../../../ui/molecules/SuccessSnackbar";
-import { appStore } from "../../stores/app-store";
 import { routerStore } from "../../stores/router-store";
 
-import { Seasons } from "../../types";
+import { Season } from "../../types";
 import { BrigadesAPI } from "../../utils/requests/brigades-request";
 
 export const BoecSeasonPanel: FC<PanelProps> = observer(({ id }) => {
   const { openPopout, closePopout } = useContext(routerStore);
-  const { user } = useContext(appStore);
+  // const { user } = useContext(appStore);
   const { route } = useRoute();
   const { boecId } = useMemo(() => route.params, [route]);
   const queryClient = useQueryClient();
@@ -53,17 +52,15 @@ export const BoecSeasonPanel: FC<PanelProps> = observer(({ id }) => {
 
   const { isDirty, isValid } = formState;
 
-  const onSubmit = async (values: Record<keyof Seasons, string>) => {
+  const onSubmit = async (values: Record<keyof Season, string>) => {
     openPopout(<ScreenSpinner />);
-    const additional = user?.isStaff
-      ? { isAccepted: true, isCandidate: true }
-      : {};
-    await BrigadesAPI.setSeason({
-      brigadeId: Number(values.brigade),
-      boecId: boecId!,
-      year: Number(values.year),
-      ...additional,
-    });
+    // const additional = user?.isStaff ? { state: "accepted" } : {};
+    // await BrigadesAPI.setSeason({
+    //   brigadeId: Number(values.brigade),
+    //   boecId: boecId!,
+    //   year: Number(values.year),
+    //   ...additional,
+    // });
     closePopout();
     queryClient.refetchQueries(["seasons", boecId]);
 

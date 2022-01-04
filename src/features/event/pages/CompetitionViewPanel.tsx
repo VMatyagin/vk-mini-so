@@ -1,6 +1,5 @@
 import { FC, useContext, useMemo } from "react";
 import {
-  CellButton,
   Group,
   Header,
   InfoRow,
@@ -16,24 +15,19 @@ import { PanelHeader } from "@vkontakte/vkui";
 
 import { observer } from "mobx-react-lite";
 import { routerStore } from "../../stores/router-store";
-import { Icon28Like, Icon28UsersOutline } from "@vkontakte/icons";
+import { Icon28UsersOutline } from "@vkontakte/icons";
 import { useMutation, useQuery } from "react-query";
 import { Boec, Brigade, CompetitionParticipant } from "../../types";
 import { EventAPI } from "../../utils/requests/event-request";
-import {
-  canEditCompetitions,
-  COMPETITIVE_PARTICIPANT_TITLES,
-} from "../helpers";
+import { COMPETITIVE_PARTICIPANT_TITLES } from "../helpers";
 import { MODAL_BOEC_SELECTING } from "../../boec/ui/modals/BoecSelectModal";
 import { MODAL_BRIGADE_SELECTING } from "../../brigades/ui/modals/BrigadeSelectModal";
 import { MODAL_EVENT_PARTICIPANT_TITLE } from "../ui/modals/ParticipantTitleModal";
-import { appStore } from "../../stores/app-store";
 import { useRoute, useRouter } from "react-router5";
 
 export const CompetitionViewPanel: FC<PanelProps> = observer((props) => {
   const { openPopout, closePopout, openModal, setModalCallback } =
     useContext(routerStore);
-  const { user } = useContext(appStore);
   const { route } = useRoute();
   const { navigate } = useRouter();
 
@@ -101,23 +95,23 @@ export const CompetitionViewPanel: FC<PanelProps> = observer((props) => {
     openModal(MODAL_EVENT_PARTICIPANT_TITLE);
   };
 
-  const { data: eventData } = useQuery({
-    queryKey: ["event", eventId],
-    queryFn: ({ queryKey }) => {
-      return EventAPI.getEvent(queryKey[1] as number);
-    },
-    retry: 1,
-    refetchOnWindowFocus: false,
-  });
+  // const { data: eventData } = useQuery({
+  //     queryKey: ["event", eventId],
+  //     queryFn: ({ queryKey }) => {
+  //         return EventAPI.getEvent(queryKey[1] as number);
+  //     },
+  //     retry: 1,
+  //     refetchOnWindowFocus: false
+  // });
 
-  const haveAccess = useMemo(
-    () =>
-      canEditCompetitions({
-        user: user!,
-        acceptedIds: [eventData?.shtabId!],
-      }) || user?.isStaff,
-    [eventData, user]
-  );
+  // const haveAccess = useMemo(
+  //   () =>
+  //     canEditCompetitions({
+  //       user: user!,
+  //       acceptedIds: [eventData?.shtabId!],
+  //     }) || user?.isStaff,
+  //   [eventData, user]
+  // );
   return (
     <Panel {...props}>
       <PanelHeader
@@ -181,20 +175,20 @@ export const CompetitionViewPanel: FC<PanelProps> = observer((props) => {
                 {data?.notwinnerCount}
               </InfoRow>
             </SimpleCell>
-            {haveAccess && (
-              <>
-                <CellButton
-                  onClick={() =>
-                    navigate("else.competition.edit", {
-                      eventId,
-                      competitionId,
-                    })
-                  }
-                >
-                  Редактировать
-                </CellButton>
-              </>
-            )}
+            {/* {haveAccess && (
+                            <>
+                                <CellButton
+                                    onClick={() =>
+                                        navigate("else.competition.edit", {
+                                            eventId,
+                                            competitionId
+                                        })
+                                    }
+                                >
+                                    Редактировать
+                                </CellButton>
+                            </>
+                        )} */}
           </Group>
           <Group header={<Header mode="secondary">Заявки</Header>}>
             <SimpleCell
@@ -204,21 +198,23 @@ export const CompetitionViewPanel: FC<PanelProps> = observer((props) => {
               Создать заявку
             </SimpleCell>
           </Group>
-          {haveAccess && (
-            <Group header={<Header mode="secondary">Номинации</Header>}>
-              <SimpleCell
-                before={<Icon28Like />}
-                onClick={() =>
-                  navigate("else.competition.nominations", {
-                    eventId,
-                    competitionId,
-                  })
-                }
-              >
-                Редактировать номинации
-              </SimpleCell>
-            </Group>
-          )}
+          {/* {haveAccess && (
+                        <Group
+                            header={<Header mode="secondary">Номинации</Header>}
+                        >
+                            <SimpleCell
+                                before={<Icon28Like />}
+                                onClick={() =>
+                                    navigate("else.competition.nominations", {
+                                        eventId,
+                                        competitionId
+                                    })
+                                }
+                            >
+                                Редактировать номинации
+                            </SimpleCell>
+                        </Group>
+                    )} */}
         </>
       )}
     </Panel>

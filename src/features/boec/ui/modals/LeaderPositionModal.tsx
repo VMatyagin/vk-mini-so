@@ -29,6 +29,8 @@ export const LeaderPositionModal = () => {
   const { closeModal, modalCallback, closeModalStack } = RouterStoreInstance;
   const { route } = useRoute();
   const { position } = useMemo(() => route.params, [route]);
+  console.log(route);
+
   const onPositionSelect = () => {
     modalCallback[MODAL_BOEC_POSITION_SELECT](getValues());
     closeModalStack();
@@ -63,7 +65,7 @@ export const LeaderPositionModal = () => {
   return (
     <ModalPage
       id={MODAL_BOEC_POSITION_SELECT}
-      settlingHeight={100}
+      dynamicContentHeight={true}
       header={
         <ModalPageHeader
           left={
