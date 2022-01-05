@@ -15,50 +15,14 @@ import { BrigadesAPI } from "../../utils/requests/brigades-request";
 import { LazyList } from "../../../ui/organisms/LazyList";
 import { useRoute } from "react-router5";
 
-// const sortByFirstSeason = (seasons: Season[]) => {
-//     let usedUsers = new Set();
-//     return Object.entries(
-//         seasons
-//             .sort((a, b) => a.year - b.year)
-//             .reduce((prev, current) => {
-//                 if (usedUsers.has(toJS(current.boec.id))) {
-//                     return prev;
-//                 }
-//                 usedUsers.add(toJS(current.boec.id));
-
-//                 return {
-//                     ...prev,
-//                     [current.year]: [
-//                         ...(prev[current.year] || []),
-//                         current.boec,
-//                     ],
-//                 };
-//             }, {} as Record<string, Boec[]>)
-//     );
-// };
-
-// const sortByYear = (seasons: Season[]) => {
-//     return Object.entries(
-//         seasons
-//             .sort((a, b) => a.year - b.year)
-//             .reduce(
-//                 (prev, current) => ({
-//                     ...prev,
-//                     [current.year]: [
-//                         ...(prev[current.year] || []),
-//                         current.boec,
-//                     ],
-//                 }),
-//                 {} as Record<string, Boec[]>
-//             )
-//     );
-// };
-
 export const BrigadeReportsListPanel: FC<PanelProps> = observer((props) => {
   const { route, router } = useRoute();
   const { brigadeId } = useMemo(() => route.params, [route]);
   const openReport = (reportId: number) => {
     router.navigate("else.report.details", { reportId });
+  };
+  const handleAdd = () => {
+    router.navigate("else.reports.create");
   };
   return (
     <Panel {...props}>
@@ -70,7 +34,7 @@ export const BrigadeReportsListPanel: FC<PanelProps> = observer((props) => {
         </Title>
       </PanelHeader>
       <Group>
-        <CellButton>Добавить год</CellButton>
+        <CellButton onClick={handleAdd}>Добавить год</CellButton>
       </Group>
       <Group>
         <LazyList
@@ -86,7 +50,7 @@ export const BrigadeReportsListPanel: FC<PanelProps> = observer((props) => {
               onClick={() => openReport(report.id)}
               description={`${report.boecCount} чел.`}
             >
-              {report.year}
+              {`${report.year} ${report.employer ?? ""}`}
             </SimpleCell>
           )}
         />

@@ -148,6 +148,13 @@ export const AppLayout: FC = observer(() => {
               <ShtabEditPanel nav="edit" />
             </View>
             <View
+              activePanel={getElseViewPanel("reports", location[2], "base")}
+              nav="reports"
+            >
+              {/* <EventListPanel nav="base" /> */}
+              <ReportEditPanel nav="create" />
+            </View>
+            <View
               activePanel={getElseViewPanel("report", location[2], "details")}
               nav="report"
             >

@@ -43,10 +43,12 @@ export interface SeasonReport {
   employer: null | string;
   canEdit: boolean;
   brigade: Brigade;
+  brigadeId: number;
 }
 
 export interface Season extends WithId {
   boec: Boec;
+  boecId: number;
   state: "initial" | "accepted" | "rejected";
 }
 

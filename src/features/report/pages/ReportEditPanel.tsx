@@ -27,7 +27,7 @@ export const ReportEditPanel: FC<PanelProps> = observer((props) => {
   const queryClient = useQueryClient();
   const { route } = useRoute();
 
-  const { reportId } = useMemo(() => route.params, [route]);
+  const { reportId, brigadeId } = useMemo(() => route.params, [route]);
 
   const { handleSubmit, control, formState, reset } = useForm<SeasonReport>({
     reValidateMode: "onChange",
@@ -56,7 +56,7 @@ export const ReportEditPanel: FC<PanelProps> = observer((props) => {
           dirtyValues(dirtyFields, values)
         );
       }
-      return ReportAPI.createReport(values);
+      return ReportAPI.createReport({ ...values, brigadeId });
     },
     {
       onSuccess: (data) => {
@@ -80,7 +80,7 @@ export const ReportEditPanel: FC<PanelProps> = observer((props) => {
         left={<PanelHeaderBack onClick={() => window.history.back()} />}
       >
         <Title level="2" weight="bold">
-          Редактирование отчета
+          {reportId ? "Редактирование отчета" : "Создать отчет"}
         </Title>
       </PanelHeader>
       {isReportLoading ? (
@@ -91,6 +91,7 @@ export const ReportEditPanel: FC<PanelProps> = observer((props) => {
             control={control}
             name="employer"
             defaultValue=""
+            rules={{ required: "Это поле необходимо заполнить" }}
             render={({ field, fieldState }) => (
               <FormItem
                 top="Работодатель"

@@ -7,6 +7,7 @@ import React, {
   useCallback,
   useMemo,
   useState,
+  useImperativeHandle,
 } from "react";
 import {
   InfiniteData,
@@ -20,6 +21,9 @@ import { useDebounce } from "use-debounce";
 interface ListOptions {
   limit?: number;
   size?: number;
+}
+export interface LazyListControls {
+  refetch: VoidFunction;
 }
 
 interface LazyUsersListProps<
@@ -36,6 +40,7 @@ interface LazyUsersListProps<
   customSpinner?: ReactElement;
   customRender?: (array: ItemType[]) => JSX.Element[];
   withSearch?: boolean;
+  laztListRef?: React.RefObject<LazyListControls>;
 }
 const limit = 20;
 
@@ -57,6 +62,7 @@ export const LazyList = observer(
     enabled,
     emptyMessage = "Ничего не найдено",
     withSearch = false,
+    laztListRef,
   }: LazyUsersListProps<Dtype, Otype>) => {
     const queryFn = useCallback(
       ({ pageParam = 0, queryKey }) => {
@@ -111,6 +117,9 @@ export const LazyList = observer(
     const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearch(event.target.value);
     };
+    useImperativeHandle(laztListRef, () => ({
+      refetch,
+    }));
     return (
       <LazyListContext.Provider
         value={{

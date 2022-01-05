@@ -55,4 +55,11 @@ export const ReportAPI = {
     );
     return data;
   },
+  async createSeason(
+    reportId: number,
+    formData: Partial<Season>
+  ): Promise<SuccessResponse<Season>> {
+    const { data } = await post(`/api/reports/${reportId}/seasons/`, formData);
+    return data;
+  },
 };
