@@ -9,6 +9,7 @@ import { FC, useContext } from "react";
 import { useMutation } from "react-query";
 import { useRouter } from "react-router5";
 import { LazyListContext } from "../../../../../ui/organisms/LazyList";
+import { appStore } from "../../../../stores/app-store";
 import { routerStore } from "../../../../stores/router-store";
 import { Season } from "../../../../types";
 import { ReportAPI } from "../../../../utils/requests/reports-requests";
@@ -21,6 +22,7 @@ export const SeasonCell: FC<SeasonCellProps> = observer(
   ({ season, reportId }) => {
     const { refetch } = useContext(LazyListContext);
     const { closePopout, openPopout } = useContext(routerStore);
+    const { isStaff } = useContext(appStore);
     const { navigate } = useRouter();
     const { mutate } = useMutation(
       (formData: Partial<Season>) => {
@@ -99,14 +101,15 @@ export const SeasonCell: FC<SeasonCellProps> = observer(
               Выезд не зачтен
             </ActionSheetItem>
           )}
-
-          <ActionSheetItem
-            mode="destructive"
-            autoclose
-            onClick={() => deleteMutate()}
-          >
-            Удалить
-          </ActionSheetItem>
+          {isStaff && (
+            <ActionSheetItem
+              mode="destructive"
+              autoclose
+              onClick={() => deleteMutate()}
+            >
+              Удалить
+            </ActionSheetItem>
+          )}
         </ActionSheet>
       );
     };

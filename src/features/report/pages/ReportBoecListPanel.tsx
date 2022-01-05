@@ -21,7 +21,10 @@ import { MODAL_BOEC_LIST } from "../../boec/ui/modals/BoecListModal";
 import { useMutation } from "react-query";
 
 export const ReportBoecListPanel: FC<PanelProps> = observer((props) => {
-  const { route } = useRoute();
+  const {
+    route,
+    router: { navigate },
+  } = useRoute();
   const laztListRef = useRef<LazyListControls>(null);
   const { setModalCallback, closeModal, openModal, openPopout, closePopout } =
     useContext(routerStore);
@@ -41,6 +44,9 @@ export const ReportBoecListPanel: FC<PanelProps> = observer((props) => {
       onError: closePopout,
     }
   );
+  const createNewPeople = () => {
+    navigate("else.boecs.create", { reportId });
+  };
   const openAllBoecListModal = () => {
     setModalCallback(MODAL_BOEC_LIST, async (boec: Boec) => {
       mutate({ boecId: boec.id, state: "rejected" });
@@ -58,7 +64,9 @@ export const ReportBoecListPanel: FC<PanelProps> = observer((props) => {
         </Title>
       </PanelHeader>
       <Group>
-        <CellButton>Добавить нового человека</CellButton>
+        <CellButton onClick={createNewPeople}>
+          Добавить нового человека
+        </CellButton>
         <CellButton onClick={openAllBoecListModal}>
           Добавить существующего бойца
         </CellButton>

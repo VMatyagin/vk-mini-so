@@ -36,7 +36,6 @@ export const ReportViewPanel: FC<PanelProps> = observer((props) => {
     enabled: !!reportId,
     refetchOnWindowFocus: false,
   });
-  console.log(report);
 
   const handleEdit = () => {
     navigate("else.report.edit", { reportId });
@@ -45,7 +44,6 @@ export const ReportViewPanel: FC<PanelProps> = observer((props) => {
   const handleOpenList = () => {
     navigate("else.report.boec-list", {
       reportId,
-      brigadeId: report?.brigade.id,
     });
   };
 

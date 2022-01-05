@@ -18,6 +18,7 @@ import { Boec } from "../../../../types";
 import { UsersAPI } from "../../../../utils/requests/user-request";
 import { useQueryClient } from "react-query";
 import { useRoute } from "react-router5";
+import { ReportAPI } from "../../../../utils/requests/reports-requests";
 
 export const UserEditMain: FC = observer(() => {
   const { openPopout, closePopout } = useContext(routerStore);
@@ -25,7 +26,7 @@ export const UserEditMain: FC = observer(() => {
     route,
     router: { navigate },
   } = useRoute();
-  const { boecId } = useMemo(() => route.params, [route]);
+  const { boecId, reportId } = useMemo(() => route.params, [route]);
 
   const [SnackBar, setSnackBar] = useState<React.ReactNode>(null);
   const queryClient = useQueryClient();
@@ -57,11 +58,25 @@ export const UserEditMain: FC = observer(() => {
         setSnackBar(<SuccessSnackbar onClose={() => setSnackBar(null)} />);
       });
     } else {
-      UsersAPI.createBoec({ ...values }).then((boec) => {
-        navigate("else.boec.details", { boecId: boec.id });
+      UsersAPI.createBoec({ ...values }).then(async (boec) => {
+        if (reportId) {
+          await ReportAPI.createSeason(reportId, {
+            boecId: boec.id,
+            state: "rejected",
+          });
+          navigate(
+            "else.report.boec-list",
+            {
+              reportId,
+            },
+            { replace: true }
+          );
+        } else {
+          navigate("else.boec.details", { boecId: boec.id });
+          reset(boec);
+          setSnackBar(<SuccessSnackbar onClose={() => setSnackBar(null)} />);
+        }
         closePopout();
-        reset(boec);
-        setSnackBar(<SuccessSnackbar onClose={() => setSnackBar(null)} />);
       });
     }
   };
