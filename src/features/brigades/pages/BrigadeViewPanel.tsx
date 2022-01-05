@@ -17,9 +17,9 @@ import { observer } from "mobx-react-lite";
 import { Icon28BookOutline } from "@vkontakte/icons";
 import { useQuery } from "react-query";
 import { BrigadesAPI } from "../../utils/requests/brigades-request";
-import { BrigadeLeaders } from "../ui/molecules/BrigadeLeaders";
 import { useRoute } from "react-router5";
 import { appStore } from "../../stores/app-store";
+import { ShtabOrBrigadeLeaders } from "../ui/molecules/ShtabOrBrigadeLeaders";
 
 export const BrigadeViewPanel: FC<PanelProps> = observer((props) => {
   const { isStaff } = useContext(appStore);
@@ -76,7 +76,7 @@ export const BrigadeViewPanel: FC<PanelProps> = observer((props) => {
             </SimpleCell>
           </Group>
           <Group header={<Header mode="secondary">Командный состав</Header>}>
-            <BrigadeLeaders />
+            <ShtabOrBrigadeLeaders />
           </Group>
           {(brigade?.canEdit || isStaff) && (
             <>

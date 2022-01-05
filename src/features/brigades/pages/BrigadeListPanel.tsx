@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useMemo } from "react";
 import {
   Group,
   Panel,
@@ -11,11 +11,15 @@ import { PanelHeader, Title } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { BrigadesAPI } from "../../utils/requests/brigades-request";
 import { LazyList } from "../../../ui/organisms/LazyList";
-import { useRouter } from "react-router5";
+import { useRoute } from "react-router5";
 import { Icon12Favorite } from "@vkontakte/icons";
 
 export const BrigadeListPanel: FC<PanelProps> = observer((props) => {
-  const { navigate } = useRouter();
+  const {
+    route,
+    router: { navigate },
+  } = useRoute();
+  const { shtabId } = useMemo(() => route.params, [route]);
 
   const selectBrigade = (brigadeId: number) => {
     navigate("else.brigade.details", { brigadeId });
@@ -34,6 +38,7 @@ export const BrigadeListPanel: FC<PanelProps> = observer((props) => {
         <LazyList
           fetchFn={BrigadesAPI.getBrigadesList}
           queryKey={"brigade-list-sort"}
+          extraFnProp={{ shtabId }}
           withSearch={true}
           renderItem={(brigade) => (
             <SimpleCell

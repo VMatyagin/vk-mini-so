@@ -1,5 +1,6 @@
 import {
   Icon28CalendarOutline,
+  Icon28UsersOutline,
   // Icon28ChevronRightOutline,
   // Icon28HelpOutline,
   // Icon28MailOutline,
@@ -48,7 +49,7 @@ export const ElsePanel: FC<PanelProps> = observer((props) => {
           Мероприятия
         </SimpleCell>
         <SimpleCell
-          before={<Icon28UserSquareOutline />}
+          before={<Icon28UsersOutline />}
           onClick={() => navigate("else.brigades.base")}
         >
           Отряды

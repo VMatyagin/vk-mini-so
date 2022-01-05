@@ -1,5 +1,5 @@
 import axios, { Canceler } from "axios";
-import { Area, Brigade, Position, SeasonReport, Season } from "../../types";
+import { Brigade, Position, SeasonReport, Season } from "../../types";
 import { get, patch, post, remove } from "../axiosConfig";
 import { ListResponse, SuccessResponse } from "../types";
 
@@ -7,16 +7,6 @@ const CancelToken = axios.CancelToken;
 let cancel: Canceler | undefined;
 
 export const BrigadesAPI = {
-  async getAreas({
-    shtabId,
-  }: {
-    shtabId?: number;
-  }): Promise<ListResponse<Area>> {
-    const { data } = await get("/api/so/area/", {
-      params: { shtab: shtabId },
-    });
-    return data;
-  },
   async getBrigade(brigadeId: number): Promise<Brigade> {
     const { data } = await get(`/api/so/brigade/${brigadeId}/`);
     return data;

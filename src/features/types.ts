@@ -80,6 +80,7 @@ export interface EventType {
 }
 export interface Shtab extends WithId {
   title: string;
+  canEdit: boolean;
 }
 
 export type ArrayElement<ArrayType extends readonly unknown[]> =

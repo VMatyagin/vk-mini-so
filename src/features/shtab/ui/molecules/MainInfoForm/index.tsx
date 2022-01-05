@@ -13,19 +13,15 @@ import { Controller, useForm } from "react-hook-form";
 import { useQuery } from "react-query";
 import { useRoute } from "react-router5";
 import { routerStore } from "../../../../stores/router-store";
-import { Brigade } from "../../../../types";
+import { Shtab } from "../../../../types";
 import { ShtabsAPI } from "../../../../utils/requests/shtab-request";
 
-interface MainInfoFormProps {
-  onSuccess: () => void;
-}
-
-export const MainInfoForm: FC<MainInfoFormProps> = observer(({ onSuccess }) => {
+export const MainInfoForm: FC = observer(() => {
   const { openPopout, closePopout } = useContext(routerStore);
-  const { route } = useRoute();
+  const { route, router } = useRoute();
   const { shtabId } = useMemo(() => route.params, [route]);
 
-  const { data: brigade, refetch } = useQuery({
+  const { data: brigade } = useQuery({
     queryKey: ["shtab", shtabId!],
     queryFn: ({ queryKey }) => {
       openPopout(<ScreenSpinner />);
@@ -35,22 +31,22 @@ export const MainInfoForm: FC<MainInfoFormProps> = observer(({ onSuccess }) => {
     refetchOnWindowFocus: false,
     enabled: !!shtabId,
     onSuccess: closePopout,
+    onError: closePopout,
   });
 
-  const { handleSubmit, control, formState, reset } = useForm<Brigade>({
+  const { handleSubmit, control, formState } = useForm<Shtab>({
     defaultValues: { ...brigade! },
     mode: "onChange",
   });
   const { isDirty, isValid } = formState;
 
-  const onSubmit = (values: Brigade) => {
+  const onSubmit = async (values: Shtab) => {
     openPopout(<ScreenSpinner />);
-    ShtabsAPI.updateShtab(values).then((data) => {
-      refetch();
-      closePopout();
-      reset(data);
-      onSuccess();
-    });
+    await ShtabsAPI.updateShtab(values)
+      .then(() => {
+        router.navigate("else.shtab.details", { shtabId });
+      })
+      .finally(closePopout);
   };
 
   return (
@@ -77,7 +73,12 @@ export const MainInfoForm: FC<MainInfoFormProps> = observer(({ onSuccess }) => {
           )}
         />
         <FormItem>
-          <Button size="l" stretched={true} disabled={!isDirty || !isValid}>
+          <Button
+            size="l"
+            stretched={true}
+            type="submit"
+            disabled={!isDirty || !isValid}
+          >
             Сохранить
           </Button>
         </FormItem>

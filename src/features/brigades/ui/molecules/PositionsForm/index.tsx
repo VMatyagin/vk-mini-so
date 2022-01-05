@@ -9,7 +9,7 @@ import { routerStore } from "../../../../stores/router-store";
 import { Boec, Position } from "../../../../types";
 import { BrigadesAPI } from "../../../../utils/requests/brigades-request";
 import { ShtabsAPI } from "../../../../utils/requests/shtab-request";
-import { BrigadeLeaders } from "../BrigadeLeaders";
+import { ShtabOrBrigadeLeaders } from "../ShtabOrBrigadeLeaders";
 
 export const PositionsForm: FC = observer(() => {
   const { setModalCallback, openModal, openPopout, closePopout } =
@@ -69,7 +69,7 @@ export const PositionsForm: FC = observer(() => {
   };
   return (
     <Group header={<Header mode="secondary">Командный состав</Header>}>
-      <BrigadeLeaders isEditing={true} />
+      <ShtabOrBrigadeLeaders isEditing={true} />
       <CellButton onClick={onAddClick}>Добавить</CellButton>
     </Group>
   );

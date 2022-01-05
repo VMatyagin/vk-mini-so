@@ -23,10 +23,10 @@ import { BrigadesAPI } from "../../../../utils/requests/brigades-request";
 import { ShtabsAPI } from "../../../../utils/requests/shtab-request";
 import { positions } from "../../../helpers";
 
-interface BrigadeLeadersProps {
+interface ShtabOrBrigadeLeadersProps {
   isEditing?: boolean;
 }
-export const BrigadeLeaders: FC<BrigadeLeadersProps> = observer(
+export const ShtabOrBrigadeLeaders: FC<ShtabOrBrigadeLeadersProps> = observer(
   ({ isEditing }) => {
     const { openPopout, closePopout, setModalCallback, openModal } =
       useContext(routerStore);
@@ -99,8 +99,6 @@ export const BrigadeLeaders: FC<BrigadeLeadersProps> = observer(
     );
 
     const openEditModal = (item: Position) => {
-      console.log(route);
-
       navigate(route.name, { ...route.params, position: item });
 
       setModalCallback(MODAL_BOEC_POSITION_SELECT, (updatedPosition) => {
