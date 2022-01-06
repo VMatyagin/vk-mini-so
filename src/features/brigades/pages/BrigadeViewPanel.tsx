@@ -10,11 +10,12 @@ import {
   SimpleCell,
   Title,
   PanelProps,
+  Counter,
 } from "@vkontakte/vkui";
 import { PanelHeader } from "@vkontakte/vkui";
 
 import { observer } from "mobx-react-lite";
-import { Icon28BookOutline } from "@vkontakte/icons";
+import { Icon28BookOutline, Icon28HashtagOutline } from "@vkontakte/icons";
 import { useQuery } from "react-query";
 import { BrigadesAPI } from "../../utils/requests/brigades-request";
 import { useRoute } from "react-router5";
@@ -31,6 +32,9 @@ export const BrigadeViewPanel: FC<PanelProps> = observer((props) => {
 
   const handleOpenList = () => {
     navigate("else.brigade.seasons-list", { brigadeId });
+  };
+  const openRequests = () => {
+    navigate("else.brigade.seasons-requests-list", { brigadeId });
   };
 
   const handleBrigadeEdit = () => {
@@ -88,6 +92,29 @@ export const BrigadeViewPanel: FC<PanelProps> = observer((props) => {
                 >
                   Отчеты за сезоны
                 </SimpleCell>
+                {!!brigade?.seasonRequestCount && (
+                  <SimpleCell
+                    before={<Icon28HashtagOutline />}
+                    expandable={true}
+                    onClick={openRequests}
+                    after={
+                      <Counter mode="secondary">
+                        {brigade.seasonRequestCount}
+                      </Counter>
+                    }
+                  >
+                    Заявки на учет сезона
+                  </SimpleCell>
+                )}
+                {/* <SimpleCell
+                                    before={<Icon28Flash />}
+                                    expandable={true}
+                                    // onClick={handleOpenList}
+                                    // disabled={brigade?.requestCount === 0}
+                                    // after={brigade?.requestCount}
+                                >
+                                    Заявки на вступление
+                                </SimpleCell> */}
               </Group>
               <Group>
                 <CellButton expandable={true} onClick={handleBrigadeEdit}>

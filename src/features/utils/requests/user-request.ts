@@ -6,6 +6,7 @@ import {
   ParticipantHistory,
   Position,
   Progress,
+  Season,
   SeasonReport,
   Viewer,
 } from "../../types";
@@ -57,9 +58,24 @@ export const UsersAPI = {
     const { data } = await remove(`/api/so/boec/${id}/`);
     return data;
   },
-  async getUserReports(userId: number): Promise<SeasonReport[]> {
-    const { data } = await get(`/api/so/boec/${userId}/reports/`);
+  async getUserSeasons(
+    userId: number,
+    state?: Season["state"]
+  ): Promise<Season[]> {
+    const params = { state };
+    const { data } = await get(`/api/so/boec/${userId}/seasons/`, {
+      params,
+    });
     return data;
+  },
+  async createNewSeason({
+    boecId,
+    report,
+  }: {
+    boecId: number;
+    report: Partial<SeasonReport>;
+  }): Promise<SuccessResponse<Season>> {
+    return post(`/api/so/boec/${boecId}/seasons/`, report);
   },
   async getUserPositions(userId: number): Promise<Position[]> {
     const { data } = await get(`/api/so/boec/${userId}/positions/`);

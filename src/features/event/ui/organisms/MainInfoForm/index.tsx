@@ -8,6 +8,7 @@ import {
   ScreenSpinner,
   DatePicker,
   PanelSpinner,
+  CustomSelectOptionInterface,
 } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { FC, useContext, useMemo } from "react";
@@ -22,6 +23,9 @@ import { EventAPI } from "../../../../utils/requests/event-request";
 import { ShtabsAPI } from "../../../../utils/requests/shtab-request";
 import { EVENT_WORTH } from "../../../helpers";
 
+interface EventTypePayload extends EventType {
+  selectedShtab: CustomSelectOptionInterface;
+}
 export const MainInfoForm: FC = observer(() => {
   const { openPopout, closePopout } = useContext(routerStore);
   const queryClient = useQueryClient();
@@ -29,7 +33,7 @@ export const MainInfoForm: FC = observer(() => {
 
   const eventId = useMemo(() => route.params.eventId, [route]);
 
-  const { handleSubmit, control, formState, reset, watch } = useForm<EventType>(
+  const { handleSubmit, control, formState, reset } = useForm<EventTypePayload>(
     {
       reValidateMode: "onChange",
       mode: "onChange",
@@ -43,9 +47,17 @@ export const MainInfoForm: FC = observer(() => {
     retry: 1,
     refetchOnWindowFocus: false,
     enabled: !!eventId,
-    onSuccess: (data) => reset(data),
+    onSuccess: (data) =>
+      reset({
+        ...data,
+        selectedShtab: data.shtab
+          ? {
+              label: data.shtab.title,
+              value: data.shtab.id,
+            }
+          : undefined,
+      }),
   });
-  console.log(watch());
 
   const { isDirty, isValid, dirtyFields } = formState;
 
@@ -69,8 +81,8 @@ export const MainInfoForm: FC = observer(() => {
       },
     }
   );
-  const onSubmit = (values: EventType) => {
-    mutate(values);
+  const onSubmit = ({ selectedShtab, ...values }: EventTypePayload) => {
+    mutate({ ...values, shtabId: selectedShtab?.value as number });
   };
 
   if (isEventLoading) {
@@ -147,7 +159,7 @@ export const MainInfoForm: FC = observer(() => {
       />
       <Controller
         control={control}
-        name="shtabId"
+        name="selectedShtab"
         // rules={{ required: "Это поле необходимо заполнить" }}
         render={({ field, fieldState }) => (
           <FormItem

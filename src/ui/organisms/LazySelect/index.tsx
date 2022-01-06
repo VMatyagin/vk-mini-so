@@ -1,8 +1,7 @@
-import { debounce } from "@vkontakte/vkjs";
-import { CustomSelectOption, Footer, Select, Spinner } from "@vkontakte/vkui";
-import React, { useCallback, useMemo } from "react";
-import { useInfiniteQuery } from "react-query";
-import { useIntersect } from "../../../features/utils/hooks/useIntersect";
+import { CustomSelect, CustomSelectOptionInterface } from "@vkontakte/vkui";
+import React, { useCallback, useMemo, useState } from "react";
+import { useQuery } from "react-query";
+import { useDebounce } from "use-debounce";
 import { ListResponse } from "../../../features/utils/types";
 
 interface ListOptions {
@@ -22,11 +21,10 @@ interface LazySelectProps<
   extraFnProp?: Omit<OptionsType, "limit" | "offset">;
   queryKey: string;
   name: string;
-  value: number | null | undefined;
-  onChange: React.ChangeEventHandler<HTMLSelectElement>;
+  value?: CustomSelectOptionInterface;
+  onChange: (option: CustomSelectOptionInterface) => void;
   enabled?: boolean;
 }
-const limit = 20;
 
 export const LazySelect = <
   Dtype extends object,
@@ -35,115 +33,99 @@ export const LazySelect = <
   fetchFn,
   queryKey,
   extraFnProp,
-  name,
-  value,
-  onChange,
   parseItem,
   enabled,
+  onChange,
+  value,
+  name,
 }: LazySelectProps<Dtype, Otype>) => {
+  const [searchInput, setSearch] = useState<string>("");
+  const [search] = useDebounce(searchInput, 750);
+
   const queryFn = useCallback(
-    ({ pageParam = 0, queryKey }) => {
+    ({ queryKey }) => {
       const data = fetchFn({
-        ...queryKey[1],
-        offset: pageParam,
-        limit,
+        search: queryKey[1],
+        ...queryKey[2],
       });
       return data;
     },
     [fetchFn]
   );
 
-  const {
-    data,
-    fetchNextPage,
-    isFetching,
-    hasNextPage = true,
-    isLoading,
-    isError,
-  } = useInfiniteQuery<ListResponse<any>, Error>({
-    queryKey: [queryKey, extraFnProp],
+  const { data, isFetching } = useQuery<ListResponse<any>, Error>({
+    queryKey: [queryKey, search, extraFnProp],
     queryFn,
     refetchOnWindowFocus: false,
-    getNextPageParam: (_lastPage, data) => {
-      const hasMore =
-        data.reduce((result, page) => result + page.items.length, 0) <
-        _lastPage.count;
-
-      return hasMore && data.length * limit;
-    },
-    cacheTime: 0,
     enabled,
   });
 
   const flatData = useMemo(() => {
-    return (data && data?.pages?.flatMap((page) => page.items)) || [];
+    return data?.items ?? [];
   }, [data]);
-  const fetch = useMemo(() => debounce(fetchNextPage, 500), [fetchNextPage]);
-  const { setNode } = useIntersect(() => fetch());
 
   const options = useMemo(() => {
     let newOptions = flatData.map(parseItem) as {
       value: any;
       label: string;
-      [field: string]: any;
     }[];
-    if (hasNextPage || (isLoading && !isError)) {
-      newOptions = [
-        ...newOptions,
-        { value: Math.random(), label: "", isSpinner: true },
-      ];
-    }
-    if (hasNextPage) {
-      newOptions = [
-        ...newOptions,
-        { value: Math.random(), label: "", isLoadDetector: true },
-      ];
-    }
 
-    if (
-      flatData &&
-      flatData.length === 0 &&
-      !isLoading &&
-      !isFetching &&
-      !isError
-    ) {
-      newOptions = [
-        ...newOptions,
-        { value: Math.random(), label: "", isEmpty: true },
-      ];
-    }
-    if (isError) {
-      newOptions = [
-        ...newOptions,
-        { value: Math.random(), label: "", isError: true },
+    if (value && searchInput === "") {
+      return [
+        value,
+        ...newOptions.filter((option) => option.value !== value?.value),
       ];
     }
 
     return newOptions;
-  }, [flatData, hasNextPage, isError, isFetching, isLoading, parseItem]);
+  }, [flatData, parseItem, searchInput, value]);
 
   return (
-    <Select
-      name={name}
-      value={value ?? undefined}
+    <CustomSelect
       placeholder="Не выбран"
-      options={options}
-      onChange={onChange}
-      renderOption={({ option, ...restProps }) => {
-        if (option.isLoadDetector) {
-          return <div style={{ height: 4 }} ref={(el) => setNode(el!)}></div>;
-        }
-        if (option.isSpinner) {
-          return <Spinner size="small" style={{ margin: "10px 0" }} />;
-        }
-        if (option.isEmpty) {
-          return <Footer>Ничего не найдено</Footer>;
-        }
-        if (option.isError) {
-          return <Footer>Ошибка соединения</Footer>;
-        }
-        return <CustomSelectOption {...restProps} />;
+      searchable
+      name={name}
+      value={value?.value}
+      onChange={(event) => {
+        const option = options.find(
+          (option) => String(option.value) === event.target.value
+        );
+        console.log(option, event.target.value);
+
+        onChange(option!);
       }}
+      onInputChange={(event) => {
+        const remoteQuery = (
+          event as unknown as React.ChangeEvent<HTMLInputElement>
+        ).target.value as unknown as string;
+        setSearch(remoteQuery);
+      }}
+      onClose={() => {
+        setSearch("");
+      }}
+      filterFn={false}
+      options={options}
+      fetching={isFetching || searchInput !== search}
+      // renderDropdown={
+      //     !isFetching &&
+      //     (({ defaultDropdownContent }) => {
+      //         if (this.state.remoteQuery.length < 3) {
+      //             return (
+      //                 <Text
+      //                     style={{
+      //                         padding: 12,
+      //                         color: "var(--text_secondary)"
+      //                     }}
+      //                     weight="regular"
+      //                 >
+      //                     Нужно ввести хотя бы три символа
+      //                 </Text>
+      //             );
+      //         } else {
+      //             return defaultDropdownContent;
+      //         }
+      //     })
+      // }
     />
   );
 };

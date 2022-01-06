@@ -20,7 +20,7 @@ import { PanelHeader } from "@vkontakte/vkui";
 
 import { observer } from "mobx-react-lite";
 import { routerStore } from "../../stores/router-store";
-import { Boec, SeasonReport } from "../../types";
+import { Boec, Season } from "../../types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { UsersAPI } from "../../utils/requests/user-request";
 import { UserPositions } from "../ui/molecules/UserPositions";
@@ -45,9 +45,10 @@ export const BoecViewPanel: FC<PanelProps> = observer((props) => {
   const [SnackBar, setSnackBar] = useState<React.ReactNode>(null);
 
   const queryClient = useQueryClient();
-  const { data: reports } = useQuery<SeasonReport[]>({
-    queryKey: ["seasons-report-boec", boecId],
-    queryFn: ({ queryKey }) => UsersAPI.getUserReports(queryKey[1] as number),
+  const { data: seasons } = useQuery<Season[]>({
+    queryKey: ["seasons-boec", boecId],
+    queryFn: ({ queryKey }) =>
+      UsersAPI.getUserSeasons(queryKey[1] as number, "accepted"),
     retry: 1,
     refetchOnWindowFocus: false,
     enabled: !!boecId,
@@ -165,22 +166,18 @@ export const BoecViewPanel: FC<PanelProps> = observer((props) => {
             </Div>
           </Group>
           <Group header={<Header mode="secondary">Года выезда</Header>}>
-            {reports === null && (
+            {seasons === null && (
               <Spinner size="small" style={{ margin: "20px 0" }} />
             )}
-            {reports?.length === 0 && <Footer>Ничего не найдено</Footer>}
-            {reports?.map((report) => (
+            {seasons?.length === 0 && <Footer>Ничего не найдено</Footer>}
+            {seasons?.map((season) => (
               <SimpleCell
-                key={`${report.id}-${report?.brigade.id}`}
-                indicator={report?.year}
+                key={season.id}
+                indicator={season?.reports?.[0].year}
                 before={<Icon28PlaneOutline />}
-                // after={season.state !== "accepted" ? "Не зачтен" : "Зачтен"}
-                // description={
-                //   season.state === "initial" ? <i> - не подтвержденный</i> : null
-                // }
+                disabled
               >
-                {report?.brigade.fullTitle}
-                {/* {season.isCandidate && <i> | Кандидат</i>} */}
+                {season?.reports?.[0]?.brigade.fullTitle}
               </SimpleCell>
             ))}
           </Group>

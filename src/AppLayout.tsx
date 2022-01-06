@@ -51,6 +51,7 @@ import { BrigadeReportsListPanel } from "./features/brigades/pages/BrigadeReport
 import { ReportViewPanel } from "./features/report/pages/ReportViewPanel";
 import { ReportEditPanel } from "./features/report/pages/ReportEditPanel";
 import { ReportBoecListPanel } from "./features/report/pages/ReportBoecListPanel";
+import { BrigadeSeasonRequestsPanel } from "./features/brigades/pages/BrigadeSeasonRequestsPanel";
 
 export const AppLayout: FC = observer(() => {
   const { popout } = useContext(routerStore);
@@ -174,6 +175,7 @@ export const AppLayout: FC = observer(() => {
               <BrigadeViewPanel nav="details" />
               <BrigadeEditPanel nav="edit" />
               <BrigadeReportsListPanel nav="seasons-list" />
+              <BrigadeSeasonRequestsPanel nav="seasons-requests-list" />
             </View>
             <View
               activePanel={getElseViewPanel("boecs", location[2], "base")}

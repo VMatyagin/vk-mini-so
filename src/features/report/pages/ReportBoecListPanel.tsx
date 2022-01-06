@@ -81,7 +81,7 @@ export const ReportBoecListPanel: FC<PanelProps> = observer((props) => {
           }}
           enabled={!!reportId}
           renderItem={(season) => (
-            <SeasonCell key={season.id} reportId={reportId} season={season} />
+            <SeasonCell key={season.id} season={season} />
           )}
         />
       </Group>

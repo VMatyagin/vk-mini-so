@@ -10,6 +10,7 @@ import {
   ViewWidth,
   useAdaptivity,
   usePlatform,
+  CustomSelectOptionInterface,
 } from "@vkontakte/vkui";
 import { useMemo, useState } from "react";
 import { useRoute } from "react-router5";
@@ -25,7 +26,8 @@ export const NominationSelectModal = () => {
   const { route } = useRoute();
 
   const { competitionId } = useMemo(() => route.params, [route]);
-  const [selectedNomination, setNomination] = useState<number>();
+  const [selectedNomination, setNomination] =
+    useState<CustomSelectOptionInterface>();
 
   const platform = usePlatform();
   const { viewWidth = 100 } = useAdaptivity();
@@ -37,7 +39,7 @@ export const NominationSelectModal = () => {
   };
 
   const onNominationSelect = () => {
-    modalCallback[MODAL_EVENT_NOMINATION_SELECT](selectedNomination);
+    modalCallback[MODAL_EVENT_NOMINATION_SELECT](selectedNomination?.value);
     setNomination(undefined);
     closeModal();
   };
@@ -67,7 +69,7 @@ export const NominationSelectModal = () => {
         <FormItem top="Номинация">
           <LazySelect
             name={"nominations"}
-            onChange={(value) => setNomination(Number(value.target.value))}
+            onChange={(option) => option.value}
             value={selectedNomination}
             fetchFn={EventAPI.getCompetitionNominations}
             extraFnProp={{ competitionId: competitionId! }}

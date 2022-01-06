@@ -189,6 +189,10 @@ const elseViews: Route[] = [
         name: "seasons-list",
         path: "/seasons-list",
       },
+      {
+        name: "seasons-requests-list",
+        path: "/seasons-requests-list",
+      },
     ],
   },
   {

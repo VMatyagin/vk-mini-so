@@ -1,7 +1,7 @@
 import axios, { Canceler } from "axios";
 import { Brigade, Position, SeasonReport, Season } from "../../types";
 import { get, patch, post, remove } from "../axiosConfig";
-import { ListResponse, SuccessResponse } from "../types";
+import { ListResponse } from "../types";
 
 const CancelToken = axios.CancelToken;
 let cancel: Canceler | undefined;
@@ -58,6 +58,72 @@ export const BrigadesAPI = {
       }),
       params,
     });
+    return data;
+  },
+  async getBrigadeSeasonRequests({
+    brigadeId,
+    limit,
+    offset,
+  }: {
+    brigadeId: number;
+    offset: number;
+    limit: number;
+  }): Promise<ListResponse<SeasonReport>> {
+    if (cancel) {
+      cancel();
+    }
+    const params = {
+      offset,
+      limit,
+    };
+    const { data } = await get(
+      `/api/so/brigade/${brigadeId}/season-requests/`,
+      {
+        cancelToken: new CancelToken(function executor(c) {
+          cancel = c;
+        }),
+        params,
+      }
+    );
+    return data;
+  },
+  async rejectSeasonRequest({
+    brigadeId,
+    reportId,
+  }: {
+    brigadeId: number;
+    reportId: number;
+  }): Promise<ListResponse<SeasonReport>> {
+    const { data } = await post(
+      `/api/so/brigade/${brigadeId}/season-requests/${reportId}/reject/`
+    );
+    return data;
+  },
+  async approveSeasonRequest({
+    brigadeId,
+    reportId,
+  }: {
+    brigadeId: number;
+    reportId: number;
+  }): Promise<ListResponse<SeasonReport>> {
+    const { data } = await post(
+      `/api/so/brigade/${brigadeId}/season-requests/${reportId}/approve/`
+    );
+    return data;
+  },
+  async mergeSeasonRequest({
+    brigadeId,
+    reportId,
+    targetId,
+  }: {
+    brigadeId: number;
+    reportId: number;
+    targetId: number;
+  }): Promise<ListResponse<SeasonReport>> {
+    const { data } = await post(
+      `/api/so/brigade/${brigadeId}/season-requests/${reportId}/merge/`,
+      { targetId }
+    );
     return data;
   },
   async getBrigadeSeason({
@@ -150,21 +216,5 @@ export const BrigadesAPI = {
       rest
     );
     return data;
-  },
-
-  setSeason({
-    brigadeId,
-    boecId,
-    year,
-  }: {
-    brigadeId: number;
-    boecId: number;
-    year: number;
-  }): Promise<SuccessResponse<Season>> {
-    return post(`/api/so/season/`, {
-      brigadeId,
-      boecId,
-      year,
-    });
   },
 };

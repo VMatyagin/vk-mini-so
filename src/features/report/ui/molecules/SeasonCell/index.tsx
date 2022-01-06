@@ -16,115 +16,111 @@ import { ReportAPI } from "../../../../utils/requests/reports-requests";
 
 interface SeasonCellProps {
   season: Season;
-  reportId: number;
 }
-export const SeasonCell: FC<SeasonCellProps> = observer(
-  ({ season, reportId }) => {
-    const { refetch } = useContext(LazyListContext);
-    const { closePopout, openPopout } = useContext(routerStore);
-    const { isStaff } = useContext(appStore);
-    const { navigate } = useRouter();
-    const { mutate } = useMutation(
-      (formData: Partial<Season>) => {
-        openPopout(<ScreenSpinner />);
-        return ReportAPI.updateSeason(reportId, season.id, formData);
+export const SeasonCell: FC<SeasonCellProps> = observer(({ season }) => {
+  const { refetch } = useContext(LazyListContext);
+  const { closePopout, openPopout } = useContext(routerStore);
+  const { isStaff } = useContext(appStore);
+  const { navigate } = useRouter();
+  const { mutate } = useMutation(
+    (formData: Partial<Season>) => {
+      openPopout(<ScreenSpinner />);
+      return ReportAPI.updateSeason(season.reports[0].id, season.id, formData);
+    },
+    {
+      onSuccess: () => {
+        closePopout();
+        refetch();
       },
-      {
-        onSuccess: () => {
-          closePopout();
-          refetch();
-        },
-      }
-    );
-    const { mutate: deleteMutate } = useMutation(
-      () => {
-        openPopout(<ScreenSpinner />);
-        return ReportAPI.deleteSeason(reportId, season.id);
+    }
+  );
+  const { mutate: deleteMutate } = useMutation(
+    () => {
+      openPopout(<ScreenSpinner />);
+      return ReportAPI.deleteSeason(season.reports[0].id, season.id);
+    },
+    {
+      onSuccess: () => {
+        closePopout();
+        refetch();
       },
-      {
-        onSuccess: () => {
-          closePopout();
-          refetch();
-        },
-      }
-    );
-    const openBoec = () => {
-      navigate("else.boec.details", { boecId: season.boec.id });
-    };
-    const handleOpenActionSheet = (elementRef: Element) => {
-      openPopout(
-        <ActionSheet
-          onClose={closePopout}
-          iosCloseItem={
-            <ActionSheetItem autoclose mode="cancel">
-              Отменить
-            </ActionSheetItem>
-          }
-          toggleRef={elementRef}
-        >
-          {season.state === "initial" && (
-            <ActionSheetItem
-              autoclose
-              onClick={() =>
-                mutate({
-                  state: "accepted",
-                })
-              }
-            >
-              Подтвердить
-            </ActionSheetItem>
-          )}
-          <ActionSheetItem autoclose onClick={openBoec}>
-            Перейти на страницу
+    }
+  );
+  const openBoec = () => {
+    navigate("else.boec.details", { boecId: season.boec.id });
+  };
+  const handleOpenActionSheet = (elementRef: Element) => {
+    openPopout(
+      <ActionSheet
+        onClose={closePopout}
+        iosCloseItem={
+          <ActionSheetItem autoclose mode="cancel">
+            Отменить
           </ActionSheetItem>
-          {season.state === "rejected" && (
-            <ActionSheetItem
-              autoclose
-              onClick={() =>
-                mutate({
-                  state: "accepted",
-                })
-              }
-            >
-              Выезд зачтен
-            </ActionSheetItem>
-          )}
-          {season.state === "accepted" && (
-            <ActionSheetItem
-              autoclose
-              onClick={() =>
-                mutate({
-                  state: "rejected",
-                })
-              }
-            >
-              Выезд не зачтен
-            </ActionSheetItem>
-          )}
-          {isStaff && (
-            <ActionSheetItem
-              mode="destructive"
-              autoclose
-              onClick={() => deleteMutate()}
-            >
-              Удалить
-            </ActionSheetItem>
-          )}
-        </ActionSheet>
-      );
-    };
-    return (
-      <SimpleCell
-        key={season.id}
-        onClick={(event) => handleOpenActionSheet(event.currentTarget)}
-        after={season.state !== "accepted" ? "Не зачтен" : "Зачтен"}
-        color="red"
-        description={
-          season.state === "initial" ? <i> - не подтвержденный</i> : null
         }
+        toggleRef={elementRef}
       >
-        {season.boec.fullName}
-      </SimpleCell>
+        {season.state === "initial" && (
+          <ActionSheetItem
+            autoclose
+            onClick={() =>
+              mutate({
+                state: "accepted",
+              })
+            }
+          >
+            Подтвердить
+          </ActionSheetItem>
+        )}
+        <ActionSheetItem autoclose onClick={openBoec}>
+          Перейти на страницу
+        </ActionSheetItem>
+        {season.state === "rejected" && (
+          <ActionSheetItem
+            autoclose
+            onClick={() =>
+              mutate({
+                state: "accepted",
+              })
+            }
+          >
+            Выезд зачтен
+          </ActionSheetItem>
+        )}
+        {season.state === "accepted" && (
+          <ActionSheetItem
+            autoclose
+            onClick={() =>
+              mutate({
+                state: "rejected",
+              })
+            }
+          >
+            Выезд не зачтен
+          </ActionSheetItem>
+        )}
+        {isStaff && (
+          <ActionSheetItem
+            mode="destructive"
+            autoclose
+            onClick={() => deleteMutate()}
+          >
+            Удалить
+          </ActionSheetItem>
+        )}
+      </ActionSheet>
     );
-  }
-);
+  };
+  return (
+    <SimpleCell
+      key={season.id}
+      onClick={(event) => handleOpenActionSheet(event.currentTarget)}
+      after={season.state !== "accepted" ? "Не зачтен" : "Зачтен"}
+      description={
+        season.state === "initial" ? <i> - не подтвержденный</i> : null
+      }
+    >
+      {season.boec.fullName}
+    </SimpleCell>
+  );
+});

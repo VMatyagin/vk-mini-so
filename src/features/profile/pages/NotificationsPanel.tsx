@@ -72,7 +72,7 @@ export const NotificationsPanel: FC<PanelProps> = observer((props) => {
   });
 
   useEffect(() => {
-    if (data && data.items.length > 0) {
+    if (data?.items.length) {
       UsersAPI.ActivietisMarkAsRead();
       qClient.refetchQueries(["user-me"]);
     }

@@ -29,7 +29,9 @@ export const ReportEditPanel: FC<PanelProps> = observer((props) => {
 
   const { reportId, brigadeId } = useMemo(() => route.params, [route]);
 
-  const { handleSubmit, control, formState, reset } = useForm<SeasonReport>({
+  const { handleSubmit, control, formState, reset } = useForm<
+    Omit<SeasonReport, "seasons">
+  >({
     reValidateMode: "onChange",
     mode: "onChange",
   });

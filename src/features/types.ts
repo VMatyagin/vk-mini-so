@@ -33,23 +33,26 @@ export interface Brigade {
   shtab: Shtab;
   canEdit: boolean;
   members: number;
+  seasonRequestCount: number;
 }
 
 export interface SeasonReport {
   id: number;
   year: number;
   boecCount: number;
-  state: "initial" | "accepted";
+  state: "initial" | "accepted" | "request";
   employer: null | string;
   canEdit: boolean;
   brigade: Brigade;
   brigadeId: number;
+  seasons: Season[];
 }
 
 export interface Season extends WithId {
   boec: Boec;
   boecId: number;
   state: "initial" | "accepted" | "rejected";
+  reports: SeasonReport[];
 }
 
 export interface Boec extends WithId {
