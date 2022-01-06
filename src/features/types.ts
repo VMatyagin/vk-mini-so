@@ -77,6 +77,7 @@ export interface EventType {
   worth: number;
   isParticipant: boolean;
   isTicketed: boolean;
+  canEdit: boolean;
 }
 export interface Shtab extends WithId {
   title: string;
@@ -120,6 +121,7 @@ export interface Competition {
   winnerCount: number;
   notwinnerCount: number;
   ratingless: boolean;
+  canEdit: boolean;
 }
 
 export interface CompetitionParticipant<IsFull extends boolean = false> {

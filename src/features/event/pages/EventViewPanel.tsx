@@ -1,5 +1,6 @@
 import { FC, useMemo } from "react";
 import {
+  CellButton,
   Group,
   Header,
   InfoRow,
@@ -13,67 +14,34 @@ import {
 import { PanelHeader } from "@vkontakte/vkui";
 
 import { observer } from "mobx-react-lite";
-import { Icon28Flash } from "@vkontakte/icons";
+import {
+  Icon28FireOutline,
+  Icon28Flash,
+  Icon28UsersOutline,
+} from "@vkontakte/icons";
 import { useQuery } from "react-query";
 import { EventAPI } from "../../utils/requests/event-request";
 import { EVENT_WORTH } from "../helpers";
 import { useRoute, useRouter } from "react-router5";
-
-// const canEdit = ({
-//     user,
-//     acceptedIds
-// }: {
-//     user: User;
-//     acceptedIds: {
-//         shtab?: number[];
-//         brigade?: number[];
-//     };
-// }) => {
-//     let can = false;
-
-//     if (acceptedIds.brigade) {
-//         can =
-//             acceptedIds.brigade.filter((id) =>
-//                 user!.brigades.map((brigade) => brigade.id).includes(id)
-//             ).length > 0;
-//     }
-
-//     if (!can && acceptedIds.shtab) {
-//         can =
-//             acceptedIds.shtab.filter((id) =>
-//                 user!.shtabs.map((shtab) => shtab.id).includes(id)
-//             ).length > 0;
-//     }
-//     if (user.isStaff) {
-//         can = true;
-//     }
-//     return can;
-// };
-
 export const EventViewPanel: FC<PanelProps> = observer((props) => {
   // const { user } = useContext(appStore);
   const { route } = useRoute();
   const eventId = useMemo(() => route.params.eventId, [route]);
 
   const { navigate } = useRouter();
-  const { data, isLoading } = useQuery({
+  const {
+    data: event,
+    isLoading,
+    // refetch
+  } = useQuery({
     queryKey: ["event", eventId],
     queryFn: ({ queryKey }) => {
       return EventAPI.getEvent(queryKey[1] as number);
     },
     retry: 1,
+    enabled: !!eventId,
     refetchOnWindowFocus: false,
   });
-  // const haveAccess = useMemo(
-  //   () =>
-  //     canEdit({
-  //       user: user!,
-  //       acceptedIds: {
-  //         shtab: [data?.shtabId!],
-  //       },
-  //     }),
-  //   [data, user]
-  // );
 
   // const { mutate } = useMutation<
   //     Participant,
@@ -96,16 +64,16 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
   // );
   // const onWannaBeParticipang = (brigadeId: number) => {
   //     mutate({
-  //         eventId: data!.id,
+  //         eventId: event!.id,
   //         boecId: user!.boec.id,
   //         worth: 0,
   //         brigadeId
   //     });
   // };
 
-  // const openPage = (url: string, additional?: Record<string, number>) => {
-  //     navigate(`else.event.${url}`, { ...additional });
-  // };
+  const openPage = (url: string, additional?: Record<string, number>) => {
+    navigate(`else.event.${url}`, { ...additional });
+  };
 
   return (
     <Panel {...props}>
@@ -113,7 +81,7 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
         left={<PanelHeaderBack onClick={() => window.history.back()} />}
       >
         <Title level="2" weight="bold">
-          {data?.title}
+          {event?.title}
         </Title>
       </PanelHeader>
       {isLoading && <PanelSpinner />}
@@ -124,17 +92,17 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
           >
             <SimpleCell>
               <InfoRow header="Штаб-организатор">
-                {data?.shtab?.title || "Без организатора"}
+                {event?.shtab?.title || "Без организатора"}
               </InfoRow>
             </SimpleCell>
             <SimpleCell>
               <InfoRow header="Блок рейтинга">
-                {EVENT_WORTH[data?.worth || 0].title}
+                {EVENT_WORTH[event?.worth || 0].title}
               </InfoRow>
             </SimpleCell>
             <SimpleCell>
               <InfoRow header="Дата проведения">
-                {new Date(data?.startDate!).toLocaleString("ru", {
+                {new Date(event?.startDate!).toLocaleString("ru", {
                   day: "numeric",
                   month: "numeric",
                   year: "numeric",
@@ -143,65 +111,51 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
             </SimpleCell>
             <SimpleCell>
               <InfoRow header="Время проведения">
-                {data?.startTime?.slice(0, -3) || "Не указано"}
+                {event?.startTime?.slice(0, -3) || "Не указано"}
               </InfoRow>
             </SimpleCell>
-            {/* {haveAccess && (
-                            <CellButton
-                                onClick={() =>
-                                    openPage("edit", {
-                                        eventId
-                                    })
-                                }
-                            >
-                                Редактировать
-                            </CellButton>
-                        )} */}
+            {event?.canEdit && (
+              <CellButton
+                onClick={() =>
+                  openPage("edit", {
+                    eventId,
+                  })
+                }
+              >
+                Редактировать
+              </CellButton>
+            )}
           </Group>
-          {/* 
-                    {haveAccess && (
-                        <>
-                            <Group
-                                header={
-                                    <Header mode="secondary">Списки</Header>
-                                }
+
+          {event?.canEdit && (
+            <Group header={<Header mode="secondary">Списки</Header>}>
+              <SimpleCell
+                before={<Icon28FireOutline />}
+                onClick={() => openPage("organizers", { eventId })}
+              >
+                Организаторы
+              </SimpleCell>
+              <SimpleCell
+                before={<Icon28UsersOutline />}
+                onClick={() => openPage("volonteers", { eventId })}
+              >
+                Волонтеры
+              </SimpleCell>
+              <SimpleCell
+                onClick={() => openPage("participants", { eventId })}
+                before={<Icon28UsersOutline />}
+              >
+                Участники
+              </SimpleCell>
+              {/* <SimpleCell
+                                onClick={() => openPage("quotas", { eventId })}
+                                before={<Icon28BillheadOutline />}
                             >
-                                <SimpleCell
-                                    before={<Icon28FireOutline />}
-                                    onClick={() =>
-                                        openPage("organizers", { eventId })
-                                    }
-                                >
-                                    Организаторы
-                                </SimpleCell>
-                                <SimpleCell
-                                    before={<Icon28UsersOutline />}
-                                    onClick={() =>
-                                        openPage("volonteers", { eventId })
-                                    }
-                                >
-                                    Волонтеры
-                                </SimpleCell>
-                                <SimpleCell
-                                    onClick={() =>
-                                        openPage("participants", { eventId })
-                                    }
-                                    before={<Icon28UsersOutline />}
-                                >
-                                    Участники
-                                </SimpleCell>
-                                <SimpleCell
-                                    onClick={() =>
-                                        openPage("quotas", { eventId })
-                                    }
-                                    before={<Icon28BillheadOutline />}
-                                >
-                                    Квоты
-                                </SimpleCell>
-                            </Group>
-                        </>
-                    )} */}
-          {data && [1, 2].includes(data.worth) && (
+                                Квоты
+                            </SimpleCell> */}
+            </Group>
+          )}
+          {event && [1, 2].includes(event.worth) && (
             <Group header={<Header mode="secondary">Конкурсная часть</Header>}>
               <SimpleCell
                 onClick={() =>
@@ -215,8 +169,8 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
               </SimpleCell>
             </Group>
           )}
-          <Group>
-            {/* {user!.brigades.length > 0 && (
+          {/* <Group>
+                        {user!.brigades.length > 0 && (
                             <SimpleCell
                                 onClick={() =>
                                     openPage("brigade-participants", {
@@ -227,8 +181,8 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
                             >
                                 Заявки моего отряда
                             </SimpleCell>
-                        )} */}
-            {/* {data &&
+                        )}
+                        {data &&
                             data.isTicketed &&
                             (!data?.isParticipant ? (
                                 <SubjectSelectingCell
@@ -250,8 +204,8 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
                                 <CellButton disabled={true}>
                                     Заявка на участие подана
                                 </CellButton>
-                            ))} */}
-          </Group>
+                            ))}
+                    </Group> */}
         </>
       )}
     </Panel>

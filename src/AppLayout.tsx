@@ -41,7 +41,6 @@ import { ShtabEditPanel } from "./features/shtab/pages/ShtabEditPanel";
 import { BrigadeListPanel } from "./features/brigades/pages/BrigadeListPanel";
 import { BrigadeViewPanel } from "./features/brigades/pages/BrigadeViewPanel";
 import { BrigadeEditPanel } from "./features/brigades/pages/BrigadeEditPanel";
-import { BrigadeBoecListPanel } from "./features/brigades/pages/BrigadeBoecListPanel";
 import { BoecViewPanel } from "./features/boec/pages/BoecViewPanel";
 import { BoecEditPanel } from "./features/boec/pages/BoecEditPanel";
 import { BoecListPanel } from "./features/boec/pages/BoecListPanel";
@@ -175,7 +174,6 @@ export const AppLayout: FC = observer(() => {
               <BrigadeViewPanel nav="details" />
               <BrigadeEditPanel nav="edit" />
               <BrigadeReportsListPanel nav="seasons-list" />
-              <BrigadeBoecListPanel nav="season-boecs" />
             </View>
             <View
               activePanel={getElseViewPanel("boecs", location[2], "base")}

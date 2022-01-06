@@ -5,6 +5,7 @@ import {
   Button,
   ScreenSpinner,
   Checkbox,
+  Group,
 } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { FC, useContext, useMemo } from "react";
@@ -81,56 +82,58 @@ export const CompetitionMainInfoForm: FC = observer(() => {
   };
 
   return (
-    <FormLayout onSubmit={handleSubmit(onSubmit)}>
-      <Controller
-        control={control}
-        name="title"
-        rules={{ required: "Это поле необходимо заполнить" }}
-        render={({ field, fieldState }) => (
-          <FormItem
-            top="Название"
-            status={fieldState.invalid ? "error" : "default"}
-            bottom={fieldState.error && fieldState.error.message}
-          >
-            <Input
-              type="text"
-              name={field.name}
-              value={field.value}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-            />
-          </FormItem>
-        )}
-      />
-      <Controller
-        control={control}
-        name="ratingless"
-        render={({ field, fieldState }) => (
-          <FormItem
-            status={fieldState.invalid ? "error" : "default"}
-            bottom={fieldState.error && fieldState.error.message}
-          >
-            <Checkbox
-              name={field.name}
-              checked={field.value}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
+    <Group>
+      <FormLayout onSubmit={handleSubmit(onSubmit)}>
+        <Controller
+          control={control}
+          name="title"
+          rules={{ required: "Это поле необходимо заполнить" }}
+          render={({ field, fieldState }) => (
+            <FormItem
+              top="Название"
+              status={fieldState.invalid ? "error" : "default"}
+              bottom={fieldState.error && fieldState.error.message}
             >
-              Не учитывать в рейтинге
-            </Checkbox>
-          </FormItem>
-        )}
-      />
-      <FormItem>
-        <Button
-          size="l"
-          stretched={true}
-          disabled={!isDirty || !isValid}
-          type="submit"
-        >
-          {competitionId ? "Сохранить" : "Создать"}
-        </Button>
-      </FormItem>
-    </FormLayout>
+              <Input
+                type="text"
+                name={field.name}
+                value={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+              />
+            </FormItem>
+          )}
+        />
+        <Controller
+          control={control}
+          name="ratingless"
+          render={({ field, fieldState }) => (
+            <FormItem
+              status={fieldState.invalid ? "error" : "default"}
+              bottom={fieldState.error && fieldState.error.message}
+            >
+              <Checkbox
+                name={field.name}
+                checked={field.value}
+                onChange={field.onChange}
+                onBlur={field.onBlur}
+              >
+                Не учитывать в рейтинге
+              </Checkbox>
+            </FormItem>
+          )}
+        />
+        <FormItem>
+          <Button
+            size="l"
+            stretched={true}
+            disabled={!isDirty || !isValid}
+            type="submit"
+          >
+            {competitionId ? "Сохранить" : "Создать"}
+          </Button>
+        </FormItem>
+      </FormLayout>
+    </Group>
   );
 });

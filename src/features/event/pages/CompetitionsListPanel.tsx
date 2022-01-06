@@ -13,31 +13,24 @@ import { LazyList } from "../../../ui/organisms/LazyList";
 import { Competition } from "../../types";
 import { EventAPI } from "../../utils/requests/event-request";
 import { useRoute } from "react-router5";
+import { useQuery } from "react-query";
 
 export const CompetitionsListPanel: FC<PanelProps> = observer((props) => {
-  // const { user } = useContext(appStore);
   const { route, router } = useRoute();
   const eventId = useMemo(() => route.params.eventId, [route]);
 
   const changeView = (competitionId: number) => {
     router.navigate("else.competition.details", { eventId, competitionId });
   };
-  // const { data } = useQuery({
-  //     queryKey: ["event", eventId],
-  //     queryFn: ({ queryKey }) => {
-  //         return EventAPI.getEvent(queryKey[1] as number);
-  //     },
-  //     retry: 1,
-  //     refetchOnWindowFocus: false
-  // });
-  // const haveAccess = useMemo(
-  //   () =>
-  //     canEditCompetitions({
-  //       user: user!,
-  //       acceptedIds: [data?.shtabId!],
-  //     }) || user?.isStaff,
-  //   [data, user]
-  // );
+  const { data: event } = useQuery({
+    queryKey: ["event", eventId],
+    queryFn: ({ queryKey }) => {
+      return EventAPI.getEvent(queryKey[1] as number);
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+
   return (
     <Panel {...props}>
       <PanelHeader
@@ -63,9 +56,9 @@ export const CompetitionsListPanel: FC<PanelProps> = observer((props) => {
           )}
         />
       </Group>
-      {/* {haveAccess && (
+      {event?.canEdit && (
         <Group>
-          <CellButton
+          <SimpleCell
             onClick={() => {
               router.navigate("else.competitions.create", {
                 eventId,
@@ -73,9 +66,9 @@ export const CompetitionsListPanel: FC<PanelProps> = observer((props) => {
             }}
           >
             Добавить конкурс
-          </CellButton>
+          </SimpleCell>
         </Group>
-      )} */}
+      )}
     </Panel>
   );
 });

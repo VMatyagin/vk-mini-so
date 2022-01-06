@@ -15,7 +15,7 @@ import { PanelHeader } from "@vkontakte/vkui";
 
 import { observer } from "mobx-react-lite";
 import { routerStore } from "../../stores/router-store";
-import { Icon28UsersOutline } from "@vkontakte/icons";
+import { Icon28Like, Icon28UsersOutline } from "@vkontakte/icons";
 import { useMutation, useQuery } from "react-query";
 import { Boec, Brigade, CompetitionParticipant } from "../../types";
 import { EventAPI } from "../../utils/requests/event-request";
@@ -40,6 +40,7 @@ export const CompetitionViewPanel: FC<PanelProps> = observer((props) => {
     },
     retry: 1,
     refetchOnWindowFocus: false,
+    enabled: !!competitionId,
   });
   const { mutate } = useMutation<
     CompetitionParticipant,
@@ -95,23 +96,6 @@ export const CompetitionViewPanel: FC<PanelProps> = observer((props) => {
     openModal(MODAL_EVENT_PARTICIPANT_TITLE);
   };
 
-  // const { data: eventData } = useQuery({
-  //     queryKey: ["event", eventId],
-  //     queryFn: ({ queryKey }) => {
-  //         return EventAPI.getEvent(queryKey[1] as number);
-  //     },
-  //     retry: 1,
-  //     refetchOnWindowFocus: false
-  // });
-
-  // const haveAccess = useMemo(
-  //   () =>
-  //     canEditCompetitions({
-  //       user: user!,
-  //       acceptedIds: [eventData?.shtabId!],
-  //     }) || user?.isStaff,
-  //   [eventData, user]
-  // );
   return (
     <Panel {...props}>
       <PanelHeader
@@ -175,20 +159,20 @@ export const CompetitionViewPanel: FC<PanelProps> = observer((props) => {
                 {data?.notwinnerCount}
               </InfoRow>
             </SimpleCell>
-            {/* {haveAccess && (
-                            <>
-                                <CellButton
-                                    onClick={() =>
-                                        navigate("else.competition.edit", {
-                                            eventId,
-                                            competitionId
-                                        })
-                                    }
-                                >
-                                    Редактировать
-                                </CellButton>
-                            </>
-                        )} */}
+            {data?.canEdit && (
+              <>
+                <SimpleCell
+                  onClick={() =>
+                    navigate("else.competition.edit", {
+                      eventId,
+                      competitionId,
+                    })
+                  }
+                >
+                  Редактировать
+                </SimpleCell>
+              </>
+            )}
           </Group>
           <Group header={<Header mode="secondary">Заявки</Header>}>
             <SimpleCell
@@ -198,23 +182,21 @@ export const CompetitionViewPanel: FC<PanelProps> = observer((props) => {
               Создать заявку
             </SimpleCell>
           </Group>
-          {/* {haveAccess && (
-                        <Group
-                            header={<Header mode="secondary">Номинации</Header>}
-                        >
-                            <SimpleCell
-                                before={<Icon28Like />}
-                                onClick={() =>
-                                    navigate("else.competition.nominations", {
-                                        eventId,
-                                        competitionId
-                                    })
-                                }
-                            >
-                                Редактировать номинации
-                            </SimpleCell>
-                        </Group>
-                    )} */}
+          {data?.canEdit && (
+            <Group header={<Header mode="secondary">Номинации</Header>}>
+              <SimpleCell
+                before={<Icon28Like />}
+                onClick={() =>
+                  navigate("else.competition.nominations", {
+                    eventId,
+                    competitionId,
+                  })
+                }
+              >
+                Редактировать номинации
+              </SimpleCell>
+            </Group>
+          )}
         </>
       )}
     </Panel>

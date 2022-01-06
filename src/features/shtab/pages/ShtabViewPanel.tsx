@@ -1,12 +1,12 @@
 import { FC, useMemo } from "react";
 import {
-  CellButton,
   Group,
   Header,
   Panel,
   PanelHeaderBack,
   Title,
   PanelProps,
+  SimpleCell,
 } from "@vkontakte/vkui";
 import { PanelHeader } from "@vkontakte/vkui";
 
@@ -15,7 +15,7 @@ import { Shtab } from "../../types";
 import { useQuery } from "react-query";
 import { ShtabsAPI } from "../../utils/requests/shtab-request";
 import { useRoute } from "react-router5";
-import { Icon28UsersOutline } from "@vkontakte/icons";
+import { Icon28CalendarOutline, Icon28UsersOutline } from "@vkontakte/icons";
 import { ShtabOrBrigadeLeaders } from "../../brigades/ui/molecules/ShtabOrBrigadeLeaders";
 
 export const ShtabViewPanel: FC<PanelProps> = observer((props) => {
@@ -52,15 +52,22 @@ export const ShtabViewPanel: FC<PanelProps> = observer((props) => {
       </Group>
 
       <Group>
-        <CellButton
+        {shtabInfo?.canEdit && (
+          <SimpleCell
+            before={<Icon28CalendarOutline />}
+            onClick={() => navigate("else.events.create")}
+          >
+            Создать мероприятие
+          </SimpleCell>
+        )}
+        <SimpleCell
           before={<Icon28UsersOutline />}
           onClick={() => navigate("else.brigades.base", { shtabId })}
         >
           Отряды
-        </CellButton>
-
+        </SimpleCell>
         {shtabInfo?.canEdit && (
-          <CellButton onClick={openEdit}>Редактировать</CellButton>
+          <SimpleCell onClick={openEdit}>Редактировать</SimpleCell>
         )}
       </Group>
     </Panel>

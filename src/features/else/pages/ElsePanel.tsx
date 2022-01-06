@@ -38,12 +38,6 @@ export const ElsePanel: FC<PanelProps> = observer((props) => {
       <Group>
         <SimpleCell
           before={<Icon28CalendarOutline />}
-          onClick={() => navigate("else.events.create")}
-        >
-          Создать мероприятие
-        </SimpleCell>
-        <SimpleCell
-          before={<Icon28CalendarOutline />}
           onClick={() => navigate("else.events.base")}
         >
           Мероприятия
