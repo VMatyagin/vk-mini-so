@@ -59,6 +59,7 @@ export interface Boec extends WithId {
   dateOfBirth: string | null;
   fullName: string;
   vkId: number;
+  canEdit: boolean;
 }
 
 export interface EventType {

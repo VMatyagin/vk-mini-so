@@ -12,17 +12,22 @@ import {
   Spinner,
   Title,
   PanelProps,
+  SimpleCell,
+  Avatar,
+  Snackbar,
 } from "@vkontakte/vkui";
 import { PanelHeader } from "@vkontakte/vkui";
 
 import { observer } from "mobx-react-lite";
 import { routerStore } from "../../stores/router-store";
-import { Boec, Season } from "../../types";
+import { Boec, SeasonReport } from "../../types";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { UsersAPI } from "../../utils/requests/user-request";
 import { UserPositions } from "../ui/molecules/UserPositions";
 import { appStore } from "../../stores/app-store";
 import { useRoute } from "react-router5";
+import { Icon16WarningTriangle, Icon28PlaneOutline } from "@vkontakte/icons";
+import { selectVKUsers } from "../../VKBridge";
 
 export const BoecViewPanel: FC<PanelProps> = observer((props) => {
   const { openPopout, closePopout } = useContext(routerStore);
@@ -33,12 +38,16 @@ export const BoecViewPanel: FC<PanelProps> = observer((props) => {
     router: { navigate },
   } = useRoute();
   const { boecId } = useMemo(() => route.params, [route]);
+  const isMe = useMemo(
+    () => user?.boec?.id === boecId,
+    [boecId, user?.boec?.id]
+  );
+  const [SnackBar, setSnackBar] = useState<React.ReactNode>(null);
 
-  const [SnackBar] = useState<React.ReactNode>(null);
   const queryClient = useQueryClient();
-  const { data: seasons } = useQuery<Season[]>({
-    queryKey: ["seasons", boecId],
-    queryFn: ({ queryKey }) => UsersAPI.getUserSeasons(queryKey[1] as number),
+  const { data: reports } = useQuery<SeasonReport[]>({
+    queryKey: ["seasons-report-boec", boecId],
+    queryFn: ({ queryKey }) => UsersAPI.getUserReports(queryKey[1] as number),
     retry: 1,
     refetchOnWindowFocus: false,
     enabled: !!boecId,
@@ -47,7 +56,7 @@ export const BoecViewPanel: FC<PanelProps> = observer((props) => {
     data: boec,
     isLoading,
     isError,
-    // refetch
+    refetch,
   } = useQuery<Boec>({
     queryKey: ["boec", boecId],
     queryFn: ({ queryKey }) => {
@@ -65,38 +74,29 @@ export const BoecViewPanel: FC<PanelProps> = observer((props) => {
     navigate("else.boec.history", { boecId });
   };
 
-  // const handleSelectUser = async () => {
-  //     const user = await selectVKUsers();
-  //     // not working in mobile web
-  //     console.log(user[0]);
-  //     if (!user[0]) {
-  //         setSnackBar(
-  //             <Snackbar
-  //                 onClose={() => setSnackBar(null)}
-  //                 before={
-  //                     <Avatar
-  //                         size={24}
-  //                         style={{ background: "var(--dynamic_red)" }}
-  //                     >
-  //                         <Icon16WarningTriangle
-  //                             fill="#fff"
-  //                             width={14}
-  //                             height={14}
-  //                         />
-  //                     </Avatar>
-  //                 }
-  //             >
-  //                 Мобильная версия (m.vk.com) не поддерживается
-  //             </Snackbar>
-  //         );
-  //     } else {
-  //         UsersAPI.updateBoecData({ id: boec?.id, vkId: user[0].id }).then(
-  //             () => {
-  //                 refetch();
-  //             }
-  //         );
-  //     }
-  // };
+  const handleSelectUser = async () => {
+    const user = await selectVKUsers();
+    // not working in mobile web
+    console.log(user[0]);
+    if (!user[0]) {
+      setSnackBar(
+        <Snackbar
+          onClose={() => setSnackBar(null)}
+          before={
+            <Avatar size={24} style={{ background: "var(--dynamic_red)" }}>
+              <Icon16WarningTriangle fill="#fff" width={14} height={14} />
+            </Avatar>
+          }
+        >
+          Мобильная версия (m.vk.com) не поддерживается
+        </Snackbar>
+      );
+    } else {
+      UsersAPI.updateBoecData({ id: boec?.id, vkId: user[0].id }).then(() => {
+        refetch();
+      });
+    }
+  };
   const mutation = useMutation<Boec, Error, void, Boec>(
     () => UsersAPI.removeUser(boecId),
     {
@@ -165,51 +165,50 @@ export const BoecViewPanel: FC<PanelProps> = observer((props) => {
             </Div>
           </Group>
           <Group header={<Header mode="secondary">Года выезда</Header>}>
-            {seasons === null && (
+            {reports === null && (
               <Spinner size="small" style={{ margin: "20px 0" }} />
             )}
-            {seasons && seasons.length === 0 && (
-              <Footer>Ничего не найдено</Footer>
-            )}
-            {/* {seasons &&
-              seasons.map((season) => (
-                <SimpleCell
-                  key={`${season.id}-${season.brigade.id}`}
-                  indicator={season.year}
-                  before={<Icon28PlaneOutline />}
-                >
-                  {season.brigade.title}
-                  {season.isCandidate && <i> | Кандидат</i>}
-                </SimpleCell>
-              ))} */}
+            {reports?.length === 0 && <Footer>Ничего не найдено</Footer>}
+            {reports?.map((report) => (
+              <SimpleCell
+                key={`${report.id}-${report?.brigade.id}`}
+                indicator={report?.year}
+                before={<Icon28PlaneOutline />}
+                // after={season.state !== "accepted" ? "Не зачтен" : "Зачтен"}
+                // description={
+                //   season.state === "initial" ? <i> - не подтвержденный</i> : null
+                // }
+              >
+                {report?.brigade.fullTitle}
+                {/* {season.isCandidate && <i> | Кандидат</i>} */}
+              </SimpleCell>
+            ))}
           </Group>
           <Group header={<Header mode="secondary">Должности</Header>}>
             <UserPositions />
           </Group>
           <Group>
             <CellButton expandable={true} onClick={handleHistory}>
-              Участие
+              {isMe ? "Где я участвовал" : "Участия в мероприятиях"}
             </CellButton>
-            {seasons && (
-              <>
-                <CellButton expandable={true} onClick={handleEdit}>
-                  Редактировать
-                </CellButton>
-                {/* {userCanAttach && !boec.vkId && (
-                  <CellButton expandable={true} onClick={handleSelectUser}>
-                    Привязать к странице ВК
-                  </CellButton>
-                )} */}
-                {user!.isStaff && (
-                  <CellButton
-                    expandable={true}
-                    mode="danger"
-                    onClick={handleDelete}
-                  >
-                    Удалить
-                  </CellButton>
-                )}
-              </>
+            {isMe && (
+              <CellButton expandable={true} onClick={handleEdit}>
+                Редактировать
+              </CellButton>
+            )}
+            {boec.canEdit && boec.vkId === null && (
+              <CellButton expandable={true} onClick={handleSelectUser}>
+                Привязать к странице ВК
+              </CellButton>
+            )}
+            {user!.isStaff && (
+              <CellButton
+                expandable={true}
+                mode="danger"
+                onClick={handleDelete}
+              >
+                Удалить
+              </CellButton>
             )}
           </Group>
         </>

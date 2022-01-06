@@ -6,7 +6,7 @@ import {
   ParticipantHistory,
   Position,
   Progress,
-  Season,
+  SeasonReport,
   Viewer,
 } from "../../types";
 import { get, patch, post, remove } from "../axiosConfig";
@@ -57,8 +57,8 @@ export const UsersAPI = {
     const { data } = await remove(`/api/so/boec/${id}/`);
     return data;
   },
-  async getUserSeasons(userId: number): Promise<Season[]> {
-    const { data } = await get(`/api/so/boec/${userId}/seasons/`);
+  async getUserReports(userId: number): Promise<SeasonReport[]> {
+    const { data } = await get(`/api/so/boec/${userId}/reports/`);
     return data;
   },
   async getUserPositions(userId: number): Promise<Position[]> {
