@@ -9,7 +9,7 @@ export const configureRouter = (useLoggerPlugin = false) => {
   AppStoreInstance.setAppParams(window.location.search);
 
   const router = createRouter(routes, {
-    defaultRoute: "else.base.base",
+    defaultRoute: "init",
     trailingSlashMode: "always",
     strictTrailingSlash: true,
   });

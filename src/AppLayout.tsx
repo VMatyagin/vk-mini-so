@@ -52,6 +52,8 @@ import { ReportViewPanel } from "./features/report/pages/ReportViewPanel";
 import { ReportEditPanel } from "./features/report/pages/ReportEditPanel";
 import { ReportBoecListPanel } from "./features/report/pages/ReportBoecListPanel";
 import { BrigadeSeasonRequestsPanel } from "./features/brigades/pages/BrigadeSeasonRequestsPanel";
+import { IntroPanel } from "./ui/molecules/IntroPanel";
+import { NoBoecAttachedPanel } from "./ui/molecules/NoBoecAttachedPanel";
 
 export const AppLayout: FC = observer(() => {
   const { popout } = useContext(routerStore);
@@ -76,7 +78,16 @@ export const AppLayout: FC = observer(() => {
         width={isDesktop ? "560px" : "100%"}
         maxWidth={isDesktop ? "560px" : "100%"}
       >
-        <Epic activeStory={location[0]} tabbar={!isDesktop && <MobileMenu />}>
+        <Epic
+          activeStory={location[0]}
+          tabbar={!isDesktop && location[0] !== "init" && <MobileMenu />}
+        >
+          <Root nav="init" activeView="base">
+            <View nav="base" activePanel={location[1] ?? "base"}>
+              <IntroPanel nav="base" />
+              <NoBoecAttachedPanel nav="onboarding" />
+            </View>
+          </Root>
           <Root nav="else" activeView={location[1]}>
             <View
               activePanel={getElseViewPanel("base", location[2], "base")}
@@ -216,7 +227,7 @@ export const AppLayout: FC = observer(() => {
           </Root>
         </Epic>
       </SplitCol>
-      {isDesktop && <DesktopMenu />}
+      {isDesktop && location[0] !== "init" && <DesktopMenu />}
     </SplitLayout>
   );
 });

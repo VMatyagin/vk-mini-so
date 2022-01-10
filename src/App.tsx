@@ -4,13 +4,11 @@ import { ConfigProvider, AdaptivityProvider, AppRoot } from "@vkontakte/vkui";
 
 import { AppLayout } from "./AppLayout";
 import { appStore } from "./features/stores/app-store";
-import { Intro } from "./ui/molecules/Intro";
 import { useQuery } from "react-query";
 import { UsersAPI } from "./features/utils/requests/user-request";
-import { NoBoecAttached } from "./ui/molecules/NoBoecAttached";
 
 export const App: FC = observer(({ children }) => {
-  const { colorSchema, isInitialization, setUser, user } = useContext(appStore);
+  const { colorSchema, setUser } = useContext(appStore);
 
   useQuery({
     queryKey: ["user-me"],
@@ -25,13 +23,7 @@ export const App: FC = observer(({ children }) => {
     <ConfigProvider scheme={colorSchema}>
       <AdaptivityProvider>
         <AppRoot noLegacyClasses={true}>
-          {isInitialization ? (
-            <Intro />
-          ) : user?.boec !== null ? (
-            <AppLayout>{children}</AppLayout>
-          ) : (
-            <NoBoecAttached />
-          )}
+          <AppLayout>{children}</AppLayout>
         </AppRoot>
       </AdaptivityProvider>
     </ConfigProvider>

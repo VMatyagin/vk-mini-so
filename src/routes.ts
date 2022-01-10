@@ -256,6 +256,16 @@ export const getElseViewPanel = (
     : defaultPanel;
 export const routes: Route[] = [
   {
+    name: "init",
+    path: "/init",
+    children: [
+      {
+        name: "onboarding",
+        path: "/onboarding",
+      },
+    ],
+  },
+  {
     // story
     name: "else",
     path: "/spbso",
