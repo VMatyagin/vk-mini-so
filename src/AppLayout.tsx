@@ -52,8 +52,8 @@ import { ReportViewPanel } from "./features/report/pages/ReportViewPanel";
 import { ReportEditPanel } from "./features/report/pages/ReportEditPanel";
 import { ReportBoecListPanel } from "./features/report/pages/ReportBoecListPanel";
 import { BrigadeSeasonRequestsPanel } from "./features/brigades/pages/BrigadeSeasonRequestsPanel";
-import { IntroPanel } from "./ui/molecules/IntroPanel";
-import { NoBoecAttachedPanel } from "./ui/molecules/NoBoecAttachedPanel";
+import { IntroPanel } from "./ui/pages/IntroPanel";
+import { OnBoardingPanel } from "./ui/pages/OnBoardingPanel";
 
 export const AppLayout: FC = observer(() => {
   const { popout } = useContext(routerStore);
@@ -85,7 +85,7 @@ export const AppLayout: FC = observer(() => {
           <Root nav="init" activeView="base">
             <View nav="base" activePanel={location[1] ?? "base"}>
               <IntroPanel nav="base" />
-              <NoBoecAttachedPanel nav="onboarding" />
+              <OnBoardingPanel nav="onboarding" />
             </View>
           </Root>
           <Root nav="else" activeView={location[1]}>
