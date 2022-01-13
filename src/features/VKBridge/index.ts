@@ -13,7 +13,6 @@ export const API_VERSION = "5.122";
 export const initApp = async () => {
   const VKConnectCallback = (e: VKBridgeEvent<AnyReceiveMethodName>) => {
     if (e.detail.type === "VKWebAppUpdateConfig") {
-      VKBridge.unsubscribe(VKConnectCallback);
       AppStoreInstance.setColorScheme(e.detail.data.scheme);
     }
   };
