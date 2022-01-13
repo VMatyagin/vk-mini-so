@@ -12,7 +12,7 @@ export const App: FC = observer(({ children }) => {
 
   useQuery({
     queryKey: ["user-me"],
-    queryFn: () => UsersAPI.getMeData(),
+    queryFn: UsersAPI.getMeData,
     retry: 1,
     refetchInterval: 60000,
     refetchOnWindowFocus: false,

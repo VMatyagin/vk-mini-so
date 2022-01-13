@@ -31,7 +31,7 @@ export const IntroPanel: FC<PanelProps> = observer((props) => {
     if (isInitialization === false && user?.boec !== null) {
       router.navigate("else.base.base");
     }
-    if (true) {
+    if (isInitialization === false && user?.boec === null) {
       router.navigate("init.onboarding");
     }
   }, [isInitialization, router, user?.boec]);
