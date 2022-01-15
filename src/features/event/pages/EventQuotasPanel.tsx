@@ -11,7 +11,6 @@ import {
   PanelHeaderBack,
   Separator,
   PanelProps,
-  Spinner,
 } from "@vkontakte/vkui";
 
 import { PanelHeader, Title } from "@vkontakte/vkui";
@@ -254,11 +253,11 @@ export const EventQuotasPanel: FC<PanelProps> = observer((props) => {
               extraFnProp={{
                 sort,
               }}
-              customSpinner={
-                <td colSpan={3}>
-                  <Spinner size="small" style={{ margin: "20px 0" }} />
-                </td>
-              }
+              // customSpinner={
+              //   <td colSpan={3}>
+              //     <Spinner size="small" style={{ margin: "20px 0" }} />
+              //   </td>
+              // }
               customRender={(brigades) => {
                 if (sort === "area") {
                   return renderSortedByAreaOrShtab(brigades, renderFn, "area");

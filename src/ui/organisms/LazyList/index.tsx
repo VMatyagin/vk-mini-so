@@ -1,9 +1,16 @@
 import { debounce } from "@vkontakte/vkjs";
-import { Footer, Header, Search, Spinner } from "@vkontakte/vkui";
+import {
+  Footer,
+  Group,
+  Header,
+  List,
+  PullToRefresh,
+  Search,
+  Spinner,
+} from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import React, {
   createContext,
-  ReactElement,
   useCallback,
   useMemo,
   useState,
@@ -37,7 +44,6 @@ interface LazyUsersListProps<
   title?: string;
   enabled?: boolean;
   emptyMessage?: string;
-  customSpinner?: ReactElement;
   customRender?: (array: ItemType[]) => JSX.Element[];
   withSearch?: boolean;
   laztListRef?: React.RefObject<LazyListControls>;
@@ -56,7 +62,6 @@ export const LazyList = observer(
     fetchFn,
     queryKey,
     extraFnProp,
-    customSpinner,
     title,
     customRender,
     enabled,
@@ -121,34 +126,41 @@ export const LazyList = observer(
       refetch,
     }));
     return (
-      <LazyListContext.Provider
-        value={{
-          refetch,
-        }}
-      >
-        {withSearch && <Search value={searchInput} onChange={onSearchChange} />}
-        {title && (
-          <Header mode="tertiary" indicator={data && data.pages[0].count}>
-            {title}
-          </Header>
-        )}
-        {!customRender &&
-          renderItem &&
-          flatData?.map((item) => renderItem(item))}
-        {customRender && flatData?.length > 0 && customRender(flatData)}
-
-        {!customSpinner &&
-          (isLoading || search !== searchInput) &&
-          !isError && <Spinner size="small" style={{ margin: "20px 0" }} />}
-        {isLoading && !isError && customSpinner}
-        {LoadDetector}
-        {flatData &&
-          flatData.length === 0 &&
-          !(isLoading || search !== searchInput) &&
-          !isFetching &&
-          !isError && <Footer>{emptyMessage}</Footer>}
-        {isError && <Footer>Ошибка соединения</Footer>}
-      </LazyListContext.Provider>
+      <Group>
+        <PullToRefresh onRefresh={refetch} isFetching={isLoading}>
+          <LazyListContext.Provider
+            value={{
+              refetch,
+            }}
+          >
+            {withSearch && (
+              <Search value={searchInput} onChange={onSearchChange} />
+            )}
+            {title && (
+              <Header mode="tertiary" indicator={data?.pages[0].count}>
+                {title}
+              </Header>
+            )}
+            {!((isLoading || search !== searchInput) && !isError) ? (
+              <List>
+                {!customRender &&
+                  renderItem &&
+                  flatData?.map((item) => renderItem(item))}
+                {customRender && flatData?.length > 0 && customRender(flatData)}
+                {LoadDetector}
+              </List>
+            ) : (
+              <Spinner size="small" style={{ margin: "20px 0" }} />
+            )}
+            {flatData &&
+              flatData.length === 0 &&
+              !(isLoading || search !== searchInput) &&
+              !isFetching &&
+              !isError && <Footer>{emptyMessage}</Footer>}
+            {isError && <Footer>Ошибка соединения</Footer>}
+          </LazyListContext.Provider>
+        </PullToRefresh>
+      </Group>
     );
   }
 );
