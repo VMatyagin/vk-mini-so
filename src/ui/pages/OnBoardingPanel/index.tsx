@@ -12,6 +12,7 @@ import astra from "../../../assets/astra.jpeg";
 import provorniy from "../../../assets/provorniy.jpeg";
 import germes from "../../../assets/germes.jpeg";
 import styled from "styled-components";
+import { useRouter } from "react-router5";
 
 interface SlideProps {
   title: string;
@@ -100,7 +101,13 @@ const Slide: FC<SlideProps> = ({ image, title, headline }) => (
 );
 export const OnBoardingPanel: FC<PanelProps> = (props) => {
   const [slideIndex, setSlideIndex] = useState(0);
-
+  const { navigate } = useRouter();
+  const onApply = () => {
+    navigate("init.apply");
+  };
+  const onBoec = () => {
+    navigate("init.already-boec");
+  };
   return (
     <Panel
       {...props}
@@ -131,10 +138,15 @@ export const OnBoardingPanel: FC<PanelProps> = (props) => {
             right: 0,
           }}
         >
-          <Button stretched mode="secondary" size="l">
+          <Button onClick={onBoec} stretched mode="secondary" size="l">
             Я боец
           </Button>
-          <Button style={{ marginTop: 16 }} stretched size="l">
+          <Button
+            onClick={onApply}
+            style={{ marginTop: 16 }}
+            stretched
+            size="l"
+          >
             Заполнить анкету
           </Button>
         </Div>

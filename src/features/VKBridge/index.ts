@@ -107,6 +107,18 @@ export const allowNotifications = async (): Promise<{
     return error;
   }
 };
+export const allowGroupNotifications = async (): Promise<{
+  result: true;
+}> => {
+  try {
+    const data = await VKBridge.send("VKWebAppAllowMessagesFromGroup", {
+      group_id: 12906,
+    });
+    return data;
+  } catch (error) {
+    return error;
+  }
+};
 export const denyNotifications = async (): Promise<{
   result: true;
 }> => {

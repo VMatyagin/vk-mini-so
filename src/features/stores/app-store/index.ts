@@ -71,6 +71,8 @@ export class AppStore {
 
     const params = Object.fromEntries(urlSearchParams.entries());
     this.appParams = params;
+    console.log(params);
+
     this.queryString = searchParams.slice(1);
   };
 }

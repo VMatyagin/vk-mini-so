@@ -54,6 +54,9 @@ import { ReportBoecListPanel } from "./features/report/pages/ReportBoecListPanel
 import { BrigadeSeasonRequestsPanel } from "./features/brigades/pages/BrigadeSeasonRequestsPanel";
 import { IntroPanel } from "./ui/pages/IntroPanel";
 import { OnBoardingPanel } from "./ui/pages/OnBoardingPanel";
+import { ApplyPanel } from "./ui/pages/ApplyPanel";
+import { ApplyComplete } from "./ui/pages/AppleComplete";
+import { AlreadyBoecPanel } from "./ui/pages/AlreadyBoecPanel";
 
 export const AppLayout: FC = observer(() => {
   const { popout } = useContext(routerStore);
@@ -69,7 +72,10 @@ export const AppLayout: FC = observer(() => {
     <SplitLayout
       modal={<Modals />}
       popout={popout}
-      header={hasHeader && <PanelHeader separator={false} />}
+      header={
+        hasHeader &&
+        location?.[0] !== "init" && <PanelHeader separator={false} />
+      }
       style={{ justifyContent: "center" }}
     >
       <SplitCol
@@ -86,6 +92,9 @@ export const AppLayout: FC = observer(() => {
             <View nav="base" activePanel={location[1] ?? "base"}>
               <IntroPanel nav="base" />
               <OnBoardingPanel nav="onboarding" />
+              <ApplyPanel nav="apply" />
+              <ApplyComplete nav="apply-completed" />
+              <AlreadyBoecPanel nav="already-boec" />
             </View>
           </Root>
           <Root nav="else" activeView={location[1]}>

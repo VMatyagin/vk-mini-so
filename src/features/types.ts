@@ -226,3 +226,19 @@ export interface Answer {
   text: string;
   answered: boolean;
 }
+
+export interface UserApply {
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  dateOfBirth: string | null;
+  about: string;
+  phone: string;
+  phoneLess: boolean;
+  areaId: number;
+  area: Area;
+  brigade: Brigade;
+  brigadeId: number;
+  university: string;
+  vkId: number;
+}

@@ -263,6 +263,18 @@ export const routes: Route[] = [
         name: "onboarding",
         path: "/onboarding",
       },
+      {
+        name: "apply",
+        path: "~/apply",
+      },
+      {
+        name: "apply-completed",
+        path: "/apply-completed",
+      },
+      {
+        name: "already-boec",
+        path: "/already-boec",
+      },
     ],
   },
   {

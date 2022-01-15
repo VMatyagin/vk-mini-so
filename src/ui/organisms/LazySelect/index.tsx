@@ -1,4 +1,8 @@
-import { CustomSelect, CustomSelectOptionInterface } from "@vkontakte/vkui";
+import {
+  CustomSelect,
+  CustomSelectOption,
+  CustomSelectOptionInterface,
+} from "@vkontakte/vkui";
 import React, { useCallback, useMemo, useState } from "react";
 import { useQuery } from "react-query";
 import { useDebounce } from "use-debounce";
@@ -13,10 +17,7 @@ interface LazySelectProps<
   ItemType extends object,
   OptionsType extends ListOptions | undefined
 > {
-  parseItem: (item: ItemType) => {
-    value: string | number;
-    label: string;
-  };
+  parseItem: (item: ItemType) => CustomSelectOptionInterface;
   fetchFn: (options: OptionsType) => Promise<ListResponse<ItemType>>;
   extraFnProp?: Omit<OptionsType, "limit" | "offset">;
   queryKey: string;
@@ -65,10 +66,7 @@ export const LazySelect = <
   }, [data]);
 
   const options = useMemo(() => {
-    let newOptions = flatData.map(parseItem) as {
-      value: any;
-      label: string;
-    }[];
+    let newOptions = flatData.map(parseItem) as CustomSelectOptionInterface[];
 
     if (value && searchInput === "") {
       return [
@@ -106,6 +104,9 @@ export const LazySelect = <
       filterFn={false}
       options={options}
       fetching={isFetching || searchInput !== search}
+      renderOption={({ option, ...restProps }) => (
+        <CustomSelectOption {...restProps} description={option.description} />
+      )}
       // renderDropdown={
       //     !isFetching &&
       //     (({ defaultDropdownContent }) => {
