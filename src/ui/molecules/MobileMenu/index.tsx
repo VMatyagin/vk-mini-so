@@ -1,8 +1,4 @@
-import {
-  Icon28Newsfeed,
-  Icon28ScanViewfinderOutline,
-  Icon28UserSquareOutline,
-} from "@vkontakte/icons";
+import { Icon28Newsfeed, Icon28UserSquareOutline } from "@vkontakte/icons";
 import { Badge, Tabbar, TabbarItem } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { useContext, useMemo } from "react";
@@ -24,13 +20,13 @@ export const MobileMenu = observer(() => {
       >
         <Icon28Newsfeed />
       </TabbarItem>
-      <TabbarItem
+      {/* <TabbarItem
         onClick={() => navigate("scanner")}
         selected={location[0] === "scanner"}
         // text="Сканнер"
       >
         <Icon28ScanViewfinderOutline />
-      </TabbarItem>
+      </TabbarItem> */}
       <TabbarItem
         onClick={() => navigate("profile")}
         selected={location[0] === "profile"}
