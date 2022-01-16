@@ -9,36 +9,37 @@ import { profileStore } from "../../../store";
 import { Mission } from "../../molecules/Mission";
 
 export const Achievements = observer(() => {
-    const { user } = useContext(appStore);
-    const { progress } = useContext(profileStore);
+  const { user } = useContext(appStore);
+  const { progress } = useContext(profileStore);
 
-    const { data, isLoading } = useQuery({
-        queryKey: ["boec-achievements", user?.boec.id],
-        queryFn: () => {
-            return UsersAPI.getBoecAchievements();
-        },
-        retry: 1,
-        refetchOnWindowFocus: false,
-    });
+  const { data, isLoading } = useQuery({
+    queryKey: ["boec-achievements", user?.boec.id],
+    queryFn: () => {
+      return UsersAPI.getBoecAchievements();
+    },
+    retry: 1,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  });
 
-    if (isLoading || !data || !progress) {
-        return <PanelSpinner />;
-    }
-    return (
-        <>
-            {data
-                .filter((item) => item.achieved_at !== null)
-                .map((item) => (
-                    <Mission
-                        key={item.id}
-                        Icon={<Icon28DrillOutline />}
-                        title={item.title}
-                        description={item.description}
-                        value={progress[item.type]}
-                        maxValue={item.goal}
-                        createdAt={item.achieved_at}
-                    />
-                ))}
-        </>
-    );
+  if (isLoading || !data || !progress) {
+    return <PanelSpinner />;
+  }
+  return (
+    <>
+      {data
+        .filter((item) => item.achieved_at !== null)
+        .map((item) => (
+          <Mission
+            key={item.id}
+            Icon={<Icon28DrillOutline />}
+            title={item.title}
+            description={item.description}
+            value={progress[item.type]}
+            maxValue={item.goal}
+            createdAt={item.achieved_at}
+          />
+        ))}
+    </>
+  );
 });
