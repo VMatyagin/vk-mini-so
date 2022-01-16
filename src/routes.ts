@@ -61,7 +61,7 @@ const elseViews: Route[] = [
   },
   {
     name: "competitions",
-    path: "/event/:eventId/competitions",
+    path: "/competitions",
     children: [
       {
         name: "base",
@@ -75,7 +75,7 @@ const elseViews: Route[] = [
   },
   {
     name: "competition",
-    path: "/event/:eventId/competition/:competitionId",
+    path: "/competition/:competitionId",
     children: [
       {
         name: "details",

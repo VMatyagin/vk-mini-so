@@ -23,7 +23,7 @@ import {
   Icon28DeleteOutline,
   Icon28DeleteOutlineAndroid,
 } from "@vkontakte/icons";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import Icon28EditOutline from "@vkontakte/icons/dist/28/edit_outline";
 import { MODAL_EVENT_NOMINATION_EDIT } from "../ui/modals/NominationEditModal";
 import { useRoute } from "react-router5";
@@ -37,6 +37,15 @@ export const NomiantionsListPanel: FC<PanelProps> = observer((props) => {
   const queryClient = useQueryClient();
   const platform = usePlatform();
 
+  const { data: competition } = useQuery({
+    queryKey: ["competition", competitionId],
+    queryFn: ({ queryKey }) => {
+      return EventAPI.getCompetition(queryKey[1] as number);
+    },
+    retry: false,
+    refetchOnWindowFocus: false,
+    enabled: !!competitionId,
+  });
   const { mutate: removeNomination } = useMutation<
     Nomination,
     Error,
@@ -136,17 +145,20 @@ export const NomiantionsListPanel: FC<PanelProps> = observer((props) => {
             <SimpleCell
               onClick={() => handleOpenActionSheet(item)}
               key={item.id}
+              disabled={!competition?.canEdit}
             >
               {item.title}
             </SimpleCell>
           )}
         />
       </Group>
-      <Group>
-        <CellButton onClick={() => openEditModal()}>
-          Добавить номинацию
-        </CellButton>
-      </Group>
+      {competition?.canEdit && (
+        <Group>
+          <CellButton onClick={() => openEditModal()}>
+            Добавить номинацию
+          </CellButton>
+        </Group>
+      )}
     </Panel>
   );
 });

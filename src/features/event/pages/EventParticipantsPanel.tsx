@@ -103,10 +103,14 @@ export const EventParticipantsPanel: FC<ParticipantsPanelProps> = observer(
     };
     const platform = usePlatform();
 
-    const handleOpenActionSheet = (data: Participant) => {
+    const handleOpenActionSheet = (
+      event: React.MouseEvent,
+      data: Participant
+    ) => {
       openPopout(
         <ActionSheet
           onClose={closePopout}
+          toggleRef={event.currentTarget}
           iosCloseItem={
             <ActionSheetItem autoclose mode="cancel">
               Отменить
@@ -146,31 +150,30 @@ export const EventParticipantsPanel: FC<ParticipantsPanelProps> = observer(
         </PanelHeader>
         <Group>
           <CellButton onClick={onAddClick}>Добавить</CellButton>
-
-          <LazyList
-            title={PARTICIPANT_TITLES[worth].title}
-            fetchFn={EventAPI.getEventParticipants}
-            queryKey={`event-${eventId}`}
-            extraFnProp={{
-              eventId: eventId!,
-              worth,
-            }}
-            enabled={!!eventId}
-            renderItem={(item: Participant) => {
-              const brigadeTitle = item.brigade?.title
-                ? `(${item.brigade?.title})`
-                : "";
-              return (
-                <SimpleCell
-                  key={item.id}
-                  onClick={() => handleOpenActionSheet(item)}
-                >
-                  {`${item.boec.fullName} ${brigadeTitle}`}
-                </SimpleCell>
-              );
-            }}
-          />
         </Group>
+        <LazyList
+          title={PARTICIPANT_TITLES[worth].title}
+          fetchFn={EventAPI.getEventParticipants}
+          queryKey={`event-${eventId}`}
+          extraFnProp={{
+            eventId: eventId!,
+            worth,
+          }}
+          enabled={!!eventId}
+          renderItem={(item: Participant) => {
+            const brigadeTitle = item.brigade?.title
+              ? `(${item.brigade?.title})`
+              : "";
+            return (
+              <SimpleCell
+                key={item.id}
+                onClick={(event) => handleOpenActionSheet(event, item)}
+              >
+                {`${item.boec.fullName} ${brigadeTitle}`}
+              </SimpleCell>
+            );
+          }}
+        />
       </Panel>
     );
   }

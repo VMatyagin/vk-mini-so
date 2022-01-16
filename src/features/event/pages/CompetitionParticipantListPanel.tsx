@@ -245,7 +245,7 @@ export const CompetitionParticipantListPanel: FC<CompetitionParticipantListPanel
               >
                 {item.brigades.reduce((prev, current, index) => {
                   const delimiter = index === 0 ? "" : "|";
-                  return `${prev} ${delimiter} ${current.title}`;
+                  return `${prev} ${delimiter} ${current.fullTitle}`;
                 }, `${item.title ? `${item.title} | ` : ""} `)}
               </SimpleCell>
             )}

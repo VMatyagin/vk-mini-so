@@ -152,6 +152,7 @@ export const ShtabOrBrigadeLeaders: FC<ShtabOrBrigadeLeadersProps> = observer(
           ) : (
             data.map((item) => (
               <SimpleCell
+                key={item.id}
                 // description={positions[item.position].title}
                 description={`${new Date(item.fromDate!).toLocaleString("ru", {
                   day: "2-digit",

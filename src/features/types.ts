@@ -82,6 +82,7 @@ export interface EventType {
   isParticipant: boolean;
   isTicketed: boolean;
   canEdit: boolean;
+  participantCount: number;
 }
 export interface Shtab extends WithId {
   title: string;

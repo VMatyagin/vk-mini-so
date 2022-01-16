@@ -1,10 +1,10 @@
-import { FC, useMemo } from "react";
+import { FC, useContext, useMemo, useState } from "react";
 import {
-  Group,
   Panel,
   PanelHeaderBack,
   SimpleCell,
   PanelProps,
+  ScreenSpinner,
 } from "@vkontakte/vkui";
 
 import { PanelHeader, Title } from "@vkontakte/vkui";
@@ -14,22 +14,38 @@ import { Competition } from "../../types";
 import { EventAPI } from "../../utils/requests/event-request";
 import { useRoute } from "react-router5";
 import { useQuery } from "react-query";
+import { routerStore } from "../../stores/router-store";
+import { Icon12Favorite } from "@vkontakte/icons";
 
 export const CompetitionsListPanel: FC<PanelProps> = observer((props) => {
-  const { route, router } = useRoute();
+  const {
+    route,
+    router: { navigate },
+  } = useRoute();
+  const { openPopout, closePopout } = useContext(routerStore);
   const eventId = useMemo(() => route.params.eventId, [route]);
 
-  const changeView = (competitionId: number) => {
-    router.navigate("else.competition.details", { eventId, competitionId });
-  };
-  const { data: event } = useQuery({
-    queryKey: ["event", eventId],
+  const [selectedId, selectId] = useState<null | number>(null);
+  useQuery({
+    queryKey: ["event", selectedId],
     queryFn: ({ queryKey }) => {
-      return EventAPI.getEvent(queryKey[1] as number);
+      openPopout(<ScreenSpinner />);
+      return EventAPI.getCompetition(queryKey[1] as number);
     },
-    retry: 1,
+    onSuccess: (data: Competition) => {
+      closePopout();
+      navigate("else.competition.details", {
+        competitionId: data.id,
+      });
+    },
+    onError: closePopout,
+    retry: false,
+    enabled: !!selectedId,
     refetchOnWindowFocus: false,
   });
+  const changeView = (competitionId: number) => {
+    selectId(competitionId);
+  };
 
   return (
     <Panel {...props}>
@@ -37,38 +53,41 @@ export const CompetitionsListPanel: FC<PanelProps> = observer((props) => {
         left={<PanelHeaderBack onClick={() => window.history.back()} />}
       >
         <Title level="2" weight="bold">
-          Конкурсы
+          Конкурсы и соревнования
         </Title>
       </PanelHeader>
-      <Group>
-        <LazyList
-          title="Конкурсы"
-          fetchFn={EventAPI.getEventCompetitions}
-          queryKey={`competitions-list-${eventId}`}
-          extraFnProp={{
-            eventId,
-          }}
-          enabled={!!eventId}
-          renderItem={(item: Competition) => (
-            <SimpleCell key={item.id} onClick={() => changeView(item.id)}>
-              {item.title}
-            </SimpleCell>
-          )}
-        />
-      </Group>
-      {event?.canEdit && (
-        <Group>
+      <LazyList
+        title="Конкурсы и соревнования"
+        fetchFn={EventAPI.getEventCompetitions}
+        queryKey={`competitions-list-${eventId}`}
+        extraFnProp={{
+          eventId,
+        }}
+        enabled={!!eventId}
+        renderItem={(item: Competition) => (
           <SimpleCell
-            onClick={() => {
-              router.navigate("else.competitions.create", {
-                eventId,
-              });
-            }}
+            key={item.id}
+            onClick={() => changeView(item.id)}
+            badge={!item.ratingless ? <Icon12Favorite /> : null}
           >
-            Добавить конкурс
+            {item.title}
           </SimpleCell>
-        </Group>
-      )}
+        )}
+      />
+      {/* TODO */}
+      {/* {event?.canEdit && (
+                <Group>
+                    <SimpleCell
+                        onClick={() => {
+                            navigate("else.competitions.create", {
+                                eventId
+                            });
+                        }}
+                    >
+                        Добавить конкурс
+                    </SimpleCell>
+                </Group>
+            )} */}
     </Panel>
   );
 });

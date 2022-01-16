@@ -1,6 +1,5 @@
 import { FC, useMemo } from "react";
 import {
-  Group,
   Panel,
   PanelHeaderBack,
   PanelProps,
@@ -34,23 +33,21 @@ export const BrigadeListPanel: FC<PanelProps> = observer((props) => {
           Отряды
         </Title>
       </PanelHeader>
-      <Group>
-        <LazyList
-          fetchFn={BrigadesAPI.getBrigadesList}
-          queryKey={"brigade-list-sort"}
-          extraFnProp={{ shtabId }}
-          withSearch={true}
-          renderItem={(brigade) => (
-            <SimpleCell
-              key={brigade.id}
-              onClick={() => selectBrigade(brigade.id)}
-              badge={brigade.canEdit ? <Icon12Favorite /> : null}
-            >
-              {brigade.fullTitle}
-            </SimpleCell>
-          )}
-        />
-      </Group>
+      <LazyList
+        fetchFn={BrigadesAPI.getBrigadesList}
+        queryKey={"brigade-list-sort"}
+        extraFnProp={{ shtabId }}
+        withSearch={true}
+        renderItem={(brigade) => (
+          <SimpleCell
+            key={brigade.id}
+            onClick={() => selectBrigade(brigade.id)}
+            badge={brigade.canEdit ? <Icon12Favorite /> : null}
+          >
+            {brigade.fullTitle}
+          </SimpleCell>
+        )}
+      />
     </Panel>
   );
 });

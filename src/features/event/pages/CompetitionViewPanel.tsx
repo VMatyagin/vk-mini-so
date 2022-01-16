@@ -5,7 +5,6 @@ import {
   InfoRow,
   Panel,
   PanelHeaderBack,
-  PanelSpinner,
   ScreenSpinner,
   SimpleCell,
   Title,
@@ -15,7 +14,7 @@ import { PanelHeader } from "@vkontakte/vkui";
 
 import { observer } from "mobx-react-lite";
 import { routerStore } from "../../stores/router-store";
-import { Icon28Like, Icon28UsersOutline } from "@vkontakte/icons";
+import { Icon28Like, Icon28UserAddOutline } from "@vkontakte/icons";
 import { useMutation, useQuery } from "react-query";
 import { Boec, Brigade, CompetitionParticipant } from "../../types";
 import { EventAPI } from "../../utils/requests/event-request";
@@ -31,14 +30,14 @@ export const CompetitionViewPanel: FC<PanelProps> = observer((props) => {
   const { route } = useRoute();
   const { navigate } = useRouter();
 
-  const { eventId, competitionId } = useMemo(() => route.params, [route]);
+  const { competitionId } = useMemo(() => route.params, [route]);
 
-  const { data, refetch, isLoading } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["competition", competitionId],
     queryFn: ({ queryKey }) => {
       return EventAPI.getCompetition(queryKey[1] as number);
     },
-    retry: 1,
+    retry: false,
     refetchOnWindowFocus: false,
     enabled: !!competitionId,
   });
@@ -66,6 +65,7 @@ export const CompetitionViewPanel: FC<PanelProps> = observer((props) => {
         closePopout();
         refetch();
       },
+      onError: closePopout,
     }
   );
   const brigadeSelectCallback = (data: {
@@ -75,24 +75,41 @@ export const CompetitionViewPanel: FC<PanelProps> = observer((props) => {
   }) => {
     mutate(data);
   };
-  const boecSelectCallback = (boecList: Boec[], title: string) => {
-    setModalCallback(MODAL_BRIGADE_SELECTING, (brigades: Brigade[]) =>
-      brigadeSelectCallback({
-        boecIds: boecList.map((item) => item.id),
-        brigadeIds:
-          brigades.length > 0 ? brigades.map((item) => item.id) : undefined,
+  const boecSelectCallback = ({
+    boecList,
+    title,
+  }: {
+    boecList: Boec[];
+    title: string;
+  }) => {
+    setModalCallback(
+      MODAL_BRIGADE_SELECTING,
+      ({
+        boecList,
+        brigades,
         title,
-      })
+      }: {
+        brigades: Brigade[];
+        boecList: Boec[];
+        title: string;
+      }) =>
+        brigadeSelectCallback({
+          boecIds: boecList.map((item) => item.id),
+          brigadeIds:
+            brigades.length > 0 ? brigades.map((item) => item.id) : undefined,
+          title,
+        })
     );
-    openModal(MODAL_BRIGADE_SELECTING);
+    openModal(MODAL_BRIGADE_SELECTING, { title, boecList });
   };
   const createParticipant = () => {
-    setModalCallback(MODAL_EVENT_PARTICIPANT_TITLE, (title: string) => {
-      openModal(MODAL_BOEC_SELECTING);
-      setModalCallback(MODAL_BOEC_SELECTING, (boecList: Boec[]) =>
-        boecSelectCallback(boecList, title)
-      );
-    });
+    setModalCallback(
+      MODAL_EVENT_PARTICIPANT_TITLE,
+      ({ title }: { title: string }) => {
+        openModal(MODAL_BOEC_SELECTING, { title });
+        setModalCallback(MODAL_BOEC_SELECTING, boecSelectCallback);
+      }
+    );
     openModal(MODAL_EVENT_PARTICIPANT_TITLE);
   };
 
@@ -105,100 +122,85 @@ export const CompetitionViewPanel: FC<PanelProps> = observer((props) => {
           {data?.title}
         </Title>
       </PanelHeader>
-      {isLoading && <PanelSpinner />}
-      {!isLoading && (
-        <>
-          <Group
-            header={<Header mode="secondary">Информация о конкурсе</Header>}
-          >
+      <Group header={<Header mode="secondary">Информация о конкурсе</Header>}>
+        <SimpleCell
+          onClick={() =>
+            navigate("else.competition.participants", {
+              competitionId,
+            })
+          }
+        >
+          <InfoRow header={COMPETITIVE_PARTICIPANT_TITLES[0].plural}>
+            {data?.participantCount}
+          </InfoRow>
+        </SimpleCell>
+        <SimpleCell
+          onClick={() =>
+            navigate("else.competition.involvements", {
+              competitionId,
+            })
+          }
+        >
+          <InfoRow header={COMPETITIVE_PARTICIPANT_TITLES[1].plural}>
+            {data?.involvementCount}
+          </InfoRow>
+        </SimpleCell>
+        <SimpleCell
+          onClick={() =>
+            navigate("else.competition.winners", {
+              competitionId,
+            })
+          }
+        >
+          <InfoRow header={COMPETITIVE_PARTICIPANT_TITLES[2].plural}>
+            {data?.winnerCount}
+          </InfoRow>
+        </SimpleCell>
+        <SimpleCell
+          onClick={() =>
+            navigate("else.competition.not-winners", {
+              competitionId,
+            })
+          }
+        >
+          <InfoRow header={COMPETITIVE_PARTICIPANT_TITLES[3].plural}>
+            {data?.notwinnerCount}
+          </InfoRow>
+        </SimpleCell>
+        {data?.canEdit && (
+          <>
             <SimpleCell
               onClick={() =>
-                navigate("else.competition.participants", {
-                  eventId,
+                navigate("else.competition.edit", {
                   competitionId,
                 })
               }
             >
-              <InfoRow header={COMPETITIVE_PARTICIPANT_TITLES[0].plural}>
-                {data?.participantCount}
-              </InfoRow>
+              Редактировать
             </SimpleCell>
-            <SimpleCell
-              onClick={() =>
-                navigate("else.competition.involvements", {
-                  eventId,
-                  competitionId,
-                })
-              }
-            >
-              <InfoRow header={COMPETITIVE_PARTICIPANT_TITLES[1].plural}>
-                {data?.involvementCount}
-              </InfoRow>
-            </SimpleCell>
-            <SimpleCell
-              onClick={() =>
-                navigate("else.competition.winners", {
-                  eventId,
-                  competitionId,
-                })
-              }
-            >
-              <InfoRow header={COMPETITIVE_PARTICIPANT_TITLES[2].plural}>
-                {data?.winnerCount}
-              </InfoRow>
-            </SimpleCell>
-            <SimpleCell
-              onClick={() =>
-                navigate("else.competition.not-winners", {
-                  eventId,
-                  competitionId,
-                })
-              }
-            >
-              <InfoRow header={COMPETITIVE_PARTICIPANT_TITLES[3].plural}>
-                {data?.notwinnerCount}
-              </InfoRow>
-            </SimpleCell>
-            {data?.canEdit && (
-              <>
-                <SimpleCell
-                  onClick={() =>
-                    navigate("else.competition.edit", {
-                      eventId,
-                      competitionId,
-                    })
-                  }
-                >
-                  Редактировать
-                </SimpleCell>
-              </>
-            )}
-          </Group>
-          <Group header={<Header mode="secondary">Заявки</Header>}>
-            <SimpleCell
-              before={<Icon28UsersOutline />}
-              onClick={createParticipant}
-            >
-              Создать заявку
-            </SimpleCell>
-          </Group>
-          {data?.canEdit && (
-            <Group header={<Header mode="secondary">Номинации</Header>}>
-              <SimpleCell
-                before={<Icon28Like />}
-                onClick={() =>
-                  navigate("else.competition.nominations", {
-                    eventId,
-                    competitionId,
-                  })
-                }
-              >
-                Редактировать номинации
-              </SimpleCell>
-            </Group>
-          )}
-        </>
-      )}
+          </>
+        )}
+      </Group>
+      <Group header={<Header mode="secondary">Заявки</Header>}>
+        <SimpleCell
+          before={<Icon28UserAddOutline />}
+          onClick={createParticipant}
+        >
+          Подать заявку
+        </SimpleCell>
+      </Group>
+      <Group header={<Header mode="secondary">Номинации</Header>}>
+        <SimpleCell
+          before={<Icon28Like />}
+          onClick={() =>
+            navigate("else.competition.nominations", {
+              competitionId,
+            })
+          }
+        >
+          Список номинаций
+        </SimpleCell>
+      </Group>
     </Panel>
   );
 });

@@ -1,10 +1,10 @@
-import { FC } from "react";
+import { FC, useContext, useState } from "react";
 import {
-  Group,
   Panel,
   PanelHeaderBack,
   SimpleCell,
   PanelProps,
+  ScreenSpinner,
 } from "@vkontakte/vkui";
 
 import { PanelHeader, Title } from "@vkontakte/vkui";
@@ -13,21 +13,22 @@ import { LazyList } from "../../../ui/organisms/LazyList";
 import { EventType } from "../../types";
 import { EventAPI } from "../../utils/requests/event-request";
 import { useRouter } from "react-router5";
+import { useQuery } from "react-query";
+import { routerStore } from "../../stores/router-store";
+import { getDateString } from "../../utils/getDateString";
 
 const getDescription = ({
   date,
   place,
+  time,
 }: {
   date?: string | null;
+  time?: string | null;
   place?: string | null;
 }) => {
   let description = "";
   if (date) {
-    description += new Date(date).toLocaleString("ru", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "2-digit",
-    });
+    description += getDateString(date, time);
   }
 
   if (place) {
@@ -39,10 +40,26 @@ const getDescription = ({
 
 export const EventListPanel: FC<PanelProps> = observer((props) => {
   const { navigate } = useRouter();
+  const { openPopout, closePopout } = useContext(routerStore);
+  const [selectedId, selectId] = useState<null | number>(null);
+  useQuery({
+    queryKey: ["event", selectedId],
+    queryFn: ({ queryKey }) => {
+      openPopout(<ScreenSpinner />);
+      return EventAPI.getEvent(queryKey[1] as number);
+    },
+    onSuccess: (data: EventType) => {
+      closePopout();
+      navigate("else.event.details", { eventId: data.id });
+    },
+    onError: closePopout,
+    retry: false,
+    enabled: !!selectedId,
+    refetchOnWindowFocus: false,
+  });
   const changeView = (eventId: number) => {
-    navigate("else.event.details", { eventId });
+    selectId(eventId);
   };
-
   return (
     <Panel {...props}>
       <PanelHeader
@@ -52,26 +69,25 @@ export const EventListPanel: FC<PanelProps> = observer((props) => {
           Мероприятия
         </Title>
       </PanelHeader>
-      <Group>
-        <LazyList
-          withSearch={true}
-          title="Предстоящие мероприятия"
-          fetchFn={EventAPI.getEventList}
-          queryKey={"event-list"}
-          renderItem={(item: EventType) => (
-            <SimpleCell
-              key={item.id}
-              onClick={() => changeView(item.id)}
-              description={getDescription({
-                date: item.startDate,
-                place: item.location,
-              })}
-            >
-              {`${item.title} | ${item.shtab?.title || "Без организатора"}`}
-            </SimpleCell>
-          )}
-        />
-      </Group>
+      <LazyList
+        withSearch={true}
+        title="Предстоящие мероприятия"
+        fetchFn={EventAPI.getEventList}
+        queryKey={"event-list"}
+        renderItem={(item: EventType) => (
+          <SimpleCell
+            key={item.id}
+            onClick={() => changeView(item.id)}
+            description={getDescription({
+              date: item.startDate,
+              place: item.location,
+              time: item.startTime,
+            })}
+          >
+            {`${item.title} | ${item.shtab?.title || "Без организатора"}`}
+          </SimpleCell>
+        )}
+      />
     </Panel>
   );
 });

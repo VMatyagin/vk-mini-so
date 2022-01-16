@@ -1,6 +1,5 @@
 import { FC } from "react";
 import {
-  Group,
   Panel,
   PanelHeaderBack,
   SimpleCell,
@@ -30,23 +29,21 @@ export const ShtabListPanel: FC<PanelProps> = observer((props) => {
           Штабы
         </Title>
       </PanelHeader>
-      <Group>
-        <LazyList
-          fetchFn={ShtabsAPI.getShtabs}
-          queryKey={"shtab-list"}
-          withSearch={true}
-          renderItem={(shtab) => (
-            <SimpleCell
-              key={shtab.id}
-              expandable={true}
-              onClick={() => handleSelect(shtab.id)}
-              badge={shtab.canEdit ? <Icon12Favorite /> : null}
-            >
-              {shtab.title}
-            </SimpleCell>
-          )}
-        />
-      </Group>
+      <LazyList
+        fetchFn={ShtabsAPI.getShtabs}
+        queryKey={"shtab-list"}
+        withSearch={true}
+        renderItem={(shtab) => (
+          <SimpleCell
+            key={shtab.id}
+            expandable={true}
+            onClick={() => handleSelect(shtab.id)}
+            badge={shtab.canEdit ? <Icon12Favorite /> : null}
+          >
+            {shtab.title}
+          </SimpleCell>
+        )}
+      />
     </Panel>
   );
 });
