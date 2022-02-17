@@ -84,7 +84,7 @@ export const APICall = async (
     });
     return data.response;
   } catch (error) {
-    return error;
+    return Promise.reject(error);
   }
 };
 export const selectVKUsers = async (): Promise<UserGetFriendsFriend[]> => {
@@ -94,7 +94,7 @@ export const selectVKUsers = async (): Promise<UserGetFriendsFriend[]> => {
     });
     return data.users;
   } catch (error) {
-    return error;
+    return Promise.reject(error);
   }
 };
 export const allowNotifications = async (): Promise<{
@@ -104,7 +104,7 @@ export const allowNotifications = async (): Promise<{
     const data = await VKBridge.send("VKWebAppAllowNotifications");
     return data;
   } catch (error) {
-    return error;
+    return Promise.reject(error);
   }
 };
 export const allowGroupNotifications = async (): Promise<{
@@ -116,7 +116,7 @@ export const allowGroupNotifications = async (): Promise<{
     });
     return data;
   } catch (error) {
-    return error;
+    return Promise.reject(error);
   }
 };
 export const denyNotifications = async (): Promise<{
@@ -126,7 +126,7 @@ export const denyNotifications = async (): Promise<{
     const data = await VKBridge.send("VKWebAppDenyNotifications");
     return data;
   } catch (error) {
-    return error;
+    return Promise.reject(error);
   }
 };
 export const sendTapticNotification = async (
@@ -140,7 +140,7 @@ export const sendTapticNotification = async (
     });
     return data;
   } catch (error) {
-    return error;
+    return Promise.reject(error);
   }
 };
 export const sendTapticImpact = async (
@@ -154,6 +154,6 @@ export const sendTapticImpact = async (
     });
     return data;
   } catch (error) {
-    return error;
+    return Promise.reject(error);
   }
 };
