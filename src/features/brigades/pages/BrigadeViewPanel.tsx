@@ -1,4 +1,4 @@
-import { FC, useContext, useMemo } from "react";
+import React, { FC, useContext, useMemo, useState } from "react";
 import {
   CellButton,
   Group,
@@ -11,19 +11,24 @@ import {
   Title,
   PanelProps,
   Counter,
+  Button,
+  Div,
+  Snackbar,
 } from "@vkontakte/vkui";
 import { PanelHeader } from "@vkontakte/vkui";
 
 import { observer } from "mobx-react-lite";
 import { Icon28BookOutline, Icon28HashtagOutline } from "@vkontakte/icons";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { BrigadesAPI } from "../../utils/requests/brigades-request";
 import { useRoute } from "react-router5";
 import { appStore } from "../../stores/app-store";
 import { ShtabOrBrigadeLeaders } from "../ui/molecules/ShtabOrBrigadeLeaders";
+import { getSafariFriendlyDate } from "../../utils/getSafariFriendlyDate";
 
 export const BrigadeViewPanel: FC<PanelProps> = observer((props) => {
   const { isStaff } = useContext(appStore);
+  const [snackBar, setSnackBar] = useState<React.ReactNode>(null);
   const {
     route,
     router: { navigate },
@@ -40,6 +45,7 @@ export const BrigadeViewPanel: FC<PanelProps> = observer((props) => {
   const handleBrigadeEdit = () => {
     navigate("else.brigade.edit", { brigadeId });
   };
+  const queryClient = useQueryClient();
 
   const { data: brigade, isLoading } = useQuery({
     queryKey: ["brigade", brigadeId],
@@ -50,7 +56,21 @@ export const BrigadeViewPanel: FC<PanelProps> = observer((props) => {
     refetchOnWindowFocus: false,
     enabled: !!brigadeId,
   });
-
+  const { isLoading: applyLoading, mutateAsync } = useMutation(
+    BrigadesAPI.applyBrigade
+  );
+  const applyToBrigade = async () => {
+    await mutateAsync(brigadeId);
+    queryClient.setQueryData(["brigade", brigadeId], {
+      ...brigade,
+      isApplied: true,
+    });
+    setSnackBar(
+      <Snackbar onClose={() => setSnackBar(null)}>
+        Супер! С тобой свяжутся
+      </Snackbar>
+    );
+  };
   return (
     <Panel {...props}>
       <PanelHeader
@@ -65,19 +85,33 @@ export const BrigadeViewPanel: FC<PanelProps> = observer((props) => {
           <Group
             header={<Header mode="secondary">Информация об отряде</Header>}
           >
-            <SimpleCell multiline>
+            <SimpleCell disabled multiline>
               <InfoRow header="День рождения">
                 {brigade?.dateOfBirth
-                  ? new Date(brigade.dateOfBirth).toLocaleDateString()
+                  ? getSafariFriendlyDate(brigade.dateOfBirth).format(
+                      "D MMMM YYYY"
+                    )
                   : "Не указан"}
               </InfoRow>
             </SimpleCell>
-            <SimpleCell>
+            <SimpleCell disabled>
               <InfoRow header="Штаб">{brigade?.shtab.title}</InfoRow>
             </SimpleCell>
-            <SimpleCell>
+            <SimpleCell disabled>
               <InfoRow header="Численность">{brigade?.members}</InfoRow>
             </SimpleCell>
+
+            <Div>
+              <Button
+                onClick={applyToBrigade}
+                stretched
+                size="m"
+                disabled={brigade?.isApplied}
+                loading={applyLoading}
+              >
+                {brigade?.isApplied ? "Заявка отправлена" : "Подать заявку"}
+              </Button>
+            </Div>
           </Group>
           <Group header={<Header mode="secondary">Командный состав</Header>}>
             <ShtabOrBrigadeLeaders />
@@ -127,6 +161,7 @@ export const BrigadeViewPanel: FC<PanelProps> = observer((props) => {
       ) : (
         <PanelSpinner />
       )}
+      {snackBar}
     </Panel>
   );
 });

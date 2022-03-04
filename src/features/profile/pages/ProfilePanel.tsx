@@ -3,13 +3,14 @@ import {
   Avatar,
   Counter,
   Group,
-  HorizontalScroll,
+  Header,
+  // HorizontalScroll,
   Panel,
   PanelHeaderButton,
   PanelProps,
   SimpleCell,
-  Tabs,
-  TabsItem,
+  // Tabs,
+  // TabsItem,
   Title,
 } from "@vkontakte/vkui";
 import { PanelHeader } from "@vkontakte/vkui";
@@ -35,7 +36,10 @@ export const ProfilePanel: FC<PanelProps> = observer((props) => {
     navigate("profile.notifications");
   };
 
-  const [activeTab, setActiveTab] = useState<string>("missions");
+  const [
+    activeTab,
+    // setActiveTab
+  ] = useState<string>("stat");
 
   return (
     <Panel {...props}>
@@ -83,32 +87,32 @@ export const ProfilePanel: FC<PanelProps> = observer((props) => {
           }
           expandable={true}
         >
-          К бойцовской странице
+          Подробнее
         </SimpleCell>
       </Group>
-      <Group>
-        <Tabs>
-          <HorizontalScroll>
-            <TabsItem
-              onClick={() => setActiveTab("missions")}
-              selected={activeTab === "missions"}
-            >
-              Задачи
-            </TabsItem>
-            <TabsItem
-              onClick={() => setActiveTab("achievements")}
-              selected={activeTab === "achievements"}
-            >
-              Достижения
-            </TabsItem>
-            <TabsItem
-              onClick={() => setActiveTab("stat")}
-              selected={activeTab === "stat"}
-            >
-              Статистика
-            </TabsItem>
-          </HorizontalScroll>
-        </Tabs>
+      <Group header={<Header>Статистика</Header>}>
+        {/* <Tabs>
+                    <HorizontalScroll>
+                        <TabsItem
+                            onClick={() => setActiveTab("missions")}
+                            selected={activeTab === "missions"}
+                        >
+                            Задачи
+                        </TabsItem>
+                        <TabsItem
+                            onClick={() => setActiveTab("achievements")}
+                            selected={activeTab === "achievements"}
+                        >
+                            Достижения
+                        </TabsItem>
+                        <TabsItem
+                            onClick={() => setActiveTab("stat")}
+                            selected={activeTab === "stat"}
+                        >
+                            Статистика
+                        </TabsItem>
+                    </HorizontalScroll>
+                </Tabs> */}
         {activeTab === "missions" && <Missions />}
         {activeTab === "achievements" && <Achievements />}
         {activeTab === "stat" && <Statistics />}

@@ -12,6 +12,7 @@ export interface Viewer {
   boec: Boec;
   isStaff: boolean;
   unreadActivityCount: number;
+  points: number;
 }
 
 export interface WithId {
@@ -32,6 +33,7 @@ export interface Brigade {
   dateOfBirth: string | null;
   shtab: Shtab;
   canEdit: boolean;
+  isApplied: boolean;
   members: number;
   seasonRequestCount: number;
 }
@@ -235,9 +237,6 @@ export interface UserApply {
   dateOfBirth: string | null;
   about: string;
   phone: string;
-  phoneLess: boolean;
-  areaId: number;
-  area: Area;
   brigade: Brigade;
   brigadeId: number;
   university: string;

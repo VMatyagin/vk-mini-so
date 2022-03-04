@@ -55,8 +55,6 @@ import { BrigadeSeasonRequestsPanel } from "./features/brigades/pages/BrigadeSea
 import { IntroPanel } from "./ui/pages/IntroPanel";
 import { OnBoardingPanel } from "./ui/pages/OnBoardingPanel";
 import { ApplyPanel } from "./ui/pages/ApplyPanel";
-import { ApplyComplete } from "./ui/pages/AppleComplete";
-import { AlreadyBoecPanel } from "./ui/pages/AlreadyBoecPanel";
 
 export const AppLayout: FC = observer(() => {
   const { popout } = useContext(routerStore);
@@ -93,8 +91,6 @@ export const AppLayout: FC = observer(() => {
               <IntroPanel nav="base" />
               <OnBoardingPanel nav="onboarding" />
               <ApplyPanel nav="apply" />
-              <ApplyComplete nav="apply-completed" />
-              <AlreadyBoecPanel nav="already-boec" />
             </View>
           </Root>
           <Root nav="else" activeView={location[1]}>

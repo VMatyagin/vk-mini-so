@@ -157,3 +157,24 @@ export const sendTapticImpact = async (
     return Promise.reject(error);
   }
 };
+export const storageSet = async (
+  key: string,
+  value: string
+): Promise<{
+  result: true;
+}> => {
+  try {
+    const data = await VKBridge.send("VKWebAppStorageSet", { key, value });
+    return data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+export const storageGet = async (key: string) => {
+  try {
+    const data = await VKBridge.send("VKWebAppStorageGet", { keys: [key] });
+    return data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

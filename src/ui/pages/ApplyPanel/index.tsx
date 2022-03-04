@@ -16,14 +16,12 @@ import { UserApply } from "../../../features/types";
 import { StepOne } from "./StepOne";
 import { StepTwo } from "./StepTwo";
 import { StepThree } from "./StepThree";
-import { useQuery } from "react-query";
 import { ApplyAPI } from "../../../features/utils/requests/apply-request";
 import { routerStore } from "../../../features/stores/router-store";
 import { useRouter } from "react-router5";
-import { allowGroupNotifications } from "../../../features/VKBridge";
+import { useQueryClient } from "react-query";
 
 interface ApplyForm extends Omit<UserApply, "areaId" | "brigadeId"> {
-  areaId: { label: string; value: number };
   brigadeId: { label: string; value: number };
 }
 type Step = 0 | 1 | 2;
@@ -42,7 +40,7 @@ const stepValues: Record<Step, State> = {
     percent: 50,
   },
   2: {
-    title: "Последний шаг!",
+    title: "Последний шаг",
     percent: 90,
   },
 };
@@ -65,36 +63,21 @@ export const ApplyPanel: FC<PanelProps> = observer((props) => {
 
   useEffect(() => {
     openPopout(<ScreenSpinner />);
-  }, [openPopout]);
-
-  const { handleSubmit, reset } = form;
-
-  useQuery({
-    queryKey: ["apply-me"],
-    queryFn: ApplyAPI.getOwn,
-    retry: false,
-    refetchOnWindowFocus: false,
-    onSuccess: async () => {
-      await allowGroupNotifications();
-      navigate("init.apply-completed");
+    if (userData) {
+      form.reset({
+        firstName: userData.first_name,
+        lastName: userData.last_name,
+      });
       closePopout();
-    },
-    onError: () => {
-      if (userData) {
-        reset({
-          firstName: userData.first_name,
-          lastName: userData.last_name,
-        });
-      }
-      closePopout();
-    },
-    enabled: !!userData,
-  });
+    }
+  }, [closePopout, form, openPopout, userData]);
+
+  const { handleSubmit } = form;
+  const queryClient = useQueryClient();
   const onSubmit = async ({
     about,
     firstName,
     lastName,
-    areaId,
     brigadeId,
     dateOfBirth,
     middleName,
@@ -107,7 +90,6 @@ export const ApplyPanel: FC<PanelProps> = observer((props) => {
         about,
         firstName,
         lastName,
-        areaId: areaId?.value,
         brigadeId: brigadeId?.value,
         dateOfBirth: dateOfBirth || null,
         middleName,
@@ -115,7 +97,8 @@ export const ApplyPanel: FC<PanelProps> = observer((props) => {
         university,
         vkId: userData?.id,
       });
-      navigate("init.apply-completed");
+      await queryClient.refetchQueries(["user-me"]);
+      navigate("else.base.base");
     } finally {
       closePopout();
     }
@@ -138,6 +121,8 @@ export const ApplyPanel: FC<PanelProps> = observer((props) => {
       document.removeEventListener("touchmove", callback);
     };
   }, []);
+  console.log(form.formState.errors);
+
   return (
     <Panel {...props}>
       <PanelHeader left={<PanelHeaderBack onClick={goBack} />}>

@@ -1,6 +1,6 @@
 import { Button, FormItem, Group, Header } from "@vkontakte/vkui";
 import { useContext } from "react";
-import { Controller } from "react-hook-form";
+import { Controller, useWatch } from "react-hook-form";
 import { stepContext } from ".";
 import { Brigade } from "../../../features/types";
 import { BrigadesAPI } from "../../../features/utils/requests/brigades-request";
@@ -8,6 +8,7 @@ import { LazySelect } from "../../organisms/LazySelect";
 
 export const StepTwo = () => {
   const { setStep } = useContext(stepContext);
+  const areaOption = useWatch({ name: "area" });
 
   return (
     <Group
@@ -29,12 +30,15 @@ export const StepTwo = () => {
                 onChange={field.onChange}
                 value={field.value}
                 fetchFn={BrigadesAPI.getBrigadesList}
-                queryKey={"brigade-list"}
+                queryKey={`brigade-list-area-${areaOption?.value}`}
                 parseItem={(brigade: Brigade) => ({
                   label: brigade.fullTitle,
                   value: brigade.id,
-                  description: "Университет? или штаб?",
+                  description: brigade.shtab?.title,
                 })}
+                extraFnProp={{
+                  areaId: areaOption?.value,
+                }}
               />
             </FormItem>
             <FormItem>

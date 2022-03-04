@@ -26,13 +26,13 @@ const slides: SlideProps[] = [
     image: astra,
   },
   {
-    title: "Второй заголовок",
-    headline: "Какие мы классные, все дела",
+    title: "Не только работа!",
+    headline: "Работа летом, мероприятия — круглый год",
     image: provorniy,
   },
   {
-    title: "Третий заголовок",
-    headline: "Какая нибудь мотивирующая\n\nхрень",
+    title: "Хочешь стать бойцом?",
+    headline: "Заполняй анкету и приходи на первое собрание!",
     image: germes,
   },
 ];
@@ -105,9 +105,7 @@ export const OnBoardingPanel: FC<PanelProps> = (props) => {
   const onApply = () => {
     navigate("init.apply");
   };
-  const onBoec = () => {
-    navigate("init.already-boec");
-  };
+
   return (
     <Panel
       {...props}
@@ -138,9 +136,6 @@ export const OnBoardingPanel: FC<PanelProps> = (props) => {
             right: 0,
           }}
         >
-          <Button onClick={onBoec} stretched mode="secondary" size="l">
-            Я боец
-          </Button>
           <Button
             onClick={onApply}
             style={{ marginTop: 16 }}

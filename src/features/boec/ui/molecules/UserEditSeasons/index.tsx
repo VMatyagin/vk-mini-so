@@ -1,6 +1,7 @@
 import { Icon28AddOutline, Icon28PlaneOutline } from "@vkontakte/icons";
 import {
   CellButton,
+  Footer,
   Group,
   Header,
   SimpleCell,
@@ -37,6 +38,8 @@ export const UserEditSeasons: FC = observer(() => {
     <>
       <Group header={<Header>Года выезда</Header>}>
         {!seasons && <Spinner size="small" style={{ margin: "20px 0" }} />}
+        {seasons?.length === 0 && <Footer>Ничего не найдено</Footer>}
+
         {seasons?.map((season) => (
           <SimpleCell
             key={season.id}

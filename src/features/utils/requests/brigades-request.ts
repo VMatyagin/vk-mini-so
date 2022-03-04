@@ -15,12 +15,14 @@ export const BrigadesAPI = {
     limit = 20,
     offset = 0,
     shtabId,
+    areaId,
     search,
     sort,
   }: {
     limit?: number;
     offset?: number;
     shtabId?: number;
+    areaId?: number;
     search?: string;
     sort?: string;
   }): Promise<ListResponse<Brigade>> {
@@ -30,6 +32,7 @@ export const BrigadesAPI = {
       shtabId,
       sort,
       search,
+      areaId,
     };
     const { data } = await get(`/api/so/brigade/`, {
       params,
@@ -215,6 +218,10 @@ export const BrigadesAPI = {
       `/api/so/brigade/${brigade.id}/positions/${id}/`,
       rest
     );
+    return data;
+  },
+  async applyBrigade(id: number): Promise<void> {
+    const { data } = await post(`/api/so/brigade/${id}/apply/`);
     return data;
   },
 };

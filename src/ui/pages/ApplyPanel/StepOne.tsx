@@ -12,7 +12,7 @@ export const StepOne = () => {
   return (
     <Group header={<Header>Давай сначала определимся с направлением</Header>}>
       <Controller
-        name="areaId"
+        name="area"
         rules={{
           required: "Это поле необходимо заполнить",
         }}
@@ -21,7 +21,10 @@ export const StepOne = () => {
             <FormItem
               top="Предпочтительное направление"
               status={fieldState.invalid ? "error" : "default"}
-              bottom={fieldState?.error?.message}
+              bottom={
+                fieldState?.error?.message ||
+                "Свой выбор всегда можно будет изменить"
+              }
             >
               <LazySelect
                 name={field.name}
