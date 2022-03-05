@@ -13,7 +13,6 @@ import {
   View,
 } from "@vkontakte/vkui";
 
-import { DesktopMenu } from "./ui/molecules/DesktopMenu";
 import { Modals } from "./ui/organisms/Modals";
 import { routerStore } from "./features/stores/router-store";
 
@@ -21,10 +20,8 @@ import { useRoute } from "react-router5";
 import { ElsePanel } from "./features/else/pages/ElsePanel";
 import { EventListPanel } from "./features/event/pages/EventListPanel";
 import { NotificationsPanel } from "./features/profile/pages/NotificationsPanel";
-import { ProfilePanel } from "./features/profile/pages/ProfilePanel";
 import { ScannerPanel } from "./features/scanner/pages/ScannerPanel";
 import { ScanPanel } from "./features/scanner/pages/ScanPanel";
-import { MobileMenu } from "./ui/molecules/MobileMenu";
 import { getElseViewPanel } from "./routes";
 import { EventViewPanel } from "./features/event/pages/EventViewPanel";
 import { EventEditPanel } from "./features/event/pages/EventEditPanel";
@@ -82,10 +79,7 @@ export const AppLayout: FC = observer(() => {
         width={isDesktop ? "560px" : "100%"}
         maxWidth={isDesktop ? "560px" : "100%"}
       >
-        <Epic
-          activeStory={location[0]}
-          tabbar={!isDesktop && location[0] !== "init" && <MobileMenu />}
-        >
+        <Epic activeStory={location[0]}>
           <Root nav="init" activeView="base">
             <View nav="base" activePanel={location[1] ?? "base"}>
               <IntroPanel nav="base" />
@@ -215,6 +209,16 @@ export const AppLayout: FC = observer(() => {
             >
               <PollViewPanel nav="base" />
             </View>
+            <View
+              activePanel={getElseViewPanel(
+                "profile",
+                location[2],
+                "notifications"
+              )}
+              nav="profile"
+            >
+              <NotificationsPanel nav="notifications" />
+            </View>
           </Root>
           <Root nav="scanner" activeView="base">
             <View nav="base" activePanel={location[1] ?? "base"}>
@@ -222,17 +226,8 @@ export const AppLayout: FC = observer(() => {
               <ScanPanel nav="scan" />
             </View>
           </Root>
-          <Root nav="profile" activeView={location[1] ?? "base"}>
-            <View activePanel="base" nav="base">
-              <ProfilePanel nav="base" />
-            </View>
-            <View activePanel="base" nav="notifications">
-              <NotificationsPanel nav="base" />
-            </View>
-          </Root>
         </Epic>
       </SplitCol>
-      {isDesktop && location[0] !== "init" && <DesktopMenu />}
     </SplitLayout>
   );
 });

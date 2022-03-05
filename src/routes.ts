@@ -241,6 +241,16 @@ const elseViews: Route[] = [
       },
     ],
   },
+  {
+    name: "profile",
+    path: "/profile",
+    children: [
+      {
+        name: "notifications",
+        path: "/notifications",
+      },
+    ],
+  },
 ];
 
 export const getElseViewPanel = (
@@ -274,16 +284,6 @@ export const routes: Route[] = [
     name: "else",
     path: "/spbso",
     children: elseViews,
-  },
-  {
-    name: "profile",
-    path: "/profile",
-    children: [
-      {
-        name: "notifications",
-        path: "/notifications",
-      },
-    ],
   },
   {
     name: "scanner",
