@@ -10,7 +10,7 @@ export const StepOne = () => {
   const { setStep } = useContext(stepContext);
 
   return (
-    <Group header={<Header>Давай сначала определимся с направлением</Header>}>
+    <Group header={<Header>Давай определимся с направлением</Header>}>
       <Controller
         name="area"
         rules={{
