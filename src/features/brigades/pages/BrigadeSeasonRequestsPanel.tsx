@@ -126,7 +126,7 @@ export const BrigadeSeasonRequestsPanel: FC<PanelProps> = observer((props) => {
               }
               indicator={report.year}
             >
-              {report?.seasons?.[0].boec?.fullName}
+              {report?.seasons?.[0]?.boec?.fullName}
             </SimpleCell>
           )}
         />

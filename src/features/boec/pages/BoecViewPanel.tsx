@@ -15,6 +15,7 @@ import {
   SimpleCell,
   Avatar,
   Snackbar,
+  Link,
 } from "@vkontakte/vkui";
 import { PanelHeader } from "@vkontakte/vkui";
 
@@ -185,6 +186,17 @@ export const BoecViewPanel: FC<PanelProps> = observer((props) => {
             <UserPositions />
           </Group>
           <Group>
+            {boec.vkId && (
+              <Div>
+                <Link
+                  href={`https://vk.com/id${boec.vkId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  На страницу ВК
+                </Link>
+              </Div>
+            )}
             <CellButton expandable={true} onClick={handleHistory}>
               {isMe ? "Где я участвовал" : "Участия в мероприятиях"}
             </CellButton>

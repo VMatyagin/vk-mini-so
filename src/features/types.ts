@@ -36,6 +36,7 @@ export interface Brigade {
   isApplied: boolean;
   members: number;
   seasonRequestCount: number;
+  candidatesCount: number;
 }
 
 export interface SeasonReport {
@@ -85,6 +86,7 @@ export interface EventType {
   isTicketed: boolean;
   canEdit: boolean;
   participantCount: number;
+  image: string;
 }
 export interface Shtab extends WithId {
   title: string;
@@ -241,4 +243,10 @@ export interface UserApply {
   brigadeId: number;
   university: string;
   vkId: number;
+}
+export interface BrigadeApply {
+  id: number;
+  brigade: Brigade;
+  boec: Boec;
+  createdAt: string;
 }

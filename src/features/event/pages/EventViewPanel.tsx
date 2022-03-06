@@ -31,8 +31,10 @@ import { EventImage } from "../ui/atoms/EventImage";
 import { sendTapticNotification } from "../../VKBridge";
 import { routerStore } from "../../stores/router-store";
 import { getDateString } from "../../utils/getDateString";
+import { appStore } from "../../stores/app-store";
 export const EventViewPanel: FC<PanelProps> = observer((props) => {
   const { openPopout, closePopout } = useContext(routerStore);
+  const { isStaff } = useContext(appStore);
   const { route } = useRoute();
   const eventId = useMemo(() => route.params.eventId, [route]);
 
@@ -100,7 +102,7 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
         }
         toggleRef={e.currentTarget}
       >
-        {event?.canEdit && (
+        {(event?.canEdit || isStaff) && (
           <>
             <ActionSheetItem
               before={<Icon28EditOutline />}
@@ -148,9 +150,11 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
       </PanelHeader>
       <PullToRefresh onRefresh={refetch} isFetching={isLoading}>
         <Group>
-          <Div style={{ paddingTop: 10, paddingBottom: 10 }}>
-            <EventImage />
-          </Div>
+          {event?.image && (
+            <Div style={{ paddingTop: 10, paddingBottom: 10 }}>
+              <EventImage src={event?.image} />
+            </Div>
+          )}
           <Div
             style={{
               display: "flex",

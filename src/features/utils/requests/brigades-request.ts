@@ -1,5 +1,11 @@
 import axios, { Canceler } from "axios";
-import { Brigade, Position, SeasonReport, Season } from "../../types";
+import {
+  Brigade,
+  Position,
+  SeasonReport,
+  Season,
+  BrigadeApply,
+} from "../../types";
 import { get, patch, post, remove } from "../axiosConfig";
 import { ListResponse } from "../types";
 
@@ -222,6 +228,30 @@ export const BrigadesAPI = {
   },
   async applyBrigade(id: number): Promise<void> {
     const { data } = await post(`/api/so/brigade/${id}/apply/`);
+    return data;
+  },
+  async getBrigadeApplies({
+    brigadeId,
+    limit,
+    offset,
+  }: {
+    brigadeId: number;
+    offset: number;
+    limit: number;
+  }): Promise<ListResponse<BrigadeApply>> {
+    const { data } = await get(`/api/so/brigade/${brigadeId}/apply/`);
+    return data;
+  },
+  async rejectBrigadeApply({
+    brigadeId,
+    applyId,
+  }: {
+    brigadeId: number;
+    applyId: number;
+  }): Promise<void> {
+    const { data } = await post(
+      `/api/so/brigade/${brigadeId}/apply/${applyId}/reject/`
+    );
     return data;
   },
 };

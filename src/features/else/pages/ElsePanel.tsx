@@ -94,7 +94,7 @@ export const ElsePanel: FC<PanelProps> = observer((props) => {
         >
           <Avatar src={userData?.photo_200} size={96} />
           <Title style={{ marginTop: 20 }} level="2" weight="medium">
-            {`${user?.boec.firstName} ${user?.boec.lastName[0]}.`}{" "}
+            {`Привет, ${user?.boec.firstName}`}
           </Title>
         </div>
         <NotificationSwitcher />

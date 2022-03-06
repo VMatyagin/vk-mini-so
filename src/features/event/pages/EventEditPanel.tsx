@@ -4,6 +4,7 @@ import {
   CustomSelectOption,
   CustomSelectOptionInterface,
   DatePicker,
+  File,
   FormItem,
   FormLayout,
   Group,
@@ -29,6 +30,7 @@ import { dirtyValues } from "../../utils";
 import { EventAPI } from "../../utils/requests/event-request";
 import { ShtabsAPI } from "../../utils/requests/shtab-request";
 import { EVENT_WORTH } from "../helpers";
+import { Icon24Camera } from "@vkontakte/icons";
 
 interface EventTypePayload extends EventType {
   selectedShtab: CustomSelectOptionInterface;
@@ -70,15 +72,26 @@ export const EventEditPanel: FC<PanelProps> = observer((props) => {
   const { isDirty, isValid, dirtyFields } = formState;
 
   const { mutate, isLoading } = useMutation<EventType, Error, EventType>(
-    (values) => {
+    async ({ image, ...values }) => {
       openPopout(<ScreenSpinner />);
+
+      let event: EventType;
       if (eventId) {
-        return EventAPI.updateEvent({
+        event = await EventAPI.updateEvent({
           ...dirtyValues(dirtyFields, values),
           id: values.id,
         });
+      } else {
+        event = await EventAPI.createEvent(values as EventType);
       }
-      return EventAPI.createEvent(values);
+      if (image) {
+        const formData = new FormData();
+        formData.set("file", image);
+        console.log(formData, image, values, typeof image);
+
+        event = await EventAPI.uploadEventImage(event.id, formData);
+      }
+      return event;
     },
     {
       onSuccess: (data) => {
@@ -255,6 +268,29 @@ export const EventEditPanel: FC<PanelProps> = observer((props) => {
               </FormItem>
             )}
           />
+          <Controller
+            control={control}
+            name="image"
+            rules={{
+              required: eventId ? "Это поле необходимо заполнить" : undefined,
+            }}
+            render={({ field, fieldState }) => (
+              <FormItem
+                top="Обложка"
+                status={fieldState.invalid ? "error" : "default"}
+                bottom={fieldState.error && fieldState.error.message}
+              >
+                <File
+                  name={field.name}
+                  before={<Icon24Camera />}
+                  controlSize="l"
+                  mode="secondary"
+                  onChange={(event) => field.onChange(event.target.files?.[0])}
+                />
+              </FormItem>
+            )}
+          />
+
           <FormItem>
             <Button
               size="l"

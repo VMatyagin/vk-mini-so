@@ -26,6 +26,10 @@ export const EventAPI = {
     const { data } = await patch(`/api/event/${event.id}/`, event);
     return data;
   },
+  async uploadEventImage(id: number, formData: FormData): Promise<EventType> {
+    const { data } = await post(`/api/event/${id}/upload/`, formData);
+    return data;
+  },
   async getEventList({
     limit,
     offset,

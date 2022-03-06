@@ -22,7 +22,7 @@ export const BrigadeReportsListPanel: FC<PanelProps> = observer((props) => {
     router.navigate("else.report.details", { reportId });
   };
   const handleAdd = () => {
-    router.navigate("else.reports.create");
+    router.navigate("else.reports.create", { brigadeId });
   };
   return (
     <Panel {...props}>

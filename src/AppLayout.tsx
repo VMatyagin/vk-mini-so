@@ -52,6 +52,7 @@ import { BrigadeSeasonRequestsPanel } from "./features/brigades/pages/BrigadeSea
 import { IntroPanel } from "./ui/pages/IntroPanel";
 import { OnBoardingPanel } from "./ui/pages/OnBoardingPanel";
 import { ApplyPanel } from "./ui/pages/ApplyPanel";
+import { BrigadeCandidatesPanel } from "./features/brigades/pages/BrigadeCandidatesPanel";
 
 export const AppLayout: FC = observer(() => {
   const { popout } = useContext(routerStore);
@@ -186,6 +187,7 @@ export const AppLayout: FC = observer(() => {
               <BrigadeEditPanel nav="edit" />
               <BrigadeReportsListPanel nav="seasons-list" />
               <BrigadeSeasonRequestsPanel nav="seasons-requests-list" />
+              <BrigadeCandidatesPanel nav="candidates-list" />
             </View>
             <View
               activePanel={getElseViewPanel("boecs", location[2], "base")}

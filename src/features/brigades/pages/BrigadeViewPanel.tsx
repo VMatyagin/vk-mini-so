@@ -18,7 +18,11 @@ import {
 import { PanelHeader } from "@vkontakte/vkui";
 
 import { observer } from "mobx-react-lite";
-import { Icon28BookOutline, Icon28HashtagOutline } from "@vkontakte/icons";
+import {
+  Icon28BabyBottleOutline,
+  Icon28BookOutline,
+  Icon28HashtagOutline,
+} from "@vkontakte/icons";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { BrigadesAPI } from "../../utils/requests/brigades-request";
 import { useRoute } from "react-router5";
@@ -40,6 +44,9 @@ export const BrigadeViewPanel: FC<PanelProps> = observer((props) => {
   };
   const openRequests = () => {
     navigate("else.brigade.seasons-requests-list", { brigadeId });
+  };
+  const openCandidates = () => {
+    navigate("else.brigade.candidates-list", { brigadeId });
   };
 
   const handleBrigadeEdit = () => {
@@ -138,6 +145,20 @@ export const BrigadeViewPanel: FC<PanelProps> = observer((props) => {
                     }
                   >
                     Заявки на учет сезона
+                  </SimpleCell>
+                )}
+                {!!brigade?.candidatesCount && (
+                  <SimpleCell
+                    before={<Icon28BabyBottleOutline />}
+                    expandable={true}
+                    onClick={openCandidates}
+                    after={
+                      <Counter mode="secondary">
+                        {brigade.candidatesCount}
+                      </Counter>
+                    }
+                  >
+                    Кандидаты
                   </SimpleCell>
                 )}
                 {/* <SimpleCell
