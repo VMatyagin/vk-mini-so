@@ -59,7 +59,6 @@ export const ApplyPanel: FC<PanelProps> = observer((props) => {
   const form = useForm<ApplyForm>({
     mode: "onChange",
   });
-  console.log(form.watch());
 
   useEffect(() => {
     openPopout(<ScreenSpinner />);
