@@ -2,11 +2,14 @@ import {
   CustomSelect,
   CustomSelectOption,
   CustomSelectOptionInterface,
+  Spinner,
 } from "@vkontakte/vkui";
 import React, { useCallback, useMemo, useState } from "react";
-import { useQuery } from "react-query";
+import { useInfiniteQuery } from "react-query";
 import { useDebounce } from "use-debounce";
+import { useIntersect } from "../../../features/utils/hooks/useIntersect";
 import { ListResponse } from "../../../features/utils/types";
+import { debounce } from "@vkontakte/vkjs";
 
 interface ListOptions {
   limit?: number;
@@ -27,6 +30,8 @@ interface LazySelectProps<
   enabled?: boolean;
 }
 
+const limit = 20;
+
 export const LazySelect = <
   Dtype extends object,
   Otype extends ListOptions | undefined
@@ -44,26 +49,39 @@ export const LazySelect = <
   const [search] = useDebounce(searchInput, 750);
 
   const queryFn = useCallback(
-    ({ queryKey }) => {
+    ({ pageParam = 0, queryKey }) => {
       const data = fetchFn({
         search: queryKey[1],
         ...queryKey[2],
+        offset: pageParam,
+        limit,
       });
       return data;
     },
     [fetchFn]
   );
-
-  const { data, isFetching } = useQuery<ListResponse<any>, Error>({
+  const { data, fetchNextPage, isFetching, hasNextPage } = useInfiniteQuery<
+    ListResponse<any>,
+    Error
+  >({
     queryKey: [queryKey, search, extraFnProp],
     queryFn,
     refetchOnWindowFocus: false,
+    getNextPageParam: (_lastPage, data) => {
+      const hasMore =
+        data.reduce((result, page) => result + page.items.length, 0) <
+        _lastPage.count;
+      return hasMore ? data.length * limit : undefined;
+    },
     enabled,
   });
 
   const flatData = useMemo(() => {
-    return data?.items ?? [];
+    return (data && data?.pages?.flatMap((page) => page.items)) || [];
   }, [data]);
+  const fetch = useMemo(() => debounce(fetchNextPage, 750), [fetchNextPage]);
+
+  const { setNode } = useIntersect(() => fetch());
 
   const options = useMemo(() => {
     let newOptions = flatData.map(parseItem) as CustomSelectOptionInterface[];
@@ -77,7 +95,13 @@ export const LazySelect = <
 
     return newOptions;
   }, [flatData, parseItem, searchInput, value]);
-
+  const LoadDetector = useMemo(() => {
+    if (hasNextPage) {
+      return <div className="h-4" ref={(el) => setNode(el!)}></div>;
+    } else {
+      return null;
+    }
+  }, [hasNextPage, setNode]);
   return (
     <CustomSelect
       placeholder="Не выбран"
@@ -103,10 +127,22 @@ export const LazySelect = <
       }}
       filterFn={false}
       options={options}
-      fetching={isFetching || searchInput !== search}
       renderOption={({ option, ...restProps }) => (
         <CustomSelectOption {...restProps} description={option.description} />
       )}
+      renderDropdown={({ defaultDropdownContent }) => {
+        return (
+          <>
+            {defaultDropdownContent}
+            {LoadDetector}
+            {(isFetching || searchInput !== search) && (
+              <CustomSelectOption>
+                <Spinner />
+              </CustomSelectOption>
+            )}
+          </>
+        );
+      }}
     />
   );
 };
