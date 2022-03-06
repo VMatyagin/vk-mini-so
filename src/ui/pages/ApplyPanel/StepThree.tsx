@@ -10,7 +10,7 @@ import {
 import { Controller, useFormState } from "react-hook-form";
 
 export const StepThree = () => {
-  const { isDirty, isValid } = useFormState();
+  const { isDirty } = useFormState();
   return (
     <Group>
       <Controller
@@ -88,7 +88,7 @@ export const StepThree = () => {
               max={{
                 day: 1,
                 month: 1,
-                year: new Date().getFullYear() - 14,
+                year: new Date().getFullYear() - 17,
               }}
               defaultValue={
                 field.value
@@ -118,6 +118,7 @@ export const StepThree = () => {
               <Controller
                 name="phone"
                 defaultValue=""
+                shouldUnregister={true}
                 render={({ field, fieldState }) => (
                   <FormItem
                     top="Телефон"
@@ -156,11 +157,15 @@ export const StepThree = () => {
       <Controller
         name="about"
         defaultValue=""
+        rules={{
+          required: "Отряду нужно знать кто ты",
+        }}
         render={({ field, fieldState }) => (
           <FormItem
             top="О тебе"
             status={fieldState.invalid ? "error" : "default"}
             bottom={fieldState?.error?.message}
+            required
           >
             <Textarea
               placeholder="Расскажи чем увлекаешься или что-нибудь что познакомит нас с тобой"
@@ -185,6 +190,7 @@ export const StepThree = () => {
             top="Учебное заведение, курс"
             status={fieldState.invalid ? "error" : "default"}
             bottom={fieldState?.error?.message}
+            required
           >
             <Input
               type="text"
@@ -197,12 +203,7 @@ export const StepThree = () => {
         )}
       />
       <FormItem>
-        <Button
-          size="l"
-          stretched={true}
-          disabled={!isDirty || !isValid}
-          type="submit"
-        >
+        <Button size="l" stretched={true} disabled={!isDirty} type="submit">
           Подать заявку
         </Button>
       </FormItem>
