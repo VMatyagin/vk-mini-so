@@ -93,6 +93,7 @@ export const NotificationsPanel: FC<PanelProps> = observer((props) => {
             <SimpleCell
               before={getBefore(item)}
               description={getTime(item.createdAt)}
+              multiline
             >
               {getTitle(item)}
             </SimpleCell>
@@ -111,6 +112,7 @@ export const NotificationsPanel: FC<PanelProps> = observer((props) => {
             <SimpleCell
               before={getBefore(item)}
               description={getTime(item.createdAt)}
+              multiline
             >
               {getTitle(item)}
             </SimpleCell>
