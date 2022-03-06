@@ -6,7 +6,7 @@
   "dependencies": {
     "@vkontakte/icons": "^1.139.0",
     "@vkontakte/vk-bridge": "^2.5.3",
-    "@vkontakte/vkui": "^4.24.0",
+    "@vkontakte/vkui": "^4.27.2",
     "axios": "^0.21.0",
     "dayjs": "^1.10.8",
     "history": "^5.2.0",
