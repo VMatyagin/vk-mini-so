@@ -22,7 +22,7 @@ export const App: FC = observer(({ children }) => {
   return (
     <ConfigProvider scheme={colorSchema}>
       <AdaptivityProvider>
-        <AppRoot noLegacyClasses={true}>
+        <AppRoot mode="full">
           <AppLayout>{children}</AppLayout>
         </AppRoot>
       </AdaptivityProvider>
