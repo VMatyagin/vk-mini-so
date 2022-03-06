@@ -105,12 +105,7 @@ export const LazySelect = <
       options={options}
       fetching={isFetching || searchInput !== search}
       renderOption={({ option, ...restProps }) => (
-        <CustomSelectOption
-          // {...restProps}
-          children={restProps.children}
-          onClick={() => alert(2)}
-          description={option.description}
-        />
+        <CustomSelectOption {...restProps} description={option.description} />
       )}
     />
   );
