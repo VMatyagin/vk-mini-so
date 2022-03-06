@@ -110,18 +110,6 @@ export const ApplyPanel: FC<PanelProps> = observer((props) => {
       window.history.back();
     }
   };
-  useEffect(() => {
-    const callback = (e: TouchEvent) => {
-      e.preventDefault();
-    };
-    document.addEventListener("touchmove", callback, {
-      passive: false,
-    });
-    return () => {
-      document.removeEventListener("touchmove", callback);
-    };
-  }, []);
-  console.log(form.formState.errors);
 
   return (
     <Panel {...props}>
