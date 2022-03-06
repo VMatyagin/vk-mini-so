@@ -39,7 +39,8 @@ const slides: SlideProps[] = [
 
 const ImageContainer = styled.div`
   pointerevents: none;
-  height: 450px;
+  height: 50vh;
+  max-height: 450px;
   position: relative;
 
   img {
@@ -55,7 +56,7 @@ const ImageContainer = styled.div`
     background: linear-gradient(
       180deg,
       transparent,
-      var(--background_content) 450px,
+      var(--background_content) 100%,
       var(--background_content)
     );
     position: absolute;
@@ -70,14 +71,14 @@ const GalleryContainer = styled.div`
   flex: 1;
   display: flex;
   .vkuiGallery__bullets {
-    top: 440px !important;
+    top: 47vh !important;
   }
 `;
 
 const Slide: FC<SlideProps> = ({ image, title, headline }) => (
   <div>
     <ImageContainer>
-      <img src={image} height={450} alt={title} />
+      <img src={image} height={"100%"} alt={title} />
       <div className="image-container-gradient" />
     </ImageContainer>
     <div
@@ -120,6 +121,7 @@ export const OnBoardingPanel: FC<PanelProps> = (props) => {
           slideWidth="100%"
           align="right"
           bullets="light"
+          showArrows={true}
         >
           {slides.map((slide) => (
             <Slide key={slide.title} {...slide} />
