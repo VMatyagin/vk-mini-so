@@ -62,7 +62,7 @@ export const BrigadeCandidatesPanel: FC<PanelProps> = observer((props) => {
             mode: "cancel",
           },
         ]}
-        actionsLayout="vertical"
+        actionsLayout="horizontal"
         onClose={closePopout}
         header="Подтвердите действие"
         text="Вы уверены, что хотите отклонить заявку?"
