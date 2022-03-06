@@ -81,14 +81,14 @@ export const LazySelect = <
   return (
     <CustomSelect
       placeholder="Не выбран"
-      searchable
+      // на устройствах не дает выбрать опцию
+      // searchable={true}
       name={name}
       value={value?.value}
       onChange={(event) => {
         const option = options.find(
           (option) => String(option.value) === event.target.value
         );
-        console.log(option, event.target.value);
 
         onChange(option!);
       }}
@@ -105,28 +105,13 @@ export const LazySelect = <
       options={options}
       fetching={isFetching || searchInput !== search}
       renderOption={({ option, ...restProps }) => (
-        <CustomSelectOption {...restProps} description={option.description} />
+        <CustomSelectOption
+          // {...restProps}
+          children={restProps.children}
+          onClick={() => alert(2)}
+          description={option.description}
+        />
       )}
-      // renderDropdown={
-      //     !isFetching &&
-      //     (({ defaultDropdownContent }) => {
-      //         if (this.state.remoteQuery.length < 3) {
-      //             return (
-      //                 <Text
-      //                     style={{
-      //                         padding: 12,
-      //                         color: "var(--text_secondary)"
-      //                     }}
-      //                     weight="regular"
-      //                 >
-      //                     Нужно ввести хотя бы три символа
-      //                 </Text>
-      //             );
-      //         } else {
-      //             return defaultDropdownContent;
-      //         }
-      //     })
-      // }
     />
   );
 };
