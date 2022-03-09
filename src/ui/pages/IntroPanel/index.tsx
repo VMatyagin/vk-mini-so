@@ -1,9 +1,7 @@
-import { Panel, PanelProps, Spinner } from "@vkontakte/vkui";
+import { PanelProps, Spinner } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
-import { FC, useContext, useEffect } from "react";
-import { useRouter } from "react-router5";
+import { FC } from "react";
 import styled from "styled-components";
-import { appStore } from "../../../features/stores/app-store";
 import { Logo } from "../../atom/Logo";
 
 const LogoWrapper = styled.section`
@@ -25,25 +23,12 @@ const SpinnerWrapper = styled.div`
 `;
 
 export const IntroPanel: FC<PanelProps> = observer((props) => {
-  const { isInitialization, user } = useContext(appStore);
-  const router = useRouter();
-  useEffect(() => {
-    if (isInitialization === false && user?.boec !== null) {
-      router.navigate("else.base.base");
-    }
-    if (isInitialization === false && user?.boec === null) {
-      router.navigate("init.onboarding");
-    }
-  }, [isInitialization, router, user?.boec]);
-
   return (
-    <Panel {...props}>
-      <LogoWrapper>
-        <Logo />
-        <SpinnerWrapper>
-          <Spinner />
-        </SpinnerWrapper>
-      </LogoWrapper>
-    </Panel>
+    <LogoWrapper>
+      <Logo />
+      <SpinnerWrapper>
+        <Spinner />
+      </SpinnerWrapper>
+    </LogoWrapper>
   );
 });

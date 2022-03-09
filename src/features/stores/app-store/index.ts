@@ -9,6 +9,7 @@ import { ScrollPosition, Viewer } from "../../types";
 
 import { initApp, APP_ID } from "../../VKBridge";
 import VKBridge from "@vkontakte/vk-bridge";
+import { router } from "../../..";
 
 export class AppStore {
   accessToken: string | null = null;
@@ -54,6 +55,14 @@ export class AppStore {
     this.userData = data;
   };
   setUser = (user: Viewer) => {
+    if (this.user === null) {
+      if (user.boec !== null) {
+        router.navigate("else.base.base", {}, { replace: true });
+      } else {
+        router.navigate("init.onboarding", {}, { replace: true });
+      }
+    }
+
     this.user = user;
   };
   setAccessToken = (accessToken: string | null) => {

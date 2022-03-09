@@ -6,9 +6,11 @@ import { AppLayout } from "./AppLayout";
 import { appStore } from "./features/stores/app-store";
 import { useQuery } from "react-query";
 import { UsersAPI } from "./features/utils/requests/user-request";
+import { IntroPanel } from "./ui/pages/IntroPanel";
 
 export const App: FC = observer(({ children }) => {
-  const { colorSchema, setUser, appParams } = useContext(appStore);
+  const { colorSchema, setUser, appParams, isInitialization } =
+    useContext(appStore);
 
   useQuery({
     queryKey: ["user-me"],
@@ -24,7 +26,11 @@ export const App: FC = observer(({ children }) => {
     <ConfigProvider scheme={colorSchema}>
       <AdaptivityProvider>
         <AppRoot mode="full">
-          <AppLayout>{children}</AppLayout>
+          {isInitialization ? (
+            <IntroPanel />
+          ) : (
+            <AppLayout>{children}</AppLayout>
+          )}
         </AppRoot>
       </AdaptivityProvider>
     </ConfigProvider>

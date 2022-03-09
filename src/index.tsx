@@ -6,7 +6,7 @@ import { configureRouter } from "./create-router";
 import { RouterProvider } from "react-router5";
 
 const queryClient = new QueryClient();
-const router = configureRouter(true);
+export const router = configureRouter(true);
 
 router.start(() =>
   ReactDOM.render(

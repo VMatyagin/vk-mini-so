@@ -6,7 +6,7 @@ import { RouterStoreInstance } from "./features/stores/router-store";
 
 export const configureRouter = (useLoggerPlugin = false) => {
   const router = createRouter(routes, {
-    defaultRoute: "init",
+    defaultRoute: "else.base",
     trailingSlashMode: "always",
     strictTrailingSlash: true,
   });
