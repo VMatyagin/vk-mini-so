@@ -115,7 +115,7 @@ export const ReportEditPanel: FC<PanelProps> = observer((props) => {
             rules={{
               required: "Это поле необходимо заполнить",
               max: new Date().getFullYear(),
-              min: 2000,
+              min: 1958,
             }}
             render={({ field, fieldState }) => (
               <FormItem
@@ -131,7 +131,7 @@ export const ReportEditPanel: FC<PanelProps> = observer((props) => {
                   onChange={field.onChange}
                   onBlur={field.onBlur}
                   max={new Date().getFullYear()}
-                  min={2000}
+                  min={1958}
                 />
               </FormItem>
             )}

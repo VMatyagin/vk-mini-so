@@ -102,7 +102,7 @@ export const BoecSeasonPanel: FC<PanelProps> = observer(({ id }) => {
             rules={{
               required: "Это поле необходимо заполнить",
               max: new Date().getFullYear(),
-              min: 2000,
+              min: 1958,
             }}
             render={({ field, fieldState }) => (
               <FormItem
