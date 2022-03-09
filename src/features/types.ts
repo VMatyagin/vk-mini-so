@@ -104,9 +104,12 @@ export interface ScrollPosition {
 export interface Position<isExtended extends boolean = true> {
   id: number;
   boec: isExtended extends true ? Boec : number;
+  boecId: number;
   position: number;
   brigade: isExtended extends true ? Brigade : number | null;
+  brigadeId: number;
   shtab: isExtended extends true ? Shtab : number | null;
+  shtabId: number;
   fromDate: string;
   toDate: string | null;
 }

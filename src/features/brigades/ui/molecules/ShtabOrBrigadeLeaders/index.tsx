@@ -1,19 +1,23 @@
 import {
+  Icon16ErrorCircleFill,
   Icon28DeleteOutline,
   Icon28DeleteOutlineAndroid,
 } from "@vkontakte/icons";
 import {
   ActionSheet,
   ActionSheetItem,
+  Avatar,
   Footer,
   IOS,
   ScreenSpinner,
   SimpleCell,
+  Snackbar,
   Spinner,
   usePlatform,
 } from "@vkontakte/vkui";
+import { AxiosError } from "axios";
 import { observer } from "mobx-react-lite";
-import { FC, useContext, useMemo } from "react";
+import { FC, useContext, useMemo, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useRoute } from "react-router5";
 import { MODAL_BOEC_POSITION_SELECT } from "../../../../boec/ui/modals/LeaderPositionModal";
@@ -30,6 +34,8 @@ export const ShtabOrBrigadeLeaders: FC<ShtabOrBrigadeLeadersProps> = observer(
   ({ isEditing }) => {
     const { openPopout, closePopout, setModalCallback, openModal } =
       useContext(routerStore);
+    const [snackbar, setSnackbar] = useState<React.ReactNode>(null);
+
     const {
       route,
       router: { navigate },
@@ -61,18 +67,42 @@ export const ShtabOrBrigadeLeaders: FC<ShtabOrBrigadeLeadersProps> = observer(
       refetchOnWindowFocus: false,
       enabled: !!brigadeId || !!shtabId,
     });
-    const { mutate: updatePosition } = useMutation<Position, Error, Position>(
-      (data) => {
+    const { mutate: updatePosition } = useMutation<
+      Position,
+      Error,
+      Partial<Position>
+    >(
+      ({ brigadeId, shtabId, ...rest }) => {
         openPopout(<ScreenSpinner />);
         if (brigadeId) {
-          return BrigadesAPI.updateBrigadePosition(data);
+          return BrigadesAPI.updateBrigadePosition({
+            ...rest,
+            brigadeId,
+          });
         }
-        return ShtabsAPI.updateShtabPosition(data);
+        return ShtabsAPI.updateShtabPosition({ ...rest, shtabId });
       },
       {
         onSuccess: () => {
           closePopout();
           refetch();
+        },
+        onError: (err) => {
+          const error = err as AxiosError;
+
+          closePopout();
+          setSnackbar(
+            <Snackbar
+              onClose={() => setSnackbar(null)}
+              before={
+                <Avatar size={24}>
+                  <Icon16ErrorCircleFill width={14} height={14} />
+                </Avatar>
+              }
+            >
+              {error.response?.data?.error}
+            </Snackbar>
+          );
         },
       }
     );
@@ -101,9 +131,19 @@ export const ShtabOrBrigadeLeaders: FC<ShtabOrBrigadeLeadersProps> = observer(
     const openEditModal = (item: Position) => {
       navigate(route.name, { ...route.params, position: item });
 
-      setModalCallback(MODAL_BOEC_POSITION_SELECT, (updatedPosition) => {
-        updatePosition(updatedPosition);
-      });
+      setModalCallback(
+        MODAL_BOEC_POSITION_SELECT,
+        ({ position, fromDate, toDate, brigadeId, shtabId, id }: Position) => {
+          updatePosition({
+            toDate,
+            fromDate,
+            position,
+            id,
+            brigadeId,
+            shtabId,
+          });
+        }
+      );
       openModal(MODAL_BOEC_POSITION_SELECT);
     };
     const platform = usePlatform();
@@ -177,6 +217,7 @@ export const ShtabOrBrigadeLeaders: FC<ShtabOrBrigadeLeadersProps> = observer(
               </SimpleCell>
             ))
           ))}
+        {snackbar}
       </>
     );
   }

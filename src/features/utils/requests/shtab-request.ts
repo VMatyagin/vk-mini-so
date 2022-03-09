@@ -55,18 +55,13 @@ export const ShtabsAPI = {
     return data;
   },
   async setShtabPosition({
-    boec,
-    position,
+    formData,
     shtabId,
   }: {
-    boec: number;
-    position: number;
+    formData: Partial<Position>;
     shtabId: number;
   }): Promise<Position<false>> {
-    const { data } = await post(`/api/shtab/${shtabId}/positions/`, {
-      boecId: boec,
-      position,
-    });
+    const { data } = await post(`/api/shtab/${shtabId}/positions/`, formData);
     return data;
   },
   async removeShtabPosition({
@@ -81,11 +76,10 @@ export const ShtabsAPI = {
     );
     return data;
   },
-  async updateShtabPosition(position: Position): Promise<Position> {
-    const { id, brigade, shtab, ...rest } = position;
+  async updateShtabPosition(position: Partial<Position>): Promise<Position> {
     const { data } = await patch(
-      `/api/shtab/${shtab.id}/positions/${id}/`,
-      rest
+      `/api/shtab/${position.shtabId}/positions/${position.id}/`,
+      position
     );
     return data;
   },

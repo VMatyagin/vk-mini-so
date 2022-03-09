@@ -192,18 +192,16 @@ export const BrigadesAPI = {
     return data;
   },
   async setBrigadePosition({
-    boec,
-    position,
+    formData,
     brigadeId,
   }: {
-    boec: number;
-    position: number;
+    formData: Partial<Position>;
     brigadeId: number;
   }): Promise<Position<false>> {
-    const { data } = await post(`/api/so/brigade/${brigadeId}/positions/`, {
-      boecId: boec,
-      position,
-    });
+    const { data } = await post(
+      `/api/so/brigade/${brigadeId}/positions/`,
+      formData
+    );
     return data;
   },
   async removeBrigadePosition({
@@ -218,11 +216,10 @@ export const BrigadesAPI = {
     );
     return data;
   },
-  async updateBrigadePosition(position: Position): Promise<Position> {
-    const { id, brigade, shtab, ...rest } = position;
+  async updateBrigadePosition(position: Partial<Position>): Promise<Position> {
     const { data } = await patch(
-      `/api/so/brigade/${brigade.id}/positions/${id}/`,
-      rest
+      `/api/so/brigade/${position.brigadeId}/positions/${position.id}/`,
+      position
     );
     return data;
   },
