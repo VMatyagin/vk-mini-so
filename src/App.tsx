@@ -8,7 +8,7 @@ import { useQuery } from "react-query";
 import { UsersAPI } from "./features/utils/requests/user-request";
 
 export const App: FC = observer(({ children }) => {
-  const { colorSchema, setUser } = useContext(appStore);
+  const { colorSchema, setUser, appParams } = useContext(appStore);
 
   useQuery({
     queryKey: ["user-me"],
@@ -17,6 +17,7 @@ export const App: FC = observer(({ children }) => {
     refetchInterval: 60000,
     refetchOnWindowFocus: false,
     onSuccess: setUser,
+    enabled: !!appParams,
   });
 
   return (

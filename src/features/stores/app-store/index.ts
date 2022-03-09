@@ -1,4 +1,8 @@
-import { AppearanceSchemeType, UserInfo } from "@vkontakte/vk-bridge";
+import {
+  AppearanceSchemeType,
+  GetLaunchParamsResponse,
+  UserInfo,
+} from "@vkontakte/vk-bridge";
 import { makeAutoObservable } from "mobx";
 import { createContext } from "react";
 import { ScrollPosition, Viewer } from "../../types";
@@ -13,7 +17,7 @@ export class AppStore {
   activeTab: Record<string, string> = {};
   componentScroll: Record<string, ScrollPosition> = {};
   user: Viewer | null = null;
-  appParams: Record<string, any> | null = null;
+  appParams: GetLaunchParamsResponse | null = null;
   queryString: string | undefined = undefined;
 
   constructor() {
@@ -22,6 +26,9 @@ export class AppStore {
   }
 
   async load() {
+    this.queryString = window.location.search.slice(1);
+
+    this.appParams = await VKBridge.send("VKWebAppGetLaunchParams");
     const user = await VKBridge.send("VKWebAppGetUserInfo");
     const token = await VKBridge.send("VKWebAppGetAuthToken", {
       app_id: APP_ID,
@@ -65,15 +72,6 @@ export class AppStore {
     const x = element.scrollLeft;
     const y = element.scrollTop;
     this.componentScroll[component] = { x, y };
-  };
-  setAppParams = (searchParams: string) => {
-    const urlSearchParams = new URLSearchParams(searchParams);
-
-    const params = Object.fromEntries(urlSearchParams.entries());
-    this.appParams = params;
-    console.log(params);
-
-    this.queryString = searchParams.slice(1);
   };
 }
 

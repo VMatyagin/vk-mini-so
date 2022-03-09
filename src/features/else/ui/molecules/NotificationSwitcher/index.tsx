@@ -6,12 +6,10 @@ import { allowNotifications, denyNotifications } from "../../../../VKBridge";
 
 export const NotificationSwitcher = observer(() => {
   const { appParams } = useContext(appStore);
-  const [checked, setChecked] = useState(
-    appParams?.vk_are_notifications_enabled
-  );
+  const [checked, setChecked] = useState<boolean>(false);
   useEffect(() => {
-    if (appParams && appParams.vk_are_notifications_enabled) {
-      setChecked(Number(appParams.vk_are_notifications_enabled) === 1);
+    if (appParams) {
+      setChecked(Boolean(appParams.vk_are_notifications_enabled));
     }
   }, [appParams]);
   const handleClick = () => {
