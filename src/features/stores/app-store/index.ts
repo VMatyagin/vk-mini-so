@@ -7,7 +7,12 @@ import { makeAutoObservable } from "mobx";
 import { createContext } from "react";
 import { ScrollPosition, Viewer } from "../../types";
 
-import { initApp, APP_ID } from "../../VKBridge";
+import {
+  initApp,
+  APP_ID,
+  denyNotifications,
+  allowNotifications,
+} from "../../VKBridge";
 import VKBridge from "@vkontakte/vk-bridge";
 import { router } from "../../..";
 
@@ -47,6 +52,22 @@ export class AppStore {
   public get isStaff() {
     return this.user?.isStaff ?? false;
   }
+  public get isNotificationsEnabled() {
+    return !!this.appParams?.vk_are_notifications_enabled;
+  }
+  toggleNotifications = async () => {
+    if (this.isNotificationsEnabled) {
+      const data = await denyNotifications();
+      if (data.result === true) {
+        this.appParams!.vk_are_notifications_enabled = 0;
+      }
+    } else {
+      const data = await allowNotifications();
+      if (data.result === true) {
+        this.appParams!.vk_are_notifications_enabled = 1;
+      }
+    }
+  };
 
   setColorScheme = (colorSchema: AppearanceSchemeType) => {
     this.colorSchema = colorSchema;
