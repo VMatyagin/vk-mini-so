@@ -49,6 +49,7 @@ export interface SeasonReport {
   brigade: Brigade;
   brigadeId: number;
   seasons: Season[];
+  isSummer: boolean;
 }
 
 export interface Season extends WithId {

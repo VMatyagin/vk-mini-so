@@ -10,6 +10,7 @@ import {
   Input,
   PanelSpinner,
   ScreenSpinner,
+  Checkbox,
 } from "@vkontakte/vkui";
 import { PanelHeader } from "@vkontakte/vkui";
 
@@ -136,7 +137,25 @@ export const ReportEditPanel: FC<PanelProps> = observer((props) => {
               </FormItem>
             )}
           />
-
+          <Controller
+            control={control}
+            name="isSummer"
+            render={({ field, fieldState }) => (
+              <FormItem
+                status={fieldState.invalid ? "error" : "default"}
+                bottom={fieldState?.error?.message}
+              >
+                <Checkbox
+                  name={field.name}
+                  checked={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                >
+                  Летний трудовой
+                </Checkbox>
+              </FormItem>
+            )}
+          />
           <FormItem>
             <Button
               size="l"
