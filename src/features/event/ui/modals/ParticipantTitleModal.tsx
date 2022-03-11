@@ -56,7 +56,13 @@ export const ParticipantTitleModal = () => {
     >
       <Group>
         <FormItem top="Название">
-          <Input type="text" name="title" value={title} onChange={onChange} />
+          <Input
+            type="text"
+            name="title"
+            value={title}
+            onChange={onChange}
+            inputMode="text"
+          />
         </FormItem>
       </Group>
     </ModalPage>
