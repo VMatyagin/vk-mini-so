@@ -78,7 +78,9 @@ export const BoecSelectModal = () => {
       onClose={onBoecSelectingClose}
     >
       <Group
-        header={<Header>Заявка «{(modalProps as any)?.title}»</Header>}
+        header={
+          <Header multiline>Заявка «{(modalProps as any)?.title}»</Header>
+        }
         description="Можно не указывать, но далее придется указать отряд"
       >
         <CellButton onClick={openBoecListModal}>Добавить бойца</CellButton>

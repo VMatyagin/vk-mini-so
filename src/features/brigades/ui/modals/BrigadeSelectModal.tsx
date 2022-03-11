@@ -82,7 +82,11 @@ export const BrigadeSelectModal = () => {
       }
       onClose={onBrigadeSelectingClose}
     >
-      <Group header={<Header>Заявка «{(modalProps as any)?.title}»</Header>}>
+      <Group
+        header={
+          <Header multiline>Заявка «{(modalProps as any)?.title}»</Header>
+        }
+      >
         <CellButton onClick={openBrigadeListModal}>Выбрать</CellButton>
         <Footer>
           Если не выбрать, то подтянется из последнего сезона бойцов
