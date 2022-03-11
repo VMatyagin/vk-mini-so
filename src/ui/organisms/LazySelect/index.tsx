@@ -133,7 +133,7 @@ export const LazySelect = <
           <>
             {defaultDropdownContent}
             {LoadDetector}
-            {(hasNextPage || !flatData.length) && (
+            {(hasNextPage || !data) && (
               <CustomSelectOption>
                 <Spinner />
               </CustomSelectOption>

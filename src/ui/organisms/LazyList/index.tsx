@@ -147,7 +147,7 @@ export const LazyList = observer(
             {LoadDetector}
           </List>
         )}
-        {(hasNextPage || !flatData.length) && (
+        {(hasNextPage || !data) && (
           <Spinner size="small" style={{ margin: "20px 0" }} />
         )}
         {flatData.length === 0 &&
