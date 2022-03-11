@@ -73,9 +73,8 @@ export const ElsePanel: FC<PanelProps> = observer((props) => {
             )}
           </PanelHeaderButton>
         }
-      >
-        Ещё
-      </PanelHeader>
+      />
+
       <Group
         style={{
           display: "flex",
