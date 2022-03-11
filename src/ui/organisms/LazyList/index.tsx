@@ -15,11 +15,7 @@ import React, {
   useState,
   useImperativeHandle,
 } from "react";
-import {
-  InfiniteData,
-  QueryObserverResult,
-  useInfiniteQuery,
-} from "react-query";
+import { useInfiniteQuery } from "react-query";
 import { useIntersect } from "../../../features/utils/hooks/useIntersect";
 import { ListResponse } from "../../../features/utils/types";
 import { useDebounce } from "use-debounce";
@@ -43,18 +39,19 @@ interface LazyUsersListProps<
   title?: string;
   enabled?: boolean;
   emptyMessage?: string;
-  customRender?: (array: ItemType[]) => JSX.Element[];
+  customRender?: (array: ItemType[]) => React.ReactNode;
   withSearch?: boolean;
   laztListRef?: React.RefObject<LazyListControls>;
   pullToRefresh?: boolean;
+  onRefetch?: () => Promise<void>;
 }
 const limit = 20;
 
-export const LazyListContext = createContext({
-  refetch: () =>
-    undefined as unknown as Promise<
-      QueryObserverResult<InfiniteData<ListResponse<any>>, Error>
-    >,
+interface LazyListContextProps {
+  refetch: VoidFunction;
+}
+export const LazyListContext = createContext<LazyListContextProps>({
+  refetch: () => undefined,
 });
 export const LazyList = observer(
   <Dtype extends object, Otype extends ListOptions | undefined>({
@@ -69,6 +66,7 @@ export const LazyList = observer(
     withSearch = false,
     laztListRef,
     pullToRefresh,
+    onRefetch,
   }: LazyUsersListProps<Dtype, Otype>) => {
     const queryFn = useCallback(
       ({ pageParam = 0, queryKey }) => {
@@ -91,7 +89,7 @@ export const LazyList = observer(
       hasNextPage,
       isLoading,
       isError,
-      refetch,
+      refetch: refetchQuery,
     } = useInfiniteQuery<ListResponse<any>, Error>({
       queryKey: [queryKey, search, extraFnProp],
       queryFn,
@@ -105,6 +103,9 @@ export const LazyList = observer(
       cacheTime: 0,
       enabled,
     });
+    const refetch = useCallback(async () => {
+      await Promise.all([onRefetch?.(), refetchQuery()]);
+    }, [onRefetch, refetchQuery]);
 
     const flatData = useMemo(() => {
       return (data && data?.pages?.flatMap((page) => page.items)) || [];

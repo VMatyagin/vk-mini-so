@@ -64,7 +64,7 @@ const getTime = (item: string) => {
 export const NotificationsPanel: FC<PanelProps> = observer((props) => {
   const qClient = useQueryClient();
 
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["user-activity"],
     queryFn: () => UsersAPI.getActivities({ limit: 20, offset: 0 }),
     retry: 1,
@@ -72,11 +72,18 @@ export const NotificationsPanel: FC<PanelProps> = observer((props) => {
   });
 
   useEffect(() => {
-    if (data?.items.length) {
-      UsersAPI.ActivietisMarkAsRead();
+    const markAsRead = async () => {
+      await UsersAPI.ActivietisMarkAsRead();
       qClient.refetchQueries(["user-me"]);
+    };
+    if (data?.items.length) {
+      markAsRead();
     }
   }, [data, qClient]);
+
+  const refetchSeen = async () => {
+    await refetch();
+  };
 
   return (
     <Panel {...props}>
@@ -109,6 +116,7 @@ export const NotificationsPanel: FC<PanelProps> = observer((props) => {
             seen: true,
           }}
           pullToRefresh
+          onRefetch={refetchSeen}
           renderItem={(item) => (
             <SimpleCell
               before={getBefore(item)}
