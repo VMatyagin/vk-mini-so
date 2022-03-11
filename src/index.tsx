@@ -8,13 +8,11 @@ import { RouterProvider } from "react-router5";
 const queryClient = new QueryClient();
 export const router = configureRouter(true);
 
-router.start(() =>
-  ReactDOM.render(
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router}>
-        <App />
-      </RouterProvider>
-    </QueryClientProvider>,
-    document.getElementById("root")
-  )
+ReactDOM.render(
+  <QueryClientProvider client={queryClient}>
+    <RouterProvider router={router}>
+      <App />
+    </RouterProvider>
+  </QueryClientProvider>,
+  document.getElementById("root")
 );

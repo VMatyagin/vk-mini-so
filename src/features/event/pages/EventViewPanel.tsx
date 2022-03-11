@@ -10,6 +10,7 @@ import {
   Panel,
   PanelHeaderBack,
   PanelProps,
+  PanelSpinner,
   PullToRefresh,
   SimpleCell,
   Title,
@@ -28,14 +29,15 @@ import { EventAPI } from "../../utils/requests/event-request";
 import { EVENT_WORTH } from "../helpers";
 import { useRoute, useRouter } from "react-router5";
 import { EventImage } from "../ui/atoms/EventImage";
-import { sendTapticNotification } from "../../VKBridge";
+import { sendTapticNotification, shareLinkToMessage } from "../../VKBridge";
 import { routerStore } from "../../stores/router-store";
 import { getDateString } from "../../utils/getDateString";
 import { appStore } from "../../stores/app-store";
+import { onHistoryBack } from "../../utils/onHistoryBack";
 export const EventViewPanel: FC<PanelProps> = observer((props) => {
   const { openPopout, closePopout } = useContext(routerStore);
   const { isStaff } = useContext(appStore);
-  const { route } = useRoute();
+  const { route, previousRoute } = useRoute();
   const eventId = useMemo(() => route.params.eventId, [route]);
 
   const { navigate } = useRouter();
@@ -46,11 +48,14 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
   } = useQuery({
     queryKey: ["event", eventId],
     queryFn: ({ queryKey }) => {
+      openPopout(<PanelSpinner />);
       return EventAPI.getEvent(queryKey[1] as number);
     },
     retry: false,
-    enabled: false,
+    enabled: !!eventId,
     refetchOnWindowFocus: false,
+    onError: closePopout,
+    onSuccess: closePopout,
   });
 
   const openPage = (url: string, additional?: Record<string, number>) => {
@@ -132,8 +137,12 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
           </>
         )}
 
-        <ActionSheetItem autoclose before={<Icon28ShareOutline />}>
-          Скопировать ссылку TODO
+        <ActionSheetItem
+          autoclose
+          before={<Icon28ShareOutline />}
+          onClick={() => shareLinkToMessage(route.path)}
+        >
+          Поделиться
         </ActionSheetItem>
       </ActionSheet>
     );
@@ -142,7 +151,7 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
   return (
     <Panel {...props}>
       <PanelHeader
-        left={<PanelHeaderBack onClick={() => window.history.back()} />}
+        left={<PanelHeaderBack onClick={onHistoryBack(previousRoute)} />}
       >
         <Title level="2" weight="bold">
           {event?.title}

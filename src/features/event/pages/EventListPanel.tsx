@@ -12,10 +12,11 @@ import { observer } from "mobx-react-lite";
 import { LazyList } from "../../../ui/organisms/LazyList";
 import { EventType } from "../../types";
 import { EventAPI } from "../../utils/requests/event-request";
-import { useRouter } from "react-router5";
+import { useRoute, useRouter } from "react-router5";
 import { useQuery } from "react-query";
 import { routerStore } from "../../stores/router-store";
 import { getDateString } from "../../utils/getDateString";
+import { onHistoryBack } from "../../utils/onHistoryBack";
 
 const getDescription = ({
   date,
@@ -40,6 +41,7 @@ const getDescription = ({
 
 export const EventListPanel: FC<PanelProps> = observer((props) => {
   const { navigate } = useRouter();
+  const { previousRoute } = useRoute();
   const { openPopout, closePopout } = useContext(routerStore);
   const [selectedId, selectId] = useState<null | number>(null);
   useQuery({
@@ -63,7 +65,7 @@ export const EventListPanel: FC<PanelProps> = observer((props) => {
   return (
     <Panel {...props}>
       <PanelHeader
-        left={<PanelHeaderBack onClick={() => window.history.back()} />}
+        left={<PanelHeaderBack onClick={onHistoryBack(previousRoute)} />}
       >
         <Title level="2" weight="bold">
           Мероприятия

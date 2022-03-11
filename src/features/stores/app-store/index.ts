@@ -15,6 +15,7 @@ import {
 } from "../../VKBridge";
 import VKBridge from "@vkontakte/vk-bridge";
 import { router } from "../../..";
+import { UsersAPI } from "../../utils/requests/user-request";
 
 export class AppStore {
   accessToken: string | null = null;
@@ -75,13 +76,16 @@ export class AppStore {
   setUserData = (data: UserInfo) => {
     this.userData = data;
   };
-  setUser = (user: Viewer) => {
+  getMe = async () => {
+    this.setUser(await UsersAPI.getMeData());
+  };
+  private setUser = (user: Viewer) => {
     if (this.user === null) {
-      if (user.boec !== null) {
-        router.navigate("else.base.base", {}, { replace: true });
-      } else {
-        router.navigate("init.onboarding", {}, { replace: true });
-      }
+      router.start(() => {
+        if (user.boec === null) {
+          router.navigate("init.onboarding", {}, { replace: true });
+        }
+      });
     }
 
     this.user = user;

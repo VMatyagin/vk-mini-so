@@ -178,3 +178,14 @@ export const storageGet = async (key: string) => {
     return Promise.reject(error);
   }
 };
+
+export const shareLinkToMessage = async (url: string) => {
+  try {
+    const data = await VKBridge.send("VKWebAppShare", {
+      link: `vk.com/app${AppStoreInstance.appParams!.vk_app_id}#${url}`,
+    });
+    return data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
