@@ -11,10 +11,12 @@ export const ShtabsAPI = {
     limit = 20,
     offset,
     search,
+    self,
   }: {
     offset?: number;
     limit?: number;
     search?: string;
+    self?: boolean;
   } = {}): Promise<ListResponse<Shtab>> {
     if (cancel) {
       cancel();
@@ -23,6 +25,7 @@ export const ShtabsAPI = {
       offset,
       limit,
       search,
+      self,
     };
 
     const { data } = await get("/api/shtab/", {

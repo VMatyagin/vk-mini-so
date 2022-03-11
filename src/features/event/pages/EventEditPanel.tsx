@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useMemo } from "react";
+import { FC, useContext, useMemo } from "react";
 import {
   Button,
   CustomSelectOption,
@@ -12,6 +12,7 @@ import {
   Panel,
   PanelHeaderBack,
   PanelProps,
+  PanelSpinner,
   ScreenSpinner,
   Select,
   SimpleCell,
@@ -22,7 +23,7 @@ import { PanelHeader } from "@vkontakte/vkui";
 import { observer } from "mobx-react-lite";
 import { useRoute } from "react-router5";
 import { useForm, Controller } from "react-hook-form";
-import { useQueryClient, useMutation } from "react-query";
+import { useQueryClient, useMutation, useQuery } from "react-query";
 import { LazySelect } from "../../../ui/organisms/LazySelect";
 import { routerStore } from "../../stores/router-store";
 import { Shtab, EventType } from "../../types";
@@ -31,6 +32,7 @@ import { EventAPI } from "../../utils/requests/event-request";
 import { ShtabsAPI } from "../../utils/requests/shtab-request";
 import { EVENT_WORTH } from "../helpers";
 import { Icon24Camera } from "@vkontakte/icons";
+import { appStore } from "../../stores/app-store";
 
 interface EventTypePayload extends EventType {
   selectedShtab: CustomSelectOptionInterface;
@@ -38,6 +40,7 @@ interface EventTypePayload extends EventType {
 
 export const EventEditPanel: FC<PanelProps> = observer((props) => {
   const { openPopout, closePopout } = useContext(routerStore);
+  const { user } = useContext(appStore);
   const {
     route,
     router: { navigate },
@@ -51,12 +54,17 @@ export const EventEditPanel: FC<PanelProps> = observer((props) => {
   );
 
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-    const queryCache = queryClient.getQueryCache();
-    const query = queryCache.find<EventType>(["event", eventId!]);
-    if (query?.state.data) {
-      const event = query?.state.data;
+  useQuery({
+    queryKey: ["event", eventId],
+    queryFn: ({ queryKey }) => {
+      openPopout(<PanelSpinner />);
+      return EventAPI.getEvent(queryKey[1] as number);
+    },
+    retry: false,
+    enabled: !!eventId,
+    refetchOnWindowFocus: false,
+    onError: closePopout,
+    onSuccess: (event: EventType) => {
       reset({
         ...event,
         selectedShtab: event.shtab
@@ -66,8 +74,9 @@ export const EventEditPanel: FC<PanelProps> = observer((props) => {
             }
           : undefined,
       });
-    }
-  }, [eventId, queryClient, reset]);
+      closePopout();
+    },
+  });
 
   const { isDirty, isValid, dirtyFields } = formState;
 
@@ -100,6 +109,7 @@ export const EventEditPanel: FC<PanelProps> = observer((props) => {
         closePopout();
         window.history.back();
       },
+      onError: closePopout,
     }
   );
   const onSubmit = ({ selectedShtab, ...values }: EventTypePayload) => {
@@ -199,6 +209,9 @@ export const EventEditPanel: FC<PanelProps> = observer((props) => {
                   onChange={field.onChange}
                   value={field.value}
                   fetchFn={ShtabsAPI.getShtabs}
+                  extraFnProp={{
+                    self: user?.isStaff ? undefined : true,
+                  }}
                   queryKey={"shtab-list"}
                   parseItem={(shtab: Shtab) => ({
                     label: shtab.title,
@@ -307,13 +320,9 @@ export const EventEditPanel: FC<PanelProps> = observer((props) => {
       <Group>
         <SimpleCell
           onClick={() => {
-            navigate(
-              "else.competitions.create",
-              {
-                eventId,
-              },
-              { replace: true }
-            );
+            navigate("else.competitions.create", {
+              eventId,
+            });
           }}
         >
           Добавить конкурс
