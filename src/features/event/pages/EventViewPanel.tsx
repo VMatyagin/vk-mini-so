@@ -34,6 +34,7 @@ import { routerStore } from "../../stores/router-store";
 import { getDateString } from "../../utils/getDateString";
 import { appStore } from "../../stores/app-store";
 import { onHistoryBack } from "../../utils/onHistoryBack";
+
 export const EventViewPanel: FC<PanelProps> = observer((props) => {
   const { openPopout, closePopout } = useContext(routerStore);
   const { isStaff } = useContext(appStore);
@@ -52,7 +53,7 @@ export const EventViewPanel: FC<PanelProps> = observer((props) => {
       return EventAPI.getEvent(queryKey[1] as number);
     },
     retry: false,
-    enabled: !!eventId,
+    enabled: !!eventId && route.name === "else.event.details",
     refetchOnWindowFocus: false,
     onError: closePopout,
     onSuccess: closePopout,
