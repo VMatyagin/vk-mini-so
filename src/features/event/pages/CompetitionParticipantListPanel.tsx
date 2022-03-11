@@ -232,6 +232,7 @@ export const CompetitionParticipantListPanel: FC<CompetitionParticipantListPanel
               competitionId: competitionId!,
               worth,
             }}
+            pullToRefresh
             enabled={!!competitionId}
             renderItem={(item: CompetitionParticipant) => (
               <SimpleCell

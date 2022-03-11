@@ -41,6 +41,7 @@ export const BrigadeListModal = () => {
         title="Отряды"
         fetchFn={BrigadesAPI.getBrigadesList}
         queryKey={"brigade-list"}
+        pullToRefresh
         renderItem={(item) => (
           <SimpleCell
             key={item.id}

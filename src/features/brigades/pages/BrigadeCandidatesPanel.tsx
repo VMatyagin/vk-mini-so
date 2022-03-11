@@ -116,6 +116,7 @@ export const BrigadeCandidatesPanel: FC<PanelProps> = observer((props) => {
             brigadeId,
           }}
           enabled={!!brigadeId}
+          pullToRefresh
           renderItem={(candidate) => (
             <SimpleCell
               key={candidate.boec.id}

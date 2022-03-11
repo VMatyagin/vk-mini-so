@@ -43,6 +43,7 @@ export const BrigadeReportsListPanel: FC<PanelProps> = observer((props) => {
           extraFnProp={{
             brigadeId,
           }}
+          pullToRefresh
           enabled={!!brigadeId}
           renderItem={(report) => (
             <SimpleCell

@@ -159,6 +159,7 @@ export const EventParticipantsPanel: FC<ParticipantsPanelProps> = observer(
             eventId: eventId!,
             worth,
           }}
+          pullToRefresh
           enabled={!!eventId}
           renderItem={(item: Participant) => {
             const brigadeTitle = item.brigade?.title

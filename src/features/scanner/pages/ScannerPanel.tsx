@@ -31,6 +31,7 @@ export const ScannerPanel: FC<PanelProps> = observer((props) => {
           title="Последние отсканированные билеты"
           fetchFn={TicketsAPI.getLastScans}
           queryKey={"scans-list"}
+          pullToRefresh
           emptyMessage={"Никто еще сканировал"}
           renderItem={(item) => (
             <SimpleCell key={item.id}>{item.ticket?.id}</SimpleCell>

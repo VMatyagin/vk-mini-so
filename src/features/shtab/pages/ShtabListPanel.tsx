@@ -33,6 +33,7 @@ export const ShtabListPanel: FC<PanelProps> = observer((props) => {
         fetchFn={ShtabsAPI.getShtabs}
         queryKey={"shtab-list"}
         withSearch={true}
+        pullToRefresh
         renderItem={(shtab) => (
           <SimpleCell
             key={shtab.id}

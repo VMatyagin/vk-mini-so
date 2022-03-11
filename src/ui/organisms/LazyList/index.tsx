@@ -46,6 +46,7 @@ interface LazyUsersListProps<
   customRender?: (array: ItemType[]) => JSX.Element[];
   withSearch?: boolean;
   laztListRef?: React.RefObject<LazyListControls>;
+  pullToRefresh?: boolean;
 }
 const limit = 20;
 
@@ -67,6 +68,7 @@ export const LazyList = observer(
     emptyMessage = "Ничего не найдено",
     withSearch = false,
     laztListRef,
+    pullToRefresh,
   }: LazyUsersListProps<Dtype, Otype>) => {
     const queryFn = useCallback(
       ({ pageParam = 0, queryKey }) => {
@@ -123,41 +125,48 @@ export const LazyList = observer(
     useImperativeHandle(laztListRef, () => ({
       refetch,
     }));
+
+    const Component = (
+      <LazyListContext.Provider
+        value={{
+          refetch,
+        }}
+      >
+        {withSearch && <Search value={searchInput} onChange={onSearchChange} />}
+        {title && (
+          <Header mode="tertiary" indicator={data?.pages[0].count}>
+            {title}
+          </Header>
+        )}
+        {!((isLoading || search !== searchInput) && !isError) && (
+          <List>
+            {!customRender &&
+              renderItem &&
+              flatData?.map((item) => renderItem(item))}
+            {customRender && flatData?.length > 0 && customRender(flatData)}
+            {LoadDetector}
+          </List>
+        )}
+        {(hasNextPage || !flatData.length) && (
+          <Spinner size="small" style={{ margin: "20px 0" }} />
+        )}
+        {flatData.length === 0 &&
+          !(isLoading || search !== searchInput) &&
+          !isFetching &&
+          !isError && <Footer>{emptyMessage}</Footer>}
+        {isError && <Footer>Ошибка соединения</Footer>}
+      </LazyListContext.Provider>
+    );
+
     return (
       <Group>
-        <PullToRefresh onRefresh={refetch} isFetching={isLoading}>
-          <LazyListContext.Provider
-            value={{
-              refetch,
-            }}
-          >
-            {withSearch && (
-              <Search value={searchInput} onChange={onSearchChange} />
-            )}
-            {title && (
-              <Header mode="tertiary" indicator={data?.pages[0].count}>
-                {title}
-              </Header>
-            )}
-            {!((isLoading || search !== searchInput) && !isError) && (
-              <List>
-                {!customRender &&
-                  renderItem &&
-                  flatData?.map((item) => renderItem(item))}
-                {customRender && flatData?.length > 0 && customRender(flatData)}
-                {LoadDetector}
-              </List>
-            )}
-            {(hasNextPage || !flatData.length) && (
-              <Spinner size="small" style={{ margin: "20px 0" }} />
-            )}
-            {flatData.length === 0 &&
-              !(isLoading || search !== searchInput) &&
-              !isFetching &&
-              !isError && <Footer>{emptyMessage}</Footer>}
-            {isError && <Footer>Ошибка соединения</Footer>}
-          </LazyListContext.Provider>
-        </PullToRefresh>
+        {pullToRefresh ? (
+          <PullToRefresh onRefresh={refetch} isFetching={isLoading}>
+            {Component}
+          </PullToRefresh>
+        ) : (
+          Component
+        )}
       </Group>
     );
   }

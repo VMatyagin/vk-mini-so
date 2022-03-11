@@ -63,6 +63,7 @@ export const CompetitionsListPanel: FC<PanelProps> = observer((props) => {
         extraFnProp={{
           eventId,
         }}
+        pullToRefresh
         enabled={!!eventId}
         renderItem={(item: Competition) => (
           <SimpleCell

@@ -76,6 +76,7 @@ export const EventListPanel: FC<PanelProps> = observer((props) => {
         title="Предстоящие мероприятия"
         fetchFn={EventAPI.getEventList}
         queryKey={"event-list"}
+        pullToRefresh
         renderItem={(item: EventType) => (
           <SimpleCell
             key={item.id}

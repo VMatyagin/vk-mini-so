@@ -253,6 +253,7 @@ export const EventQuotasPanel: FC<PanelProps> = observer((props) => {
               extraFnProp={{
                 sort,
               }}
+              pullToRefresh
               // customSpinner={
               //   <td colSpan={3}>
               //     <Spinner size="small" style={{ margin: "20px 0" }} />

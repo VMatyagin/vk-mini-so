@@ -140,6 +140,7 @@ export const NomiantionsListPanel: FC<PanelProps> = observer((props) => {
           extraFnProp={{
             competitionId: competitionId!,
           }}
+          pullToRefresh
           enabled={!!competitionId}
           renderItem={(item) => (
             <SimpleCell

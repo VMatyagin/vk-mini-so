@@ -108,6 +108,7 @@ export const NotificationsPanel: FC<PanelProps> = observer((props) => {
           extraFnProp={{
             seen: true,
           }}
+          pullToRefresh
           renderItem={(item) => (
             <SimpleCell
               before={getBefore(item)}

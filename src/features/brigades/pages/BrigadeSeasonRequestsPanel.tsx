@@ -114,6 +114,7 @@ export const BrigadeSeasonRequestsPanel: FC<PanelProps> = observer((props) => {
           extraFnProp={{
             brigadeId,
           }}
+          pullToRefresh
           enabled={!!brigadeId}
           renderItem={(report) => (
             <SimpleCell

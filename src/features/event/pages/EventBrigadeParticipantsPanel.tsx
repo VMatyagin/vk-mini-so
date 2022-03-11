@@ -313,6 +313,7 @@ export const EventBrigadeParticipantsPanel: FC<PanelProps> = observer(
                   brigadeId: brigadeId!,
                   status: activeTab,
                 }}
+                pullToRefresh
                 enabled={!!eventId && !!brigadeId}
                 renderItem={(item: Participant) => (
                   <SimpleCell

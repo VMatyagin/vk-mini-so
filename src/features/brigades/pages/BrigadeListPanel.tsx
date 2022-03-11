@@ -38,6 +38,7 @@ export const BrigadeListPanel: FC<PanelProps> = observer((props) => {
         queryKey={"brigade-list-sort"}
         extraFnProp={{ shtabId }}
         withSearch={true}
+        pullToRefresh
         renderItem={(brigade) => (
           <SimpleCell
             key={brigade.id}

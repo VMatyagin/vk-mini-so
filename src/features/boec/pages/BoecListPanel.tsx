@@ -85,6 +85,7 @@ export const BoecListPanel: FC<PanelProps> = observer((props) => {
             search: filter.search,
             brigadeId: filter.brigadeId,
           }}
+          pullToRefresh
           renderItem={(item) => (
             <SimpleCell key={item.id} onClick={() => changeView(item.id)}>
               {item.fullName}

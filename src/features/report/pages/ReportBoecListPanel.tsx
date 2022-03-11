@@ -79,6 +79,7 @@ export const ReportBoecListPanel: FC<PanelProps> = observer((props) => {
           extraFnProp={{
             reportId,
           }}
+          pullToRefresh
           enabled={!!reportId}
           renderItem={(season) => (
             <SeasonCell key={season.id} season={season} />
