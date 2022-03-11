@@ -33,7 +33,7 @@ export interface Brigade {
   dateOfBirth: string | null;
   shtab: Shtab;
   canEdit: boolean;
-  isApplied: boolean;
+  applyStatus: "initial" | "accepted" | "canceled";
   members: number;
   seasonRequestCount: number;
   candidatesCount: number;

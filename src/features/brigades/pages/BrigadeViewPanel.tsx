@@ -70,7 +70,7 @@ export const BrigadeViewPanel: FC<PanelProps> = observer((props) => {
     await mutateAsync(brigadeId);
     queryClient.setQueryData(["brigade", brigadeId], {
       ...brigade,
-      isApplied: true,
+      applyStatus: "initial",
     });
     setSnackBar(
       <Snackbar onClose={() => setSnackBar(null)}>
@@ -108,17 +108,21 @@ export const BrigadeViewPanel: FC<PanelProps> = observer((props) => {
               <InfoRow header="Численность">{brigade?.members}</InfoRow>
             </SimpleCell>
 
-            <Div>
-              <Button
-                onClick={applyToBrigade}
-                stretched
-                size="m"
-                disabled={brigade?.isApplied}
-                loading={applyLoading}
-              >
-                {brigade?.isApplied ? "Заявка отправлена" : "Подать заявку"}
-              </Button>
-            </Div>
+            {brigade?.applyStatus !== "accepted" && (
+              <Div>
+                <Button
+                  onClick={applyToBrigade}
+                  stretched
+                  size="m"
+                  disabled={brigade?.applyStatus === "initial"}
+                  loading={applyLoading}
+                >
+                  {brigade?.applyStatus !== "initial"
+                    ? "Подать заявку"
+                    : "Заявка отправлена"}
+                </Button>
+              </Div>
+            )}
           </Group>
           <Group header={<Header mode="secondary">Командный состав</Header>}>
             <ShtabOrBrigadeLeaders />
