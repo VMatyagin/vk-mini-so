@@ -34,6 +34,10 @@ export const UserEditSeasons: FC = observer(() => {
     navigate("else.boec.seasons", { boecId });
   };
 
+  if (!boecId) {
+    return null;
+  }
+
   return (
     <>
       <Group header={<Header>Года выезда</Header>}>
