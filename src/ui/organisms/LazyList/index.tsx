@@ -1,4 +1,3 @@
-import { debounce } from "@vkontakte/vkjs";
 import {
   Footer,
   Group,
@@ -108,17 +107,16 @@ export const LazyList = observer(
     const flatData = useMemo(() => {
       return (data && data?.pages?.flatMap((page) => page.items)) || [];
     }, [data]);
-    const fetch = useMemo(() => debounce(fetchNextPage, 750), [fetchNextPage]);
 
-    const { setNode } = useIntersect(() => fetch());
+    const { setNode } = useIntersect(() => fetchNextPage());
 
     const LoadDetector = useMemo(() => {
-      if (hasNextPage) {
+      if (hasNextPage && !isFetching) {
         return <div className="h-4" ref={(el) => setNode(el!)}></div>;
       } else {
         return null;
       }
-    }, [hasNextPage, setNode]);
+    }, [hasNextPage, setNode, isFetching]);
     const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearch(event.target.value);
     };
@@ -141,7 +139,7 @@ export const LazyList = observer(
                 {title}
               </Header>
             )}
-            {!((isLoading || search !== searchInput) && !isError) ? (
+            {!((isLoading || search !== searchInput) && !isError) && (
               <List>
                 {!customRender &&
                   renderItem &&
@@ -149,11 +147,11 @@ export const LazyList = observer(
                 {customRender && flatData?.length > 0 && customRender(flatData)}
                 {LoadDetector}
               </List>
-            ) : (
+            )}
+            {(hasNextPage || !flatData.length) && (
               <Spinner size="small" style={{ margin: "20px 0" }} />
             )}
-            {flatData &&
-              flatData.length === 0 &&
+            {flatData.length === 0 &&
               !(isLoading || search !== searchInput) &&
               !isFetching &&
               !isError && <Footer>{emptyMessage}</Footer>}

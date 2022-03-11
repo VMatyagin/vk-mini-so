@@ -9,7 +9,6 @@ import { useInfiniteQuery } from "react-query";
 import { useDebounce } from "use-debounce";
 import { useIntersect } from "../../../features/utils/hooks/useIntersect";
 import { ListResponse } from "../../../features/utils/types";
-import { debounce } from "@vkontakte/vkjs";
 
 interface ListOptions {
   limit?: number;
@@ -60,7 +59,7 @@ export const LazySelect = <
     },
     [fetchFn]
   );
-  const { data, fetchNextPage, isFetching, hasNextPage } = useInfiniteQuery<
+  const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery<
     ListResponse<any>,
     Error
   >({
@@ -79,9 +78,8 @@ export const LazySelect = <
   const flatData = useMemo(() => {
     return (data && data?.pages?.flatMap((page) => page.items)) || [];
   }, [data]);
-  const fetch = useMemo(() => debounce(fetchNextPage, 750), [fetchNextPage]);
 
-  const { setNode } = useIntersect(() => fetch());
+  const { setNode } = useIntersect(() => fetchNextPage());
 
   const options = useMemo(() => {
     let newOptions = flatData.map(parseItem) as CustomSelectOptionInterface[];
@@ -96,12 +94,12 @@ export const LazySelect = <
     return newOptions;
   }, [flatData, parseItem, searchInput, value]);
   const LoadDetector = useMemo(() => {
-    if (hasNextPage) {
+    if (hasNextPage && !isFetching) {
       return <div className="h-4" ref={(el) => setNode(el!)}></div>;
     } else {
       return null;
     }
-  }, [hasNextPage, setNode]);
+  }, [hasNextPage, setNode, isFetching]);
   return (
     <CustomSelect
       placeholder="Не выбран"
@@ -135,7 +133,7 @@ export const LazySelect = <
           <>
             {defaultDropdownContent}
             {LoadDetector}
-            {(isFetching || searchInput !== search) && (
+            {(hasNextPage || !flatData.length) && (
               <CustomSelectOption>
                 <Spinner />
               </CustomSelectOption>
