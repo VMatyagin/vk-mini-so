@@ -332,11 +332,9 @@ export const EventEditPanel: FC<PanelProps> = observer(props => {
                         control={control}
                         name="image"
                         rules={{
-                            required: eventId
-                                ? "Это поле необходимо заполнить"
-                                : undefined
+                            required: "Это поле необходимо заполнить"
                         }}
-                        render={({ field, fieldState, formState }) => (
+                        render={({ field, fieldState }) => (
                             <FormItem
                                 top="Обложка"
                                 status={
