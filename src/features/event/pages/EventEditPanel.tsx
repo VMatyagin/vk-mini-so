@@ -28,7 +28,7 @@ import { useQueryClient, useMutation, useQuery } from "react-query";
 import { LazySelect } from "../../../ui/organisms/LazySelect";
 import { routerStore } from "../../stores/router-store";
 import { Shtab, EventType } from "../../types";
-import { dirtyValues } from "../../utils";
+import { getDirtyFields } from "../../utils";
 import { EventAPI } from "../../utils/requests/event-request";
 import { ShtabsAPI } from "../../utils/requests/shtab-request";
 import { EVENT_WORTH } from "../helpers";
@@ -83,22 +83,26 @@ export const EventEditPanel: FC<PanelProps> = observer(props => {
     const { isDirty, isValid, dirtyFields } = formState;
 
     const { mutate, isLoading } = useMutation(
-        async ({ image, selectedShtab, ...values }: EventTypePayload) => {
+        async (values: EventTypePayload) => {
             openPopout(<ScreenSpinner />);
 
             let event: EventType;
+            const { image, selectedShtab, ...restValues } =
+                getDirtyFields<EventTypePayload>(values, dirtyFields);
+
             if (eventId) {
-                event = await EventAPI.updateEvent({
-                    ...dirtyValues(dirtyFields, {
-                        ...values,
-                        shtab: selectedShtab.value
-                    }),
-                    id: values.id
-                });
+                event = await EventAPI.updateEvent(values.id, {
+                    ...restValues,
+                    shtabId: selectedShtab
+                        ? (selectedShtab.value as unknown as number)
+                        : undefined
+                } as EventType);
             } else {
                 event = await EventAPI.createEvent({
-                    ...values,
-                    shtabId: selectedShtab.value as unknown as number
+                    ...restValues,
+                    shtabId: selectedShtab
+                        ? (selectedShtab.value as unknown as number)
+                        : undefined
                 } as EventType);
             }
             if (image) {

@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useContext } from "react";
+import { FieldNamesMarkedBoolean } from "react-hook-form";
 import { appStore } from "../stores/app-store";
 
 export const smoothScrollToTop = () => {
@@ -17,7 +18,7 @@ export const smoothScrollToTop = () => {
 
 export const restoreScrollPosition = observer(() => {
     const { componentScroll: scrolls } = useContext(appStore);
-    Object.keys(scrolls).forEach((component) => {
+    Object.keys(scrolls).forEach(component => {
         let componentData = scrolls[component];
 
         let element = document.getElementById(component) as HTMLElement;
@@ -33,20 +34,13 @@ export const restoreScrollPosition = observer(() => {
     return null;
 });
 
-// Map RHF's dirtyFields over the `data` received by `handleSubmit` and return the changed subset of that data.
-export function dirtyValues(
-    dirtyFields: any,
-    allValues: any
-): any {
-    // If *any* item in an array was modified, the entire array must be submitted, because there's no way to indicate
-    // "placeholders" for unchanged elements. `dirtyFields` is `true` for leaves.
-    if (dirtyFields === true || Array.isArray(dirtyFields)) return allValues;
-    // Here, we have an object
-    return Object.fromEntries(
-        Object.keys(dirtyFields).map((key) => [
-            key,
-            // @ts-ignore
-            dirtyValues(dirtyFields[key], allValues[key]),
-        ])
-    );
-}
+export const getDirtyFields = <DataType extends Record<string, any>>(
+    data: DataType,
+    dirtyFileds: FieldNamesMarkedBoolean<DataType>
+): DataType => {
+    let newData = {} as DataType;
+    for (const [key] of Object.entries(dirtyFileds)) {
+        newData[key as keyof DataType] = data[key];
+    }
+    return newData;
+};
