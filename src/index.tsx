@@ -6,13 +6,13 @@ import { configureRouter } from "./create-router";
 import { RouterProvider } from "react-router5";
 
 const queryClient = new QueryClient();
-export const router = configureRouter(true);
+export const router = configureRouter();
 
 ReactDOM.render(
-  <QueryClientProvider client={queryClient}>
-    <RouterProvider router={router}>
-      <App />
-    </RouterProvider>
-  </QueryClientProvider>,
-  document.getElementById("root")
+    <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router}>
+            <App />
+        </RouterProvider>
+    </QueryClientProvider>,
+    document.getElementById("root")
 );
