@@ -75,6 +75,7 @@ export interface EventType {
     title: string;
     description: string | null;
     location: string | null;
+    state: number;
     shtab: Shtab | null;
     shtabId: number | null;
     startDate: string | null;

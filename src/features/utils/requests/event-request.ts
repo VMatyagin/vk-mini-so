@@ -37,12 +37,14 @@ export const EventAPI = {
         limit,
         offset,
         search,
-        visibility
+        visibility,
+        passed
     }: {
         offset: number;
         limit: number;
         search?: string;
         visibility?: boolean;
+        passed?: boolean;
     }): Promise<ListResponse<EventType>> {
         if (cancel) {
             cancel();
@@ -51,7 +53,8 @@ export const EventAPI = {
             offset,
             limit,
             search,
-            visibility
+            visibility,
+            passed
         };
 
         const { data } = await get("/api/event/", {
