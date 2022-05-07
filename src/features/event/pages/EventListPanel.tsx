@@ -1,4 +1,4 @@
-import { FC, useContext, useState } from "react";
+import { FC, useContext, useMemo, useState } from "react";
 import {
     Panel,
     PanelHeaderBack,
@@ -43,7 +43,10 @@ const getDescription = ({
 
 export const EventListPanel: FC<PanelProps> = observer(props => {
     const { navigate } = useRouter();
-    const { previousRoute } = useRoute();
+    const { previousRoute, route } = useRoute();
+
+    const { shtabId } = useMemo(() => route.params, [route]);
+
     const { openPopout, closePopout } = useContext(routerStore);
     const [selectedId, selectId] = useState<null | number>(null);
     const [tab, setTab] = useState(0);
@@ -98,7 +101,8 @@ export const EventListPanel: FC<PanelProps> = observer(props => {
                 queryKey={"event-list"}
                 extraFnProp={{
                     passed: tab === 1 ? true : false,
-                    visibility: true
+                    visibility: !shtabId ? true : undefined,
+                    shtabId
                 }}
                 pullToRefresh
                 renderItem={(item: EventType) => (

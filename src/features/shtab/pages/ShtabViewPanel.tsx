@@ -53,12 +53,22 @@ export const ShtabViewPanel: FC<PanelProps> = observer(props => {
 
             <Group>
                 {shtabInfo?.canEdit && (
-                    <SimpleCell
-                        before={<Icon28CalendarOutline />}
-                        onClick={() => navigate("else.events.create")}
-                    >
-                        Создать мероприятие
-                    </SimpleCell>
+                    <>
+                        <SimpleCell
+                            before={<Icon28CalendarOutline />}
+                            onClick={() => navigate("else.events.create")}
+                        >
+                            Создать мероприятие
+                        </SimpleCell>
+                        <SimpleCell
+                            before={<Icon28CalendarOutline />}
+                            onClick={() =>
+                                navigate("else.events.base", { shtabId })
+                            }
+                        >
+                            Мероприятия
+                        </SimpleCell>
+                    </>
                 )}
                 <SimpleCell
                     before={<Icon28UsersOutline />}
