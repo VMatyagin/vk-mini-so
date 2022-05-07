@@ -19,6 +19,7 @@ import { useQuery } from "react-query";
 import { routerStore } from "../../stores/router-store";
 import { getDateString } from "../../utils/getDateString";
 import { onHistoryBack } from "../../utils/onHistoryBack";
+import { Icon12EyeSlashOutline } from "@vkontakte/icons";
 
 const getDescription = ({
     date,
@@ -114,6 +115,7 @@ export const EventListPanel: FC<PanelProps> = observer(props => {
                             place: item.location,
                             time: item.startTime
                         })}
+                        badge={!item.visibility && <Icon12EyeSlashOutline />}
                     >
                         {item.shtab?.title
                             ? `${item.title} | ${item.shtab?.title}`
