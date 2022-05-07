@@ -2,6 +2,7 @@ import { FC, useContext, useMemo } from "react";
 import {
     Button,
     Cell,
+    Checkbox,
     CustomSelectOption,
     CustomSelectOptionInterface,
     DatePicker,
@@ -260,6 +261,7 @@ export const EventEditPanel: FC<PanelProps> = observer(props => {
                         render={({ field }) => (
                             <FormItem top="Дата начала">
                                 <DatePicker
+                                    key={field.value}
                                     name={field.name}
                                     min={{
                                         day: 1,
@@ -280,6 +282,15 @@ export const EventEditPanel: FC<PanelProps> = observer(props => {
                                             ).toISOString()
                                         );
                                     }}
+                                    {...console.log({
+                                        day: new Date(field.value!).getDate(),
+                                        month:
+                                            new Date(field.value!).getMonth() +
+                                            1,
+                                        year: new Date(
+                                            field.value!
+                                        ).getFullYear()
+                                    })}
                                     defaultValue={
                                         field.value
                                             ? {
@@ -329,6 +340,30 @@ export const EventEditPanel: FC<PanelProps> = observer(props => {
                                     onChange={field.onChange}
                                     onBlur={field.onBlur}
                                 />
+                            </FormItem>
+                        )}
+                    />
+                    <Controller
+                        control={control}
+                        name="visibility"
+                        defaultValue={false}
+                        render={({ field, fieldState }) => (
+                            <FormItem
+                                status={
+                                    fieldState.invalid ? "error" : "default"
+                                }
+                                bottom={
+                                    fieldState.error && fieldState.error.message
+                                }
+                            >
+                                <Checkbox
+                                    name={field.name}
+                                    checked={field.value}
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
+                                >
+                                    Видимость
+                                </Checkbox>
                             </FormItem>
                         )}
                     />
