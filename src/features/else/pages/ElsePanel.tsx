@@ -36,7 +36,6 @@ import { FC, useContext, useEffect, useState } from "react";
 import { useRouter } from "react-router5";
 import { appStore } from "../../stores/app-store";
 import { storageGet, storageSet } from "../../VKBridge";
-import { NotificationSwitcher } from "../ui/molecules/NotificationSwitcher";
 
 export const ElsePanel: FC<PanelProps> = observer(props => {
     const { user, userData } = useContext(appStore);
@@ -96,7 +95,7 @@ export const ElsePanel: FC<PanelProps> = observer(props => {
                         {`Привет, ${user?.boec.firstName}`}
                     </Title>
                 </div>
-                <NotificationSwitcher />
+                {/* <NotificationSwitcher /> */}
                 <SimpleCell
                     before={<Icon28Profile />}
                     onClick={() =>
