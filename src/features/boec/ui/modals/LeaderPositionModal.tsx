@@ -29,7 +29,6 @@ export const LeaderPositionModal = () => {
     const { closeModal, modalCallback, closeModalStack } = RouterStoreInstance;
     const { route } = useRoute();
     const { position, brigadeId } = useMemo(() => route.params, [route]);
-    console.log(brigadeId);
 
     const onPositionSelect = () => {
         modalCallback[MODAL_BOEC_POSITION_SELECT](getValues());

@@ -99,8 +99,6 @@ export const ApplyPanel: FC<PanelProps> = observer(props => {
         resolver: joiResolver(ApplySchema)
     });
 
-    console.log(form.formState.errors, form.watch());
-
     useEffect(() => {
         openPopout(<ScreenSpinner />);
         if (userData) {

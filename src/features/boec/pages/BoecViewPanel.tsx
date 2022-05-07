@@ -79,7 +79,6 @@ export const BoecViewPanel: FC<PanelProps> = observer(props => {
     const handleSelectUser = async () => {
         const user = await selectVKUsers();
         // not working in mobile web
-        console.log(user[0]);
         if (!user[0]) {
             setSnackBar(
                 <Snackbar
